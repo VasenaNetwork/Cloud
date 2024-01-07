@@ -28,7 +28,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: bedrockcloud
-          path: target/BedrockCloud.jar
+          path: target/Cloud.jar
       - name: Upload development release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
