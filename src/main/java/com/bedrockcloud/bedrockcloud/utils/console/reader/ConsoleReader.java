@@ -13,11 +13,10 @@ import org.jline.utils.InfoCmp;
 
 public class ConsoleReader extends Thread implements Loggable {
     private final Set<Command> commands;
-    private String message;
 
     public ConsoleReader() {
         this.setName("ConsoleReader-main");
-        this.commands = new HashSet<Command>();
+        this.commands = new HashSet<>();
     }
 
     @Override
@@ -94,23 +93,17 @@ public class ConsoleReader extends Thread implements Loggable {
         return this.commands;
     }
 
-    private class CommandCompleter implements Completer {
-        private final Set<String> commandNames;
-
-        CommandCompleter(Set<String> commandNames) {
-            this.commandNames = commandNames;
-        }
-
+    private record CommandCompleter(Set<String> commandNames) implements Completer {
         @Override
-        public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
-            String word = line.word();
-            if (line.words().size() == 1) {
-                for (String cmd : commandNames) {
-                    if (cmd.startsWith(word)) {
-                        candidates.add(new Candidate(cmd));
+            public void complete(LineReader reader, ParsedLine line, List<Candidate> candidates) {
+                String word = line.word();
+                if (line.words().size() == 1) {
+                    for (String cmd : commandNames) {
+                        if (cmd.startsWith(word)) {
+                            candidates.add(new Candidate(cmd));
+                        }
                     }
                 }
             }
         }
-    }
 }
