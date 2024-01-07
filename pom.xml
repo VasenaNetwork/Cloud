@@ -88,7 +88,7 @@
     </dependencies>
 
     <build>
-        <finalName>BedrockCloud</finalName>
+        <finalName>Cloud</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
