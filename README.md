@@ -9,12 +9,18 @@
 - Put the "bin" directory in the Cloud folder
 - Make a start file with this content: `java -jar Cloud.jar`
 - Give the start file permissions and execute the script
-- Start the cloud for the first time
-- CloudBridge-PM, DevTools and CloudBridge-Proxy will be downloaded automatically
-- Now you can use the cloud.
 
-# Extra
-- If you want a SignSystem for your lobby, download https://github.com/BedrockCloud/CloudSignSystem and put it on your lobby template in the plugin folder.
+# Features
+- Templates
+- Dynamic Servers
+- Static Servers
+- Maintenance system
+- RestAPI
+- Automatically downloading server software (PocketMine, WaterdogPE) & plugins (CloudBridge)
+- Notify (In-game notifications)
+
+# Note
+- You don't have to download the plugins (CloudBridge-PM, CloudBridge-Proxy)
 
 # Support
 - If you find any bugs, please create a issue on GitHub
