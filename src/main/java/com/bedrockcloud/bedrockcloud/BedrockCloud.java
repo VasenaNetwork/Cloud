@@ -78,7 +78,7 @@ public class BedrockCloud
         setPluginManager(new PluginManager(this));
 
         maintenanceFile = new Config("./local/maintenance.txt", Config.ENUM);
-        this.pluginPath = new File("./local/plugins/cloud/");
+        this.pluginPath = new File("./local/plugins/cloud");
 
         running = true;
         this.initProvider();
