@@ -1,6 +1,10 @@
 package com.bedrockcloud.bedrockcloud.server.proxyserver;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.api.event.server.PrivateServerStopEvent;
+import com.bedrockcloud.bedrockcloud.api.event.server.ProxyServerStartEvent;
+import com.bedrockcloud.bedrockcloud.api.event.server.ProxyServerStopEvent;
+import com.bedrockcloud.bedrockcloud.api.event.server.ServerStartEvent;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper.ServiceHelper;
 import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
@@ -53,6 +57,16 @@ public class ProxyServer {
         ServiceKiller.killPid(this);
 
         BedrockCloud.getProxyServerProvider().addProxyServer(this);
+
+        ProxyServerStartEvent event = new ProxyServerStartEvent(this);
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            BedrockCloud.getProxyServerProvider().removeServer(this);
+            BedrockCloud.getLogger().warning("§cServer start was cancelled because §eProxyServerStartEvent §cis cancelled§7.");
+            return;
+        }
+
         this.copyServer();
         try {
             this.startServer();
@@ -133,6 +147,14 @@ public class ProxyServer {
     }
 
     public void stopServer() {
+        ProxyServerStopEvent event = new ProxyServerStopEvent(this);
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            BedrockCloud.getLogger().warning("§cServer stop was cancelled because §eProxyServerStopEvent §cis cancelled§7.");
+            return;
+        }
+
         String notifyMessage = MessageAPI.stopMessage.replace("%service", this.serverName);
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().warning(notifyMessage);
@@ -146,7 +168,7 @@ public class ProxyServer {
         PushPacketManager.pushPacket(cloudPacket, this);
     }
 
-    public void copyServer() {
+    private void copyServer() {
         final File src = new File("./templates/" + this.template.getName() + "/");
         final File dest = new File("./temp/" + this.serverName);
         if (!dest.exists()) {

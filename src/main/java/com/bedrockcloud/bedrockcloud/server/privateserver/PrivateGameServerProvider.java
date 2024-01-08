@@ -1,11 +1,13 @@
 package com.bedrockcloud.bedrockcloud.server.privateserver;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class PrivateGameServerProvider
 {
-    public Map<String, PrivateGameServer> gameServerMap;
+    private final Map<String, PrivateGameServer> gameServerMap;
 
     public PrivateGameServerProvider() {
         this.gameServerMap = new HashMap<String, PrivateGameServer>();
@@ -14,15 +16,18 @@ public class PrivateGameServerProvider
     public Map<String, PrivateGameServer> getGameServerMap() {
         return this.gameServerMap;
     }
-    
+
+    @ApiStatus.Internal
     public void addGameServer(final PrivateGameServer gameServer) {
         this.gameServerMap.put(gameServer.getServerName(), gameServer);
     }
-    
+
+    @ApiStatus.Internal
     public void removeServer(final PrivateGameServer gameServer) {
         this.gameServerMap.remove(gameServer.getServerName());
     }
-    
+
+    @ApiStatus.Internal
     public void removeServer(final String name) {
         this.gameServerMap.remove(name);
     }

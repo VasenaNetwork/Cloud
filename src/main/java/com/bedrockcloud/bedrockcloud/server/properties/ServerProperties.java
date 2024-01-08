@@ -5,11 +5,13 @@ import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
 import com.bedrockcloud.bedrockcloud.server.privateserver.PrivateGameServer;
 import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Objects;
 
 public class ServerProperties {
 
+    @ApiStatus.Internal
     public static void createProperties(final GameServer gameServer) {
         final String serverName = gameServer.getServerName();
         final int port = gameServer.getServerPort();
@@ -47,6 +49,7 @@ public class ServerProperties {
         } catch (Throwable ignored) {}
     }
 
+    @ApiStatus.Internal
     public static void createProperties(final PrivateGameServer gameServer) {
         final String serverName = gameServer.getServerName();
         final int port = gameServer.getServerPort();
@@ -85,6 +88,7 @@ public class ServerProperties {
         } catch (Throwable ignored) {}
     }
 
+    @ApiStatus.Internal
     public static void createProperties(final ProxyServer proxyServer) {
         final Config proxy = new Config("./temp/" + proxyServer.getServerName() + "/config.yml", Config.YAML);
         proxy.set("listener.host", "0.0.0.0:" + proxyServer.getServerPort());

@@ -1,5 +1,8 @@
 package com.bedrockcloud.bedrockcloud;
 
+import com.bedrockcloud.bedrockcloud.api.event.EventHandler;
+import com.bedrockcloud.bedrockcloud.api.plugin.PluginLoadOrder;
+import com.bedrockcloud.bedrockcloud.api.plugin.PluginManager;
 import com.bedrockcloud.bedrockcloud.utils.command.CommandRegistry;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import com.bedrockcloud.bedrockcloud.utils.console.shutdown.ShutdownThread;
@@ -18,12 +21,17 @@ import com.bedrockcloud.bedrockcloud.templates.TemplateProvider;
 import com.bedrockcloud.bedrockcloud.utils.console.Logger;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 import java.util.Timer;
 
 public class BedrockCloud
 {
+    @Getter
+    private static BedrockCloud instance;
+
     @Getter
     private static TemplateProvider templateProvider;
     @Getter
@@ -46,6 +54,12 @@ public class BedrockCloud
     private static Config maintenanceFile;
     @Getter
     private File pluginPath;
+    @Setter
+    @Getter
+    private PluginManager pluginManager;
+    @Setter
+    @Getter
+    private EventHandler eventHandler;
 
     public final static String prefix = "§l§bCloud §r§8» §r";
     
@@ -58,14 +72,18 @@ public class BedrockCloud
     }
 
     public BedrockCloud() {
+        instance = this;
+
         Runtime.getRuntime().addShutdownHook(new ShutdownThread());
+        setPluginManager(new PluginManager(this));
+
         maintenanceFile = new Config("./local/maintenance.txt", Config.ENUM);
         this.pluginPath = new File("./local/plugins/cloud/");
 
         running = true;
         this.initProvider();
 
-        (new CommandRegistry()).registerAllCommands();
+        CommandRegistry.registerAllCommands();
         BedrockCloud.networkManager = new NetworkManager((int) Utils.getConfig().getDouble("port"));
 
         if (Utils.getConfig().getBoolean("rest-enabled", true)) {
@@ -81,9 +99,13 @@ public class BedrockCloud
             restartTimer.schedule(new RestartAllTask(), 1000L, 1000L);
         }
 
+        getPluginManager().enableAllPlugins(PluginLoadOrder.STARTUP);
+
         ServiceHelper.startAllProxies();
         ServiceHelper.startAllServers();
         BedrockCloud.networkManager.start();
+
+        getPluginManager().enableAllPlugins(PluginLoadOrder.POSTWORLD);
     }
 
     private void initProvider() {
@@ -98,6 +120,7 @@ public class BedrockCloud
         BedrockCloud.consoleReader.start();
     }
 
+    @ApiStatus.Internal
     public static void setRunning(boolean running) {
         BedrockCloud.running = running;
     }

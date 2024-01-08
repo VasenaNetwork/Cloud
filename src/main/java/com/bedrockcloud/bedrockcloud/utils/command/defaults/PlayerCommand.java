@@ -19,8 +19,8 @@ public class PlayerCommand extends Command
     public void onCommand(final String[] args) {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("list")) {
-                this.getLogger().info("§e»§r §7There are currently " + BedrockCloud.getCloudPlayerProvider().cloudPlayerMap.size() + " Player connected! §e«");
-                for (CloudPlayer cloudPlayer : BedrockCloud.getCloudPlayerProvider().cloudPlayerMap.values()) {
+                this.getLogger().info("§e»§r §7There are currently " + BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().size() + " Player connected! §e«");
+                for (CloudPlayer cloudPlayer : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
                     this.getLogger().info("§c➤ §rPlayer: " + cloudPlayer.getPlayerName() + " (" + cloudPlayer.getAddress() + ") | (" + cloudPlayer.getXuid() + ") ᐅ " + cloudPlayer.getCurrentServer());
                 }
             } else if (args[0].equalsIgnoreCase("message") && args.length != 2) {

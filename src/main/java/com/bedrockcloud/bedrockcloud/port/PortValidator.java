@@ -60,13 +60,13 @@ public final class PortValidator {
     }
 
     private static boolean isPortUsed(int port) {
-        for (final var service : BedrockCloud.getGameServerProvider().gameServerMap.values()) {
+        for (final var service : BedrockCloud.getGameServerProvider().getGameServerMap().values()) {
             if (service.getServerPort() == port || service.getServerPort()+1 == port) return true;
         }
-        for (final var service : BedrockCloud.getPrivategameServerProvider().gameServerMap.values()) {
+        for (final var service : BedrockCloud.getPrivategameServerProvider().getGameServerMap().values()) {
             if (service.getServerPort() == port || service.getServerPort()+1 == port) return true;
         }
-        for (final var service : BedrockCloud.getProxyServerProvider().proxyServerMap.values()) {
+        for (final var service : BedrockCloud.getProxyServerProvider().getProxyServerMap().values()) {
             if (service.getServerPort() == port || service.getServerPort()+1 == port) return true;
         }
 

@@ -16,15 +16,15 @@ public class TemplateCommand extends Command {
     public void onCommand(final String[] args) {
         if (args.length > 0) {
             if (Objects.equals(args[0], "list")) {
-                this.getLogger().info("§e»§r §7There are currently " + BedrockCloud.getTemplateProvider().templateMap.size() + " Templates online! §e«");
-                for (final Template template : BedrockCloud.getTemplateProvider().templateMap.values()) {
+                this.getLogger().info("§e»§r §7There are currently " + BedrockCloud.getTemplateProvider().getTemplateMap().size() + " Templates online! §e«");
+                for (final Template template : BedrockCloud.getTemplateProvider().getTemplateMap().values()) {
                     if (template.getType() == 0) {
-                        this.getLogger().info("§c➤ §rName: " + template.getName() + " | Maintenance: " + template.isMaintenance + " | Beta: " + template.isBeta + " | TYPE: WATERDOGPE");
+                        this.getLogger().info("§c➤ §rName: " + template.getName() + " | Maintenance: " + template.getMaintenance() + " | Beta: " + template.getBeta() + " | TYPE: WATERDOGPE");
                     }
                 }
-                for (final Template template : BedrockCloud.getTemplateProvider().templateMap.values()) {
+                for (final Template template : BedrockCloud.getTemplateProvider().getTemplateMap().values()) {
                     if (template.getType() == 1) {
-                        this.getLogger().info("§c➤ §rName: " + template.getName() + " | Maintenance: " + template.isMaintenance + " | Beta: " + template.isBeta + " | TYPE: POCKETMINE");
+                        this.getLogger().info("§c➤ §rName: " + template.getName() + " | Maintenance: " + template.getMaintenance() + " | Beta: " + template.getBeta() + " | TYPE: POCKETMINE");
                     }
                 }
             }

@@ -21,8 +21,7 @@ public class StartServerPacket extends DataPacket
         }
         else if (!BedrockCloud.getTemplateProvider().isTemplateRunning(group)) {
             BedrockCloud.getLogger().error("The group is not running");
-        }
-        else {
+        } else {
             for (int i = 0; i < Integer.parseInt(count); ++i) {
                 if (group.getType() == GroupAPI.POCKETMINE_SERVER) {
                     new GameServer(group);

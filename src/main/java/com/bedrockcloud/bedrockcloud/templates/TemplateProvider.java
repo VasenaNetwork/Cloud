@@ -7,16 +7,18 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import com.bedrockcloud.bedrockcloud.utils.files.json.json;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.HashMap;
 
 public class TemplateProvider implements Loggable
 {
-    public HashMap<String, Template> templateMap;
-    public HashMap<String, Template> runningTemplates;
+    private final HashMap<String, Template> templateMap;
+    private final HashMap<String, Template> runningTemplates;
     
     public TemplateProvider() {
-        this.templateMap = new HashMap<String, Template>();
-        this.runningTemplates = new HashMap<String, Template>();
+        this.templateMap = new HashMap<>();
+        this.runningTemplates = new HashMap<>();
     }
     
     public HashMap<String, Template> getRunningTemplates() {
@@ -26,11 +28,13 @@ public class TemplateProvider implements Loggable
     public HashMap<String, Template> getTemplateMap() {
         return this.templateMap;
     }
-    
+
+    @ApiStatus.Internal
     public void addTemplate(final Template template) {
         this.templateMap.put(template.getName(), template);
     }
-    
+
+    @ApiStatus.Internal
     public Template getTemplate(final String name) {
         return this.templateMap.get(name);
     }
@@ -38,31 +42,37 @@ public class TemplateProvider implements Loggable
     public boolean existsTemplate(final String name) {
         return this.templateMap.get(name) != null;
     }
-    
+
+    @ApiStatus.Internal
     public void removeTemplate(final String name) {
         this.templateMap.remove(name);
     }
-    
+
+    @ApiStatus.Internal
     public void removeTemplate(final Template template) {
         this.templateMap.remove(template.getName());
     }
-    
+
     public boolean isTemplateRunning(final Template template) {
         return this.runningTemplates.containsKey(template.getName());
     }
-    
+
+    @ApiStatus.Internal
     public void addRunningTemplate(final Template template) {
         this.runningTemplates.put(template.getName(), template);
     }
-    
+
+    @ApiStatus.Internal
     public void removeRunningGroup(final String name) {
         this.runningTemplates.remove(name);
     }
-    
+
+    @ApiStatus.Internal
     public void removeRunningGroup(final Template group) {
         this.runningTemplates.remove(group.getName());
     }
-    
+
+    @ApiStatus.Internal
     public void loadTemplates() {
         for (final String name : GroupAPI.getGroups()) {
             try {

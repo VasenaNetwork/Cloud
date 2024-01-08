@@ -9,6 +9,7 @@ import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
 import com.bedrockcloud.bedrockcloud.server.privateserver.PrivateGameServer;
 import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
+import org.jetbrains.annotations.ApiStatus;
 
 public class Template implements Loggable
 {
@@ -47,10 +48,12 @@ public class Template implements Loggable
         return this.runningTemplateServers;
     }
 
+    @ApiStatus.Internal
     public void addServer(final Template template, final String serverName) {
         this.runningTemplateServers.put(serverName, template);
     }
 
+    @ApiStatus.Internal
     public void removeServer(final String name) {
         this.runningTemplateServers.remove(name);
     }
@@ -63,10 +66,12 @@ public class Template implements Loggable
         return this.templatePlayer;
     }
 
+    @ApiStatus.Internal
     public void addPlayer(final CloudPlayer player, final String serverName) {
         this.templatePlayer.put(serverName, player.getPlayerName());
     }
 
+    @ApiStatus.Internal
     public void removePlayer(final CloudPlayer name) {
         this.templatePlayer.remove(name.getPlayerName());
     }
@@ -94,10 +99,10 @@ public class Template implements Loggable
     public int getType() {
         return this.type;
     }
-    
-    public void start(boolean byCommand) {
+
+    public void start(boolean force) {
         if (this.getMaintenance()) {
-            if (!byCommand) {
+            if (!force) {
                 BedrockCloud.getLogger().warning("§cThe group §e" + this.getName() + " §cwas not started because it is in maintenance, but you can start it yourself with the command §7'§etemplate start <template>§7'§c.");
                 return;
             }
@@ -116,7 +121,7 @@ public class Template implements Loggable
 
     public void restart() {
         BedrockCloud.getLogger().info("Restarting group " + this.getName() + "...");
-        for (final String servername : BedrockCloud.getGameServerProvider().gameServerMap.keySet()) {
+        for (final String servername : BedrockCloud.getGameServerProvider().getGameServerMap().keySet()) {
             if (Objects.equals(BedrockCloud.getGameServerProvider().getGameServer(servername).getTemplate().getName(), this.getName())) {
                 final GameServer server = BedrockCloud.getGameServerProvider().getGameServer(servername);
                 if (server == null) {
@@ -126,7 +131,7 @@ public class Template implements Loggable
             }
         }
 
-        for (final String servername : BedrockCloud.getPrivategameServerProvider().gameServerMap.keySet()) {
+        for (final String servername : BedrockCloud.getPrivategameServerProvider().getGameServerMap().keySet()) {
             if (Objects.equals(BedrockCloud.getPrivategameServerProvider().getGameServer(servername).getTemplate().getName(), this.getName())) {
                 final PrivateGameServer server = BedrockCloud.getPrivategameServerProvider().getGameServer(servername);
                 if (server == null) {
@@ -136,7 +141,7 @@ public class Template implements Loggable
             }
         }
 
-        for (final String servername : BedrockCloud.getProxyServerProvider().proxyServerMap.keySet()) {
+        for (final String servername : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
             if (Objects.equals(BedrockCloud.getProxyServerProvider().getProxyServer(servername).getTemplate().getName(), this.getName())) {
                 final ProxyServer server = BedrockCloud.getProxyServerProvider().getProxyServer(servername);
                 if (server == null) {
@@ -151,7 +156,7 @@ public class Template implements Loggable
         BedrockCloud.getLogger().info("Stopping group " + this.getName() + "...");
         BedrockCloud.getTemplateProvider().removeRunningGroup(this);
 
-        for (final String servername : BedrockCloud.getGameServerProvider().gameServerMap.keySet()) {
+        for (final String servername : BedrockCloud.getGameServerProvider().getGameServerMap().keySet()) {
             if (Objects.equals(BedrockCloud.getGameServerProvider().getGameServer(servername).getTemplate().getName(), this.getName())) {
                 final GameServer server = BedrockCloud.getGameServerProvider().getGameServer(servername);
                 if (server == null) {
@@ -161,7 +166,7 @@ public class Template implements Loggable
             }
         }
 
-        for (final String servername : BedrockCloud.getPrivategameServerProvider().gameServerMap.keySet()) {
+        for (final String servername : BedrockCloud.getPrivategameServerProvider().getGameServerMap().keySet()) {
             if (Objects.equals(BedrockCloud.getPrivategameServerProvider().getGameServer(servername).getTemplate().getName(), this.getName())) {
                 final PrivateGameServer server = BedrockCloud.getPrivategameServerProvider().getGameServer(servername);
                 if (server == null) {
@@ -171,7 +176,7 @@ public class Template implements Loggable
             }
         }
 
-        for (final String servername : BedrockCloud.getProxyServerProvider().proxyServerMap.keySet()) {
+        for (final String servername : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
             if (Objects.equals(BedrockCloud.getProxyServerProvider().getProxyServer(servername).getTemplate().getName(), this.getName())) {
                 final ProxyServer server = BedrockCloud.getProxyServerProvider().getProxyServer(servername);
                 if (server == null) {

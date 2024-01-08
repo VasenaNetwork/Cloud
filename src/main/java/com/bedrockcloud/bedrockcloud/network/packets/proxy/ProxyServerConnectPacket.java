@@ -34,7 +34,7 @@ public class ProxyServerConnectPacket extends DataPacket implements Loggable
         for (final String key : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
             final ProxyServer proxy = BedrockCloud.getProxyServerProvider().getProxyServer(key);
             final RegisterServerPacket packet = new RegisterServerPacket();
-            for (GameServer server : BedrockCloud.getGameServerProvider().gameServerMap.values()) {
+            for (GameServer server : BedrockCloud.getGameServerProvider().getGameServerMap().values()) {
                 if (server != null) {
                     packet.addValue("serverPort", server.getServerPort());
                     packet.addValue("serverName", server.getServerName());

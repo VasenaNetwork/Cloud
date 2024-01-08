@@ -76,7 +76,7 @@ public class CloudStarter {
         }
     }
 
-    public static String checkForUpdate() throws IOException {
+    private static String checkForUpdate() throws IOException {
         String url = "https://raw.githubusercontent.com/BedrockCloud/Cloud/master/src/main/resources/version.yml";
         InputStream inputStream = new URL(url).openStream();
         String content = null;
@@ -86,7 +86,7 @@ public class CloudStarter {
         return content;
     }
 
-    public static String getVersion() throws IOException {
+    private static String getVersion() throws IOException {
         String content = checkForUpdate();
         Yaml yaml = new Yaml();
         Object obj = yaml.load(content);
@@ -106,7 +106,7 @@ public class CloudStarter {
         return Integer.parseInt(version);
     }
 
-    public static boolean isLinux(){
+    private static boolean isLinux(){
         String osName = System.getProperty("os.name");
         return (osName.contains("Linux"));
     }

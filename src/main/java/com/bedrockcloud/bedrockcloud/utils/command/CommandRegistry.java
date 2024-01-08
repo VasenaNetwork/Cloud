@@ -2,9 +2,12 @@ package com.bedrockcloud.bedrockcloud.utils.command;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.utils.command.defaults.*;
+import org.jetbrains.annotations.ApiStatus;
 
 public class CommandRegistry {
-    public void registerAllCommands() {
+
+    @ApiStatus.Internal
+    public static void registerAllCommands() {
         BedrockCloud.getConsoleReader().addCommand(new HelpCommand());
         BedrockCloud.getConsoleReader().addCommand(new ServerCommand());
         BedrockCloud.getConsoleReader().addCommand(new TemplateCommand());

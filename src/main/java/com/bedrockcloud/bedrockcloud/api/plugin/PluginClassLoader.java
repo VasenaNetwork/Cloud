@@ -27,7 +27,7 @@ public class PluginClassLoader extends URLClassLoader {
     }
 
     protected Class<?> findClass(String name, boolean checkGlobal) throws ClassNotFoundException {
-        if (name.startsWith("dev.waterdog.")) { // Proxy classes should be known
+        if (name.startsWith("com.bedrockcloud.bedrockcloud.")) { // Cloud classes should be known
             throw new ClassNotFoundException(name);
         }
 

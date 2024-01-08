@@ -24,13 +24,13 @@ public class ServerCommand extends Command
             if (args[0].equalsIgnoreCase("list")) {
                 int services = BedrockCloud.getGameServerProvider().getGameServerMap().size() + BedrockCloud.getPrivategameServerProvider().getGameServerMap().size() + BedrockCloud.getProxyServerProvider().getProxyServerMap().size();
                 this.getLogger().info("§e»§r §7There are currently " + services + " Services online! §e«");
-                for (final GameServer gameServer : BedrockCloud.getGameServerProvider().gameServerMap.values()) {
+                for (final GameServer gameServer : BedrockCloud.getGameServerProvider().getGameServerMap().values()) {
                     this.getLogger().info("§c➤ §rGameServer: " + gameServer.getServerName() + " | Players: " + gameServer.getPlayerCount() + " ᐅ " + gameServer.getTemplate().getName() + " | Static: " + Utils.boolToString(gameServer.getTemplate().getStatic()));
                 }
-                for (final PrivateGameServer privateGameServer : BedrockCloud.getPrivategameServerProvider().gameServerMap.values()) {
+                for (final PrivateGameServer privateGameServer : BedrockCloud.getPrivategameServerProvider().getGameServerMap().values()) {
                     this.getLogger().info("§c➤ §rPrivateServer: " + privateGameServer.getServerName() + " | Players: " + privateGameServer.getPlayerCount() + " ᐅ " + privateGameServer.getTemplate().getName() + " | Static: " + Utils.boolToString(privateGameServer.getTemplate().getStatic()) + " | Owner: " + privateGameServer.getServerOwner());
                 }
-                for (final ProxyServer proxyServer : BedrockCloud.getProxyServerProvider().proxyServerMap.values()) {
+                for (final ProxyServer proxyServer : BedrockCloud.getProxyServerProvider().getProxyServerMap().values()) {
                     this.getLogger().info("§c➤ §rProxyServer: " + proxyServer.getServerName() + " | Template: " + proxyServer.getTemplate().getName() + " | Static: " + Utils.boolToString(proxyServer.getTemplate().getStatic()));
                 }
             } else if (args.length > 1) {

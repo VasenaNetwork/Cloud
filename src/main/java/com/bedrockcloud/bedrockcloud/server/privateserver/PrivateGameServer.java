@@ -1,6 +1,10 @@
 package com.bedrockcloud.bedrockcloud.server.privateserver;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.api.event.server.PrivateServerStartEvent;
+import com.bedrockcloud.bedrockcloud.api.event.server.PrivateServerStopEvent;
+import com.bedrockcloud.bedrockcloud.api.event.server.ServerStartEvent;
+import com.bedrockcloud.bedrockcloud.api.event.server.ServerStopEvent;
 import com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper.ServiceHelper;
 import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
 import com.bedrockcloud.bedrockcloud.utils.manager.FileManager;
@@ -67,12 +71,22 @@ public class PrivateGameServer {
         this.state = 0;
         this.pid = -1;
         this.startTime = System.currentTimeMillis() / 1000;
+        this.serverOwner = serverOwner;
 
         ServiceKiller.killPid(this);
 
         BedrockCloud.getPrivategameServerProvider().addGameServer(this);
+
+        PrivateServerStartEvent event = new PrivateServerStartEvent(this);
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            BedrockCloud.getPrivategameServerProvider().removeServer(this);
+            BedrockCloud.getLogger().warning("§cServer start was cancelled because §ePrivateServerStartEvent §cis cancelled§7.");
+            return;
+        }
+
         this.copyServer();
-        this.serverOwner = serverOwner;
         try {
             this.startServer();
         } catch (InterruptedException e) {
@@ -179,6 +193,14 @@ public class PrivateGameServer {
     }
     
     public void stopServer() {
+        PrivateServerStopEvent event = new PrivateServerStopEvent(this);
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            BedrockCloud.getLogger().warning("§cServer stop was cancelled because §ePrivateServerStopEvent §cis cancelled§7.");
+            return;
+        }
+
         String notifyMessage = MessageAPI.stopMessage.replace("%service", this.serverName);
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().warning(notifyMessage);

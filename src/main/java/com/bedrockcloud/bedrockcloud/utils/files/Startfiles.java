@@ -41,7 +41,7 @@ public class Startfiles implements Loggable
         this.checkFolder();
     }
 
-    public void delete(final File file) {
+    private void delete(final File file) {
         if (file.isDirectory()) {
             final String[] fileList = file.list();
             if (fileList.length == 0) {

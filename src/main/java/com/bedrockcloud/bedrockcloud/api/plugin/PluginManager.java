@@ -108,7 +108,7 @@ public class PluginManager {
 
         for ( Plugin plugin : this.pluginMap.values() ) {
             if ( plugin.getLoadOrder().equals( pluginLoadOrder ) ) {
-                if ( !this.enablePlugin( plugin, null ) ) {
+                if (this.enablePlugin(plugin, null)) {
                     failed.add( plugin );
                 }
             }
@@ -128,24 +128,24 @@ public class PluginManager {
     }
 
     public boolean enablePlugin( Plugin plugin, String parent ) {
-        if ( plugin.isEnabled() ) return true;
+        if ( plugin.isEnabled() ) return false;
         String pluginName = plugin.getName();
 
         if ( plugin.getDescription().getDepends() != null ) {
             for ( String depend : plugin.getDescription().getDepends() ) {
                 if ( depend.equals( parent ) ) {
                     this.logger.warning( "§cCan not enable plugin " + pluginName + " circular dependency " + parent + "!" );
-                    return false;
+                    return true;
                 }
 
                 Plugin dependPlugin = this.getPluginByName( depend );
                 if ( dependPlugin == null ) {
                     this.logger.warning( "§cCan not enable plugin " + pluginName + " missing dependency " + depend + "!" );
-                    return false;
+                    return true;
                 }
 
-                if ( !dependPlugin.isEnabled() && !this.enablePlugin( dependPlugin, pluginName ) ) {
-                    return false;
+                if ( !dependPlugin.isEnabled() && this.enablePlugin(dependPlugin, pluginName)) {
+                    return true;
                 }
             }
         }
@@ -155,9 +155,9 @@ public class PluginManager {
             this.logger.info( "Loaded plugin " + plugin.getName() + " Version: " + plugin.getVersion() + " successfully!" );
         } catch ( RuntimeException e ) {
             e.printStackTrace();
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void disableAllPlugins() {
@@ -235,7 +235,7 @@ public class PluginManager {
                 if ( methods != null ) {
                     for ( RegisteredListener registeredListener : methods ) {
                         try {
-                            registeredListener.getMethod().invoke( registeredListener.getListener(), event );
+                            registeredListener.method().invoke( registeredListener.listener(), event );
                         } catch ( IllegalAccessException | InvocationTargetException e ) {
                             e.printStackTrace();
                         }

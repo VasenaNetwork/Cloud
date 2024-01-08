@@ -6,9 +6,11 @@ public class ShutdownThread extends Thread {
 
     @Override
     public void run() {
+        BedrockCloud.getInstance().getPluginManager().disableAllPlugins();
+
         boolean servicesRunning = true;
         BedrockCloud.getLogger().info("§cPlease wait until all services are stopped.");
-        for (final String templateName : BedrockCloud.getTemplateProvider().templateMap.keySet()) {
+        for (final String templateName : BedrockCloud.getTemplateProvider().getTemplateMap().keySet()) {
             if (BedrockCloud.getTemplateProvider().isTemplateRunning(BedrockCloud.getTemplateProvider().getTemplate(templateName))) {
                 BedrockCloud.getTemplateProvider().getTemplate(templateName).stop();
             }

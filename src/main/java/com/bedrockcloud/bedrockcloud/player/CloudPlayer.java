@@ -2,6 +2,7 @@ package com.bedrockcloud.bedrockcloud.player;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import org.jetbrains.annotations.ApiStatus;
 
 public class CloudPlayer
 {
@@ -46,7 +47,8 @@ public class CloudPlayer
     public String getXuid() {
         return this.xuid;
     }
-    
+
+    @ApiStatus.Internal
     public void setCurrentServer(final String serverName) {
         this.currentServer = serverName;
     }
@@ -59,6 +61,7 @@ public class CloudPlayer
         return hasPrivateServer;
     }
 
+    @ApiStatus.Internal
     public void setHasPrivateServer(boolean bool){
         this.hasPrivateServer = bool;
     }

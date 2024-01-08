@@ -35,7 +35,7 @@ public class GameServerInfoResponsePacket extends RequestPacket
         this.addValue("isStatic", this.isStatic);
         final JSONArray arr = new JSONArray();
         try {
-            for (final CloudPlayer key : BedrockCloud.getCloudPlayerProvider().cloudPlayerMap.values()) {
+            for (final CloudPlayer key : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
                 if (key.getPlayerName() != null && Objects.equals(key.getCurrentServer(), this.serverInfoName)) {
                     arr.add(key.getPlayerName());
                 }

@@ -4,10 +4,13 @@ import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
 import com.bedrockcloud.bedrockcloud.server.privateserver.PrivateGameServer;
 import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 
 public class ServiceKiller {
+
+    @ApiStatus.Internal
     public static void killPid(GameServer server){
         final File pidFile = new File("./archive/server-pids/" + server.getServerName() + ".json");
         if (pidFile.exists()) {
@@ -22,6 +25,7 @@ public class ServiceKiller {
         }
     }
 
+    @ApiStatus.Internal
     public static void killPid(PrivateGameServer server){
         final File pidFile = new File("./archive/server-pids/" + server.getServerName() + ".json");
         if (pidFile.exists()) {
@@ -36,6 +40,7 @@ public class ServiceKiller {
         }
     }
 
+    @ApiStatus.Internal
     public static void killPid(ProxyServer server){
         final File pidFile = new File("./archive/server-pids/" + server.getServerName() + ".json");
         if (pidFile.exists()) {

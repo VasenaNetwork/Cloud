@@ -11,6 +11,7 @@ import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
 import com.bedrockcloud.bedrockcloud.server.privateserver.PrivateGameServer;
 import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
 import com.bedrockcloud.bedrockcloud.templates.Template;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 
 public class ServiceHelper {
 
+    @ApiStatus.Internal
     public static void startAllProxies() {
         try {
             Thread.sleep(3000L);
@@ -43,6 +45,7 @@ public class ServiceHelper {
         }
     }
 
+    @ApiStatus.Internal
     public static void startAllServers() {
         for (final String name : GroupAPI.getGroups()) {
             try {
@@ -63,18 +66,22 @@ public class ServiceHelper {
         }
     }
 
+    @ApiStatus.Internal
     public static void killWithPID(GameServer server) throws IOException {
         killWithPID(true, server);
     }
 
+    @ApiStatus.Internal
     public static void killWithPID(PrivateGameServer server) throws IOException {
         killWithPID(false, server);
     }
 
+    @ApiStatus.Internal
     public static void killWithPID(ProxyServer server) throws IOException {
         killWithPID(true, server);
     }
 
+    @ApiStatus.Internal
     public static void killWithPID(boolean startNewService, GameServer server) throws IOException {
         String notifyMessage = MessageAPI.stoppedMessage.replace("%service", server.getServerName());
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
@@ -116,6 +123,7 @@ public class ServiceHelper {
         }
     }
 
+    @ApiStatus.Internal
     public static void killWithPID(boolean startNewService, PrivateGameServer server) throws IOException {
         String notifyMessage = MessageAPI.stoppedMessage.replace("%service", server.getServerName());
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
@@ -155,6 +163,7 @@ public class ServiceHelper {
         }
     }
 
+    @ApiStatus.Internal
     public static void killWithPID(boolean startNewService, ProxyServer server) throws IOException {
         String notifyMessage = MessageAPI.stoppedMessage.replace("%service", server.getServerName());
         CloudNotifyManager.sendNotifyCloud(notifyMessage);

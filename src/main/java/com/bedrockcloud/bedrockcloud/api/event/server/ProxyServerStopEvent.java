@@ -4,10 +4,11 @@ import com.bedrockcloud.bedrockcloud.api.event.Cancellable;
 import com.bedrockcloud.bedrockcloud.api.event.Event;
 import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
 
-public class ProxyServerStartEvent extends Event implements Cancellable {
+public class ProxyServerStopEvent extends Event implements Cancellable {
+
     private final ProxyServer server;
 
-    public ProxyServerStartEvent(ProxyServer server) {
+    public ProxyServerStopEvent(ProxyServer server) {
         this.server = server;
     }
 

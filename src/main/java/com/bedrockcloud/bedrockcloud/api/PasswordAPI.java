@@ -1,11 +1,14 @@
 package com.bedrockcloud.bedrockcloud.api;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.security.SecureRandom;
 
 public class PasswordAPI {
 
     private static final String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
+    @ApiStatus.Internal
     public static String generateRandomPassword(int length) {
         SecureRandom random = new SecureRandom();
         StringBuilder sb = new StringBuilder(length);

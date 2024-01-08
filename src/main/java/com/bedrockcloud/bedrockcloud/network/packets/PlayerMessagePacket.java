@@ -28,7 +28,7 @@ public class PlayerMessagePacket extends DataPacket
             playerTextPacket.playerName = playerName;
             playerTextPacket.type = 0;
             playerTextPacket.value = value;
-            for (final String proxy : BedrockCloud.getProxyServerProvider().proxyServerMap.keySet()) {
+            for (final String proxy : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
                 final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(proxy);
                 proxyServer.pushPacket(playerTextPacket);
             }
@@ -37,7 +37,7 @@ public class PlayerMessagePacket extends DataPacket
             playerTextPacket.playerName = playerName;
             playerTextPacket.type = 0;
             playerTextPacket.value = value;
-            for (final String proxy : BedrockCloud.getProxyServerProvider().proxyServerMap.keySet()) {
+            for (final String proxy : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
                 final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(proxy);
                 proxyServer.pushPacket(playerTextPacket);
             }

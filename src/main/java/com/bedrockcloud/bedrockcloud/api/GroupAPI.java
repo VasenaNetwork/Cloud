@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
+import org.jetbrains.annotations.ApiStatus;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 
@@ -25,6 +26,7 @@ public class GroupAPI implements Loggable
         return theDir.exists();
     }
 
+    @ApiStatus.Internal
     public static boolean deleteGroup(final String name) {
         if (isGroup(name)) {
             if (!BedrockCloud.getTemplateProvider().isTemplateRunning(BedrockCloud.getTemplateProvider().getTemplate(name))) {
@@ -70,6 +72,7 @@ public class GroupAPI implements Loggable
         }
     }
 
+    @ApiStatus.Internal
     public static void createGroup(final String name, final int type) {
         if (!isGroup(name)) {
             try {
@@ -104,6 +107,7 @@ public class GroupAPI implements Loggable
         }
     }
 
+    @ApiStatus.Internal
     private static void createConfigEntry(String name, int type) throws IOException {
         final String configFilePath = "./templates/config.json";
         final JSONParser jsonParser = new JSONParser();
