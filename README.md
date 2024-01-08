@@ -1,3 +1,5 @@
+[![](https://jitci.com/gh/BedrockCloud/Cloud/svg)](https://jitci.com/gh/BedrockCloud/Cloud)
+
 # Requirements
 - Java 17 or higher
 - Debian 10 or higher
@@ -26,3 +28,20 @@
 # Support
 - If you find any bugs, please create a issue on GitHub
 - If you need help, you can join our [Discord server](https://discord.gg/JPK5Wk2auY)
+
+# Maven
+```xml
+<repositories>
+	<repository>
+        <id>jitpack.io</id>
+	    <url>https://jitpack.io</url>
+	</repository>
+</repositories>
+```
+```xml
+<dependency>
+    <groupId>com.github.BedrockCloud</groupId>
+    <artifactId>Cloud</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
