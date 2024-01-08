@@ -20,21 +20,39 @@ import com.bedrockcloud.bedrockcloud.utils.helper.serviceKiller.ServiceKiller;
 import com.bedrockcloud.bedrockcloud.tasks.KeepALiveTask;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
 
 public class GameServer {
     private static final int TIMEOUT = 20;
 
+    @Getter
     private final Template template;
+    @Getter
     private final String serverName;
+    @Getter
     private final int serverPort;
-    public int pid;
-    public int state;
+    @Setter
+    @Getter
+    private int pid;
+    @Setter
+    @Getter
+    private int state;
+    @Setter
+    @Getter
     private int playerCount;
+    @Setter
+    @Getter
     private int aliveChecks;
+    @Setter
+    @Getter
     private DatagramSocket socket;
-    public KeepALiveTask task = null;
+    @Setter
+    @Getter
+    private KeepALiveTask task = null;
+    @Setter
+    @Getter
     private boolean isConnected = false;
-
     private final long startTime;
     
     public GameServer(final Template template) {
@@ -59,8 +77,8 @@ public class GameServer {
         this.checkAliveAsync();
     }
 
-    public CompletableFuture<Boolean> checkAliveAsync() {
-        return CompletableFuture.supplyAsync(() -> {
+    private void checkAliveAsync() {
+        CompletableFuture.supplyAsync(() -> {
             while (!this.isConnected() && BedrockCloud.getGameServerProvider().existServer(this.getServerName())) {
                 if (!checkAlive()) {
                     String servername = getServerName();
@@ -89,44 +107,12 @@ public class GameServer {
         });
     }
 
-    public boolean checkAlive(){
+    private boolean checkAlive(){
         long currentTime = System.currentTimeMillis() / 1000;
 
         if ((currentTime - this.startTime) < TIMEOUT) return true;
         if (this.isConnected()) return true;
         return false;
-    }
-
-    public void setConnected(boolean connected) {
-        isConnected = connected;
-    }
-
-    public boolean isConnected() {
-        return isConnected;
-    }
-
-    public int getPid() {
-        return this.pid;
-    }
-
-    public KeepALiveTask getTask() {
-        return task;
-    }
-
-    public String getServerName() {
-        return this.serverName;
-    }
-    
-    public int getServerPort() {
-        return this.serverPort;
-    }
-    
-    public int getAliveChecks() {
-        return this.aliveChecks;
-    }
-    
-    public void setAliveChecks(final int aliveChecks) {
-        this.aliveChecks = aliveChecks;
     }
     
     private void startServer() throws InterruptedException {
@@ -179,10 +165,6 @@ public class GameServer {
         }
     }
     
-    public Template getTemplate() {
-        return this.template;
-    }
-    
     public void stopServer() {
         String notifyMessage = MessageAPI.stopMessage.replace("%service", this.serverName);
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
@@ -193,28 +175,8 @@ public class GameServer {
         this.pushPacket(packet);
     }
 
-    public DatagramSocket getSocket() {
-        return this.socket;
-    }
-
-    public void setSocket(final DatagramSocket socket) {
-        this.socket = socket;
-    }
-
     public void pushPacket(final DataPacket cloudPacket) {
         PushPacketManager.pushPacket(cloudPacket, this);
-    }
-    
-    public int getPlayerCount() {
-        return this.playerCount;
-    }
-    
-    public void setPlayerCount(final int v) {
-        this.playerCount = v;
-    }
-    
-    public int getState() {
-        return this.state;
     }
     
     @Override

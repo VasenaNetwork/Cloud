@@ -20,7 +20,7 @@ public class UpdateGameServerInfoPacket extends DataPacket
             serverName.setPlayerCount(Integer.parseInt(value));
         }
         else if (type == TYPE_UPDATE_STATE_MODE) {
-            serverName.state = Integer.parseInt(value);
+            serverName.setState(Integer.parseInt(value));
         }
         super.handle(jsonObject, clientRequest);
     }

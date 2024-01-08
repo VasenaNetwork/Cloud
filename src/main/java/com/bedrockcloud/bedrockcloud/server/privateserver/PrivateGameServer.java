@@ -15,6 +15,8 @@ import com.bedrockcloud.bedrockcloud.tasks.PrivateKeepALiveTask;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.*;
 import java.net.*;
@@ -24,17 +26,36 @@ import java.util.concurrent.CompletableFuture;
 public class PrivateGameServer {
     private static final int TIMEOUT = 20;
 
+    @Getter
     private final Template template;
+    @Getter
     private final String serverName;
+    @Getter
     private final int serverPort;
-    public int pid;
-    public int state;
+    @Setter
+    @Getter
+    private int pid;
+    @Setter
+    @Getter
+    private int state;
+    @Setter
+    @Getter
     private int playerCount;
+    @Setter
+    @Getter
     private int aliveChecks;
+    @Setter
+    @Getter
     private DatagramSocket socket;
-    public String serverOwner;
-    public PrivateKeepALiveTask task = null;
+    @Getter
+    private final String serverOwner;
+    @Setter
+    @Getter
+    private PrivateKeepALiveTask task = null;
+    @Setter
+    @Getter
     private boolean isConnected = false;
+    @Getter
     private final long startTime;
 
     public PrivateGameServer(final Template template, String serverOwner) {
@@ -60,8 +81,8 @@ public class PrivateGameServer {
         this.checkAliveAsync();
     }
 
-    public CompletableFuture<Boolean> checkAliveAsync() {
-        return CompletableFuture.supplyAsync(() -> {
+    private void checkAliveAsync() {
+        CompletableFuture.supplyAsync(() -> {
             while (!this.isConnected() && BedrockCloud.getPrivategameServerProvider().existServer(this.getServerName())) {
                 if (!checkAlive()) {
                     String servername = getServerName();
@@ -90,51 +111,15 @@ public class PrivateGameServer {
         });
     }
 
-    public boolean checkAlive(){
+    private boolean checkAlive(){
         long currentTime = System.currentTimeMillis() / 1000;
 
         if ((currentTime - this.startTime) < TIMEOUT) return true;
         if (this.isConnected()) return true;
         return false;
     }
-
-    public void setConnected(boolean connected) {
-        isConnected = connected;
-    }
-
-    public boolean isConnected() {
-        return isConnected;
-    }
-
-    public PrivateKeepALiveTask getTask() {
-        return task;
-    }
-
-    public int getPid() {
-        return this.pid;
-    }
     
-    public String getServerName() {
-        return this.serverName;
-    }
-
-    public String getServerOwner(){
-        return this.serverOwner;
-    }
-    
-    public int getServerPort() {
-        return this.serverPort;
-    }
-    
-    public int getAliveChecks() {
-        return this.aliveChecks;
-    }
-    
-    public void setAliveChecks(final int aliveChecks) {
-        this.aliveChecks = aliveChecks;
-    }
-    
-    public void startServer() throws InterruptedException {
+    private void startServer() throws InterruptedException {
         final File server = new File("./temp/" + this.serverName);
         if (server.exists()) {
             final ProcessBuilder builder = new ProcessBuilder(new String[0]);
@@ -175,7 +160,7 @@ public class PrivateGameServer {
         }
     }
     
-    public void copyServer() {
+    private void copyServer() {
         final File src = new File("./templates/" + this.template.getName() + "/");
         final File dest = new File("./temp/" + this.serverName);
         if (!dest.exists()) {
@@ -193,10 +178,6 @@ public class PrivateGameServer {
         }
     }
     
-    public Template getTemplate() {
-        return this.template;
-    }
-    
     public void stopServer() {
         String notifyMessage = MessageAPI.stopMessage.replace("%service", this.serverName);
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
@@ -207,28 +188,8 @@ public class PrivateGameServer {
         this.pushPacket(packet);
     }
 
-    public DatagramSocket getSocket() {
-        return this.socket;
-    }
-
-    public void setSocket(final DatagramSocket socket) {
-        this.socket = socket;
-    }
-
     public void pushPacket(final DataPacket cloudPacket) {
         PushPacketManager.pushPacket(cloudPacket, this);
-    }
-    
-    public int getPlayerCount() {
-        return this.playerCount;
-    }
-    
-    public void setPlayerCount(final int v) {
-        this.playerCount = v;
-    }
-    
-    public int getState() {
-        return this.state;
     }
     
     @Override

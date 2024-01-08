@@ -34,7 +34,7 @@ public class GameServerConnectPacket extends DataPacket
         if (!isPrivate) {
             final GameServer gameServer = BedrockCloud.getGameServerProvider().getGameServer(serverName);
             gameServer.setSocket(clientRequest.getSocket());
-            gameServer.pid = Integer.parseInt(serverPid);
+            gameServer.setPid(Integer.parseInt(serverPid));
 
             Config config = new Config("./archive/server-pids/" + serverName + ".json", Config.JSON);
             config.set("pid", Integer.parseInt(serverPid));
@@ -42,9 +42,9 @@ public class GameServerConnectPacket extends DataPacket
 
             gameServer.setAliveChecks(0);
 
-            gameServer.task = new KeepALiveTask(gameServer);
-            gameServer.task.setName(gameServer.getServerName());
-            service.scheduleAtFixedRate(gameServer.task, 0, 1, TimeUnit.SECONDS);
+            gameServer.setTask(new KeepALiveTask(gameServer));
+            gameServer.getTask().setName(gameServer.getServerName());
+            service.scheduleAtFixedRate(gameServer.getTask(), 0, 1, TimeUnit.SECONDS);
 
             final VersionInfoPacket versionInfoPacket = new VersionInfoPacket();
             gameServer.pushPacket(versionInfoPacket);
@@ -65,7 +65,7 @@ public class GameServerConnectPacket extends DataPacket
         } else {
             final PrivateGameServer gameServer = BedrockCloud.getPrivategameServerProvider().getGameServer(serverName);
             gameServer.setSocket(clientRequest.getSocket());
-            gameServer.pid = Integer.parseInt(serverPid);
+            gameServer.setPid(Integer.parseInt(serverPid));
 
             Config config = new Config("./archive/server-pids/" + serverName + ".json", Config.JSON);
             config.set("pid", Integer.parseInt(serverPid));
@@ -73,9 +73,9 @@ public class GameServerConnectPacket extends DataPacket
 
             gameServer.setAliveChecks(0);
 
-            gameServer.task = new PrivateKeepALiveTask(gameServer);
-            gameServer.task.setName(gameServer.getServerName());
-            service.scheduleAtFixedRate(gameServer.task, 0, 1, TimeUnit.SECONDS);
+            gameServer.setTask(new PrivateKeepALiveTask(gameServer));
+            gameServer.getTask().setName(gameServer.getServerName());
+            service.scheduleAtFixedRate(gameServer.getTask(), 0, 1, TimeUnit.SECONDS);
 
             final VersionInfoPacket versionInfoPacket = new VersionInfoPacket();
             gameServer.pushPacket(versionInfoPacket);

@@ -88,7 +88,7 @@ public class ServiceHelper {
         } catch (Exception ignored) {
         }
         try {
-            builder.command("/bin/sh", "-c", "kill " + server.pid).start();
+            builder.command("/bin/sh", "-c", "kill " + server.getPid()).start();
         } catch (Exception ignored) {
         }
 
@@ -127,7 +127,7 @@ public class ServiceHelper {
         } catch (Exception ignored) {
         }
         try {
-            builder.command("/bin/sh", "-c", "kill " + server.pid).start();
+            builder.command("/bin/sh", "-c", "kill " + server.getPid()).start();
         } catch (Exception ignored) {
         }
 
@@ -166,7 +166,7 @@ public class ServiceHelper {
         } catch (Exception ignored) {
         }
         try {
-            builder.command("/bin/sh", "-c", "kill " + server.pid).start();
+            builder.command("/bin/sh", "-c", "kill " + server.getPid()).start();
         } catch (Exception ignored) {
         }
 

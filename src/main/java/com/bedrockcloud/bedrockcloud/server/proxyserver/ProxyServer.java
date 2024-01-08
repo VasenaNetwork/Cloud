@@ -17,6 +17,8 @@ import java.io.*;
 
 import com.bedrockcloud.bedrockcloud.network.packets.proxy.ProxyServerDisconnectPacket;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.net.*;
 import java.util.concurrent.CompletableFuture;
@@ -24,12 +26,20 @@ import java.util.concurrent.CompletableFuture;
 public class ProxyServer {
     private static final int TIMEOUT = 20;
 
+    @Getter
     private final Template template;
+    @Getter
     private final String serverName;
+    @Getter
     private final int serverPort;
+    @Setter
+    @Getter
     private DatagramSocket socket;
-    public int pid;
-    public int socketPort;
+    @Setter
+    @Getter
+    private int pid;
+    @Setter
+    @Getter
     private boolean isConnected = false;
     private final long startTime;
 
@@ -38,7 +48,6 @@ public class ProxyServer {
         this.serverName = template.getName() + Utils.getServiceSeperator() + FileManager.getFreeNumber("./temp/" + template.getName());
         this.serverPort = PortValidator.getNextProxyServerPort(this);
         this.pid = -1;
-        this.socketPort = -1;
         this.startTime = System.currentTimeMillis() / 1000;
 
         ServiceKiller.killPid(this);
@@ -53,8 +62,8 @@ public class ProxyServer {
         this.checkAliveAsync();
     }
 
-    public CompletableFuture<Boolean> checkAliveAsync() {
-        return CompletableFuture.supplyAsync(() -> {
+    private void checkAliveAsync() {
+        CompletableFuture.supplyAsync(() -> {
             while (!this.isConnected() && BedrockCloud.getProxyServerProvider().existServer(this.getServerName())) {
                 if (!checkAlive()) {
                     String servername = getServerName();
@@ -82,7 +91,7 @@ public class ProxyServer {
         });
     }
 
-    public boolean checkAlive(){
+    private boolean checkAlive(){
         long currentTime = System.currentTimeMillis() / 1000;
 
         if ((currentTime - this.startTime) < TIMEOUT) return true;
@@ -90,43 +99,7 @@ public class ProxyServer {
         return false;
     }
 
-    public void setConnected(boolean connected) {
-        isConnected = connected;
-    }
-
-    public boolean isConnected() {
-        return isConnected;
-    }
-
-    public Template getTemplate() {
-        return this.template;
-    }
-
-    public String getServerName() {
-        return this.serverName;
-    }
-
-    public void setSocketPort(int socketPort) {
-        this.socketPort = socketPort;
-    }
-
-    public int getSocketPort() {
-        return socketPort;
-    }
-
-    public DatagramSocket getSocket() {
-        return this.socket;
-    }
-
-    public void setSocket(final DatagramSocket socket) {
-        this.socket = socket;
-    }
-
-    public int getServerPort() {
-        return this.serverPort;
-    }
-
-    public void startServer() throws InterruptedException {
+    private void startServer() throws InterruptedException {
         final File server = new File("./temp/" + this.serverName);
         if (server.exists()) {
             final ProcessBuilder builder = new ProcessBuilder(new String[0]);

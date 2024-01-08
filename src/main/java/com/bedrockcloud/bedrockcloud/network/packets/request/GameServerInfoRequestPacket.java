@@ -27,7 +27,7 @@ public class GameServerInfoRequestPacket extends DataPacket
             }
             gameServerInfoResponsePacket.serverInfoName = server.getServerName();
             gameServerInfoResponsePacket.templateName = server.getTemplate().getName();
-            gameServerInfoResponsePacket.state = server.state;
+            gameServerInfoResponsePacket.state = server.getState();
             gameServerInfoResponsePacket.isLobby = server.getTemplate().getLobby();
             gameServerInfoResponsePacket.isMaintenance = server.getTemplate().getMaintenance();
             gameServerInfoResponsePacket.isPrivate = false;
@@ -45,7 +45,7 @@ public class GameServerInfoRequestPacket extends DataPacket
             }
             gameServerInfoResponsePacket.serverInfoName = server.getServerName();
             gameServerInfoResponsePacket.templateName = server.getTemplate().getName();
-            gameServerInfoResponsePacket.state = server.state;
+            gameServerInfoResponsePacket.state = server.getState();
             gameServerInfoResponsePacket.isLobby = server.getTemplate().getLobby();
             gameServerInfoResponsePacket.isMaintenance = server.getTemplate().getMaintenance();
             gameServerInfoResponsePacket.isPrivate = false;

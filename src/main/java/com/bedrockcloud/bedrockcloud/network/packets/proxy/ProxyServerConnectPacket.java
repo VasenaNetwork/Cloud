@@ -28,7 +28,7 @@ public class ProxyServerConnectPacket extends DataPacket implements Loggable
         config.save();
 
         final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(serverName);
-        proxyServer.pid = Integer.parseInt(pid);
+        proxyServer.setPid(Integer.parseInt(pid));
         final Object socketPort = jsonObject.get("socketPort");
         proxyServer.setSocket(clientRequest.getSocket());
         for (final String key : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
