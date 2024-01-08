@@ -73,14 +73,14 @@ public class BedrockCloud
 
     public BedrockCloud() {
         instance = this;
+        running = true;
 
         Runtime.getRuntime().addShutdownHook(new ShutdownThread());
-        setPluginManager(new PluginManager(this));
 
         maintenanceFile = new Config("./local/maintenance.txt", Config.ENUM);
         this.pluginPath = new File("./local/plugins/cloud");
 
-        running = true;
+        setPluginManager(new PluginManager(this));
         this.initProvider();
 
         CommandRegistry.registerAllCommands();

@@ -98,13 +98,13 @@ public class TemplateCommand extends Command {
                                 case "waterdogpe" -> GroupAPI.createGroup(args[1], 0);
                                 case "pocketmine" -> GroupAPI.createGroup(args[1], 1);
                                 default ->
-                                        BedrockCloud.getLogger().warning("Try to execute: template <create> [pocketmine | waterdogpe]");
+                                        BedrockCloud.getLogger().warning("Try to execute: template <create> <name> [pocketmine | waterdogpe]");
                             }
                         } else {
-                            BedrockCloud.getLogger().warning("Try to execute: template <create> [pocketmine | waterdogpe]");
+                            BedrockCloud.getLogger().warning("Try to execute: template <create> <name> [pocketmine | waterdogpe]");
                         }
                     } else {
-                        BedrockCloud.getLogger().warning("Try to execute: template <create> [pocketmine | waterdogpe]");
+                        BedrockCloud.getLogger().warning("Try to execute: template <create> <name> [pocketmine | waterdogpe]");
                     }
                 } else {
                     BedrockCloud.getLogger().warning("Try to execute: " + this.getUsage());

@@ -90,7 +90,7 @@ public class GroupAPI implements Loggable
                     final File theDir = new File(directory);
                     if (!theDir.exists()) {
                         theDir.mkdirs();
-                        if (type == POCKETMINE_SERVER && directory.equals(directories.get(0) + "/server.properties")) {
+                        if (type == POCKETMINE_SERVER) {
                             createConfigEntry(name, type);
                         }
                     }
@@ -127,9 +127,9 @@ public class GroupAPI implements Loggable
         object.put("maintenance", false);
         object.put("isStatic", false);
         object.put("type", type);
+        object.put("beta", false);
 
         if (type == POCKETMINE_SERVER) {
-            object.put("beta", true);
             object.put("isLobby", false);
             object.put("canBePrivate", false);
             object.put("proxy", "Proxy-Master");

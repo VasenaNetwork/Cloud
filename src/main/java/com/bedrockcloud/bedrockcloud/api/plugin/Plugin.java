@@ -36,7 +36,7 @@ public abstract class Plugin {
         this.logger = BedrockCloud.getLogger();
 
         this.pluginFile = pluginFile;
-        this.dataFolder = new File( cloud.getPluginPath().getPath() + "/" + description.getName() + "/" );
+        this.dataFolder = new File( cloud.getPluginPath().toPath() + "/" + description.getName() + "/" );
         if ( !this.dataFolder.exists() ) {
             this.dataFolder.mkdirs();
         }
