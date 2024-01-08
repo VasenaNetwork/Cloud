@@ -28,7 +28,7 @@ public class ServerCommand extends Command
                     this.getLogger().info("§c➤ §rGameServer: " + gameServer.getServerName() + " | Players: " + gameServer.getPlayerCount() + " ᐅ " + gameServer.getTemplate().getName() + " | Static: " + Utils.boolToString(gameServer.getTemplate().getStatic()));
                 }
                 for (final PrivateGameServer privateGameServer : BedrockCloud.getPrivategameServerProvider().gameServerMap.values()) {
-                    this.getLogger().info("§c➤ §rPrivateGameServer: " + privateGameServer.getServerName() + " | Players: " + privateGameServer.getPlayerCount() + " ᐅ " + privateGameServer.getTemplate().getName() + " | Static: " + Utils.boolToString(privateGameServer.getTemplate().getStatic()));
+                    this.getLogger().info("§c➤ §rPrivateServer: " + privateGameServer.getServerName() + " | Players: " + privateGameServer.getPlayerCount() + " ᐅ " + privateGameServer.getTemplate().getName() + " | Static: " + Utils.boolToString(privateGameServer.getTemplate().getStatic()) + " | Owner: " + privateGameServer.getServerOwner());
                 }
                 for (final ProxyServer proxyServer : BedrockCloud.getProxyServerProvider().proxyServerMap.values()) {
                     this.getLogger().info("§c➤ §rProxyServer: " + proxyServer.getServerName() + " | Template: " + proxyServer.getTemplate().getName() + " | Static: " + Utils.boolToString(proxyServer.getTemplate().getStatic()));
