@@ -19,6 +19,7 @@ import com.bedrockcloud.bedrockcloud.utils.console.Logger;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 import lombok.Getter;
 
+import java.io.File;
 import java.util.Timer;
 
 public class BedrockCloud
@@ -43,6 +44,8 @@ public class BedrockCloud
     private static boolean running;
     @Getter
     private static Config maintenanceFile;
+    @Getter
+    private File pluginPath;
 
     public final static String prefix = "§l§bCloud §r§8» §r";
     
@@ -57,11 +60,12 @@ public class BedrockCloud
     public BedrockCloud() {
         Runtime.getRuntime().addShutdownHook(new ShutdownThread());
         maintenanceFile = new Config("./local/maintenance.txt", Config.ENUM);
+        this.pluginPath = new File("./local/plugins/cloud/");
 
         running = true;
         this.initProvider();
 
-        CommandRegistry.registerCommands();
+        (new CommandRegistry()).registerAllCommands();
         BedrockCloud.networkManager = new NetworkManager((int) Utils.getConfig().getDouble("port"));
 
         if (Utils.getConfig().getBoolean("rest-enabled", true)) {

@@ -26,6 +26,7 @@ public class Startfiles implements Loggable
             this.directorys.add("./local");
             this.directorys.add("./archive");
             this.directorys.add(this.directorys.get(2) + "/plugins");
+            this.directorys.add(this.directorys.get(2) + "/plugins/cloud");
             this.directorys.add(this.directorys.get(2) + "/plugins/pocketmine");
             this.directorys.add(this.directorys.get(2) + "/plugins/waterdogpe");
             this.directorys.add(this.directorys.get(2) + "/versions");

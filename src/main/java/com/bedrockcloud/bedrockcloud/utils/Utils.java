@@ -6,6 +6,10 @@ import com.bedrockcloud.bedrockcloud.VersionInfo;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import com.bedrockcloud.bedrockcloud.utils.manager.MemoryManager;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 
@@ -78,5 +82,25 @@ public class Utils {
 
     public static String getServiceSeperator(){
         return getConfig().getString("service-separator", "-");
+    }
+
+    public static void writeFile(File file, InputStream content) throws IOException {
+        if ( content == null ) {
+            throw new IllegalArgumentException( "Content must not be null!" );
+        }
+
+        if ( !file.exists() ) {
+            file.createNewFile();
+        }
+
+        FileOutputStream stream = new FileOutputStream( file );
+
+        byte[] buffer = new byte[1024];
+        int length;
+        while ( ( length = content.read( buffer ) ) != -1 ) {
+            stream.write( buffer, 0, length );
+        }
+        content.close();
+        stream.close();
     }
 }
