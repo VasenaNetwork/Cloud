@@ -54,9 +54,8 @@ public class BedrockCloud
     private static Config maintenanceFile;
     @Getter
     private File pluginPath;
-    @Setter
-    @Getter
-    private PluginManager pluginManager;
+
+    private final PluginManager pluginManager;
     @Setter
     @Getter
     private EventHandler eventHandler;
@@ -79,8 +78,8 @@ public class BedrockCloud
 
         maintenanceFile = new Config("./local/maintenance.txt", Config.ENUM);
         this.pluginPath = new File("./local/plugins/cloud");
+        this.pluginManager = new PluginManager(this);
 
-        setPluginManager(new PluginManager(this));
         this.initProvider();
 
         CommandRegistry.registerAllCommands();
@@ -118,6 +117,10 @@ public class BedrockCloud
         BedrockCloud.packetHandler = new PacketHandler();
         PacketRegistry.registerPackets();
         BedrockCloud.consoleReader.start();
+    }
+
+    public PluginManager getPluginManager() {
+        return pluginManager;
     }
 
     @ApiStatus.Internal
