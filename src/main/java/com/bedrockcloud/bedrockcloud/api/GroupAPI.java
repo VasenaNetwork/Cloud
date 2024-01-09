@@ -107,6 +107,41 @@ public class GroupAPI implements Loggable
         }
     }
 
+    public static void createNewGroup(final String name, final int type) {
+        if (!isGroup(name)) {
+            try {
+                final ArrayList<String> directories = new ArrayList<>();
+                directories.add("./templates/" + name);
+
+                if (type == POCKETMINE_SERVER) {
+                    directories.add(directories.get(0) + "/crashdumps");
+                    directories.add(directories.get(0) + "/plugins");
+                    directories.add(directories.get(0) + "/plugin_data");
+                    directories.add(directories.get(0) + "/worlds");
+                }
+
+                for (final String directory : directories) {
+                    final File theDir = new File(directory);
+                    if (!theDir.exists()) {
+                        theDir.mkdirs();
+                        if (type == POCKETMINE_SERVER) {
+                            createConfigEntry(name, type);
+                        }
+                    }
+                }
+
+                if (type == PROXY_SERVER) {
+                    createConfigEntry(name, type);
+                }
+
+                BedrockCloud.getLogger().debug("The Group " + name + " has been successfully created!");
+                BedrockCloud.getTemplateProvider().loadTemplate(name);
+            } catch (IOException e) {
+                BedrockCloud.getLogger().exception(e);
+            }
+        }
+    }
+
     @ApiStatus.Internal
     private static void createConfigEntry(String name, int type) throws IOException {
         final String configFilePath = "./templates/config.json";

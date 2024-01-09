@@ -95,8 +95,8 @@ public class TemplateCommand extends Command {
                     if (args.length == 3) {
                         if (args[2] != null) {
                             switch (args[2]) {
-                                case "waterdogpe" -> GroupAPI.createGroup(args[1], 0);
-                                case "pocketmine" -> GroupAPI.createGroup(args[1], 1);
+                                case "waterdogpe" -> GroupAPI.createNewGroup(args[1], 0);
+                                case "pocketmine" -> GroupAPI.createNewGroup(args[1], 1);
                                 default ->
                                         BedrockCloud.getLogger().warning("Try to execute: template <create> <name> [pocketmine | waterdogpe]");
                             }

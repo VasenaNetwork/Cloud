@@ -72,6 +72,22 @@ public class TemplateProvider implements Loggable
         this.runningTemplates.remove(group.getName());
     }
 
+    public void loadTemplate(String name) {
+        final HashMap<String, Object> stats;
+        try {
+            if (!BedrockCloud.getTemplateProvider().existsTemplate(name)) {
+                stats = (HashMap<String, Object>) json.get(name, 10);
+                if (stats != null && !stats.isEmpty()) {
+                    new Template(name, Math.toIntExact((Long) stats.get("minRunningServer")), Math.toIntExact((Long) stats.get("maxRunningServer")), Math.toIntExact((Long) stats.get("maxPlayer")), Math.toIntExact((Long) stats.get("type")), (Boolean) stats.get("beta"), (Boolean) stats.get("maintenance"), (Boolean) stats.get("isLobby"), (Boolean) stats.get("canBePrivate"), (Boolean) stats.get("isStatic"));
+                }
+            } else {
+                BedrockCloud.getLogger().error("§cThe template §e" + name + " §cis already loaded.");
+            }
+        } catch (IOException e) {
+            BedrockCloud.getLogger().exception(e);
+        }
+    }
+
     @ApiStatus.Internal
     public void loadTemplates() {
         for (final String name : GroupAPI.getGroups()) {
