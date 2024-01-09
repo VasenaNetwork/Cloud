@@ -25,7 +25,7 @@ jobs:
         run: |
           echo ::set-output name=VERSION::$(php -r 'echo explode("+", explode("-", yaml_parse_file(getcwd() . DIRECTORY_SEPARATOR . "src/main/resources/version.yml")["version"])[0])[0];')
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bedrockcloud
           path: target/Cloud.jar
