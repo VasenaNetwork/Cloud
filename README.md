@@ -21,6 +21,7 @@
 - Automatically downloading server software (PocketMine, WaterdogPE) & plugins (CloudBridge)
 - Notify (In-game notifications)
 - PrivateServerSystem (*W.I.P*)
+- Custom cloud plugins
 
 # Note
 - You don't have to download the plugins (CloudBridge-PM, CloudBridge-Proxy)
