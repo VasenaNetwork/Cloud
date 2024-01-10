@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.api.event.template.TemplateLoadEvent;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
@@ -33,6 +34,14 @@ public class Template implements Loggable
         this.isMaintenance = isMaintenance;
         this.isLobby = isLobby;
         this.isStatic = isStatic;
+
+        TemplateLoadEvent event = new TemplateLoadEvent(this);
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) {
+            return;
+        }
+
         if (!BedrockCloud.getTemplateProvider().existsTemplate(this.getName())) {
             BedrockCloud.getTemplateProvider().addTemplate(this);
         }

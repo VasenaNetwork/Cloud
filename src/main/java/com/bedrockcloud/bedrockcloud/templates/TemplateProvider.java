@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.api.event.template.TemplateEvent;
+import com.bedrockcloud.bedrockcloud.api.event.template.TemplateLoadEvent;
+import com.bedrockcloud.bedrockcloud.api.event.template.TemplateUnloadEvent;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import com.bedrockcloud.bedrockcloud.utils.files.json.json;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
@@ -64,11 +67,17 @@ public class TemplateProvider implements Loggable
 
     @ApiStatus.Internal
     public void removeRunningGroup(final String name) {
+        TemplateUnloadEvent event = new TemplateUnloadEvent(BedrockCloud.getTemplateProvider().getTemplate(name));
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
         this.runningTemplates.remove(name);
     }
 
     @ApiStatus.Internal
     public void removeRunningGroup(final Template group) {
+        TemplateUnloadEvent event = new TemplateUnloadEvent(group);
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
         this.runningTemplates.remove(group.getName());
     }
 
