@@ -18,12 +18,11 @@ public class json
     public static final int maxPlayer = 2;
     public static final int maintenance = 3;
     public static final int beta = 4;
-    public static final int canBePrivate = 5;
-    public static final int proxy = 6;
-    public static final int type = 7;
-    public static final int isLobby = 8;
-    public static final int isStatic = 9;
-    public static final int ALL = 10;
+    public static final int proxy = 5;
+    public static final int type = 6;
+    public static final int isLobby = 7;
+    public static final int isStatic = 8;
+    public static final int ALL = 9;
     
     public static Object get(final String name, final int type) throws IOException {
         final JSONParser jsonParser = new JSONParser();
@@ -56,18 +55,15 @@ public class json
                                     returnval[0] = directtemp.get("beta");
                                 }
                                 case 5 -> {
-                                    returnval[0] = directtemp.get("canBePrivate");
-                                }
-                                case 6 -> {
                                     returnval[0] = directtemp.get("proxy");
                                 }
-                                case 7 -> {
+                                case 6 -> {
                                     returnval[0] = directtemp.get("type");
                                 }
-                                case 8 -> {
+                                case 7 -> {
                                     returnval[0] = directtemp.get("isLobby");
                                 }
-                                case 9 -> {
+                                case 8 -> {
                                     returnval[0] = directtemp.get("isStatic");
                                 }
                                 default -> {

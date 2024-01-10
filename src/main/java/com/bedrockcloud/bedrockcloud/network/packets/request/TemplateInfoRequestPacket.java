@@ -16,16 +16,15 @@ public class TemplateInfoRequestPacket extends DataPacket {
         templateInfoResponsePacket.requestId = jsonObject.get("requestId").toString();
         Template template;
         if (jsonObject.get("template") == null) {
-            template = BedrockCloud.getPrivategameServerProvider().getGameServer(jsonObject.get("serverName").toString()).getTemplate();
+            template = BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).getTemplate();
         } else {
             template = BedrockCloud.getTemplateProvider().getTemplate(jsonObject.get("templateName").toString());
         }
         templateInfoResponsePacket.templateName = template.getName();
         templateInfoResponsePacket.isLobby = template.getLobby();
         templateInfoResponsePacket.isMaintenance = template.getMaintenance();
-        templateInfoResponsePacket.isPrivate = template.getCanBePrivate();
         templateInfoResponsePacket.isBeta = template.getBeta();
         templateInfoResponsePacket.maxPlayer = template.getMaxPlayers();
-        BedrockCloud.getPrivategameServerProvider().getGameServer(jsonObject.get("serverName").toString()).pushPacket(templateInfoResponsePacket);
+        BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(templateInfoResponsePacket);
     }
 }
