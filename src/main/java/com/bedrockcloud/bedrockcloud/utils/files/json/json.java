@@ -39,35 +39,34 @@ public class json
                     if (directtemp != null) {
                         if (type != 9) {
                             switch (type) {
-                                case 0 -> {
+                                case json.minRunningServer -> {
                                     returnval[0] = directtemp.get("minRunningServer");
                                 }
-                                case 1 -> {
+                                case json.maxRunningServer -> {
                                     returnval[0] = directtemp.get("maxRunningServer");
                                 }
-                                case 2 -> {
+                                case json.maxPlayer -> {
                                     returnval[0] = directtemp.get("maxPlayer");
                                 }
-                                case 3 -> {
+                                case json.maintenance -> {
                                     returnval[0] = directtemp.get("maintenance");
                                 }
-                                case 4 -> {
+                                case json.beta -> {
                                     returnval[0] = directtemp.get("beta");
                                 }
-                                case 5 -> {
+                                case json.proxy -> {
                                     returnval[0] = directtemp.get("proxy");
                                 }
-                                case 6 -> {
+                                case json.type -> {
                                     returnval[0] = directtemp.get("type");
                                 }
-                                case 7 -> {
+                                case json.isLobby -> {
                                     returnval[0] = directtemp.get("isLobby");
                                 }
-                                case 8 -> {
+                                case json.isStatic -> {
                                     returnval[0] = directtemp.get("isStatic");
                                 }
-                                default -> {
-                                }
+                                default -> {}
                             }
                         } else {
                             stats.put("minRunningServer", directtemp.get("minRunningServer"));
