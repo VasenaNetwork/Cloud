@@ -1,6 +1,7 @@
 package com.bedrockcloud.bedrockcloud.network.packets.proxy;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.api.event.player.CloudPlayerQuitEvent;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
@@ -29,6 +30,9 @@ public class ProxyPlayerQuitPacket extends DataPacket
         if (server != null) server.getTemplate().removePlayer(cloudPlayer);
         String proxy = cloudPlayer.getCurrentProxy();
         if (BedrockCloud.getCloudServerProvider().getServer(proxy) != null) BedrockCloud.getCloudServerProvider().getServer(proxy).getTemplate().removePlayer(cloudPlayer);
+        CloudPlayerQuitEvent event = new CloudPlayerQuitEvent(cloudPlayer);
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
         BedrockCloud.getCloudPlayerProvider().removeCloudPlayer(cloudPlayer);
     }
     

@@ -1,6 +1,7 @@
 package com.bedrockcloud.bedrockcloud.network.packets.proxy;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.api.event.player.CloudPlayerJoinEvent;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
@@ -15,7 +16,11 @@ public class ProxyPlayerJoinPacket extends DataPacket
     public void handle(final JSONObject jsonObject, final ClientRequest clientRequest) {
         final String playername = jsonObject.get("playerName").toString();
         final String serverName = jsonObject.get("joinedServer").toString();
+
         BedrockCloud.getCloudPlayerProvider().addCloudPlayer(new CloudPlayer(jsonObject.get("playerName").toString().toLowerCase(), jsonObject.get("address").toString(), jsonObject.get("uuid").toString(), jsonObject.get("xuid").toString(), jsonObject.get("currentServer").toString(), jsonObject.get("currentProxy").toString()));
+        CloudPlayerJoinEvent event = new CloudPlayerJoinEvent(BedrockCloud.getCloudPlayerProvider().getCloudPlayer(jsonObject.get("playerName").toString().toLowerCase()));
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
         if (BedrockCloud.getCloudServerProvider().existServer(serverName)) {
             final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
             final ProxyPlayerJoinPacket packet = new ProxyPlayerJoinPacket();
