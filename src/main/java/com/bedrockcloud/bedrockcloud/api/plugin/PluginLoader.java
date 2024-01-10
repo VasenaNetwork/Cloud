@@ -80,7 +80,6 @@ public class PluginLoader {
                             AtomicReference<String> version = new AtomicReference<>();
                             AtomicReference<String> author = new AtomicReference<>();
                             AtomicReference<List<String>> depends = new AtomicReference<>();
-                            AtomicReference<String> pluginLoadOrder = new AtomicReference<>(PluginLoadOrder.POSTWORLD.name());
                             classReader.accept( new ClassVisitor( Opcodes.ASM7 ) {
                                 @Override
                                 public AnnotationVisitor visitAnnotation( String descriptor, boolean visible ) {
@@ -123,14 +122,6 @@ public class PluginLoader {
                                                 }
                                             };
                                         }
-                                        case "Lcom/bedrockcloud/bedrockcloud/api/plugin/annotation/Startup;" -> {
-                                            return new AnnotationVisitor(Opcodes.ASM7) {
-                                                @Override
-                                                public void visitEnum(String name, String descriptor, String value) {
-                                                    pluginLoadOrder.set(value);
-                                                }
-                                            };
-                                        }
                                     }
                                     return super.visitAnnotation( descriptor, visible );
                                 }
@@ -141,7 +132,6 @@ public class PluginLoader {
                             pluginYAML.setVersion( version.get() );
                             pluginYAML.setAuthor( author.get() );
                             pluginYAML.setDepends( depends.get() );
-                            pluginYAML.setLoad( PluginLoadOrder.valueOf( pluginLoadOrder.get() ) );
                         }
                     }
                 }

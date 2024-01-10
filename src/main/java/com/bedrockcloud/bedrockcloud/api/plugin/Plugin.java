@@ -165,10 +165,6 @@ public abstract class Plugin {
         return this.description.getAuthors();
     }
 
-    public PluginLoadOrder getLoadOrder() {
-        return this.description.getLoadOrder();
-    }
-
     public BedrockCloud getCloud() {
         return this.cloud;
     }

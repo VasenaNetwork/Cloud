@@ -1,9 +1,8 @@
 package com.bedrockcloud.bedrockcloud;
 
 import com.bedrockcloud.bedrockcloud.api.event.EventHandler;
-import com.bedrockcloud.bedrockcloud.api.plugin.PluginLoadOrder;
+import com.bedrockcloud.bedrockcloud.api.event.cloud.CloudStartEvent;
 import com.bedrockcloud.bedrockcloud.api.plugin.PluginManager;
-import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServerProvider;
 import com.bedrockcloud.bedrockcloud.utils.command.CommandRegistry;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
@@ -93,13 +92,14 @@ public class BedrockCloud
             restartTimer.schedule(new RestartAllTask(), 1000L, 1000L);
         }
 
-        getPluginManager().enableAllPlugins(PluginLoadOrder.STARTUP);
+        getPluginManager().enableAllPlugins();
 
         ServiceHelper.startAllProxies();
         ServiceHelper.startAllServers();
         BedrockCloud.networkManager.start();
 
-        getPluginManager().enableAllPlugins(PluginLoadOrder.POSTWORLD);
+        CloudStartEvent event = new CloudStartEvent(this);
+        getPluginManager().callEvent(event);
     }
 
     private void initProvider() {

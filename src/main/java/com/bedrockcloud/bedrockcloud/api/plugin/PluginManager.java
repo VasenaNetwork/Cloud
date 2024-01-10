@@ -2,6 +2,8 @@ package com.bedrockcloud.bedrockcloud.api.plugin;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.api.event.*;
+import com.bedrockcloud.bedrockcloud.api.event.plugin.PluginLoadEvent;
+import com.bedrockcloud.bedrockcloud.api.event.plugin.PluginUnloadEvent;
 import com.bedrockcloud.bedrockcloud.utils.command.CommandRegistry;
 import com.bedrockcloud.bedrockcloud.utils.console.Logger;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
@@ -65,6 +67,7 @@ public class PluginManager {
     }
 
     public Plugin loadPlugin( Path path, boolean directStartup ) {
+
         if ( !Files.isRegularFile( path ) || !PluginLoader.isJarFile( path ) ) {
             this.logger.warning( "Cannot load plugin: Provided file is no jar file: " + path.getFileName() );
             return null;
@@ -90,6 +93,12 @@ public class PluginManager {
             return null;
         }
 
+        PluginLoadEvent event = new PluginLoadEvent(plugin);
+        this.callEvent(event);
+        if (event.isCancelled()) {
+            return null;
+        }
+
         this.pluginMap.put( config.getName(), plugin );
 
         plugin.onStartup();
@@ -103,14 +112,12 @@ public class PluginManager {
         return plugin;
     }
 
-    public void enableAllPlugins( PluginLoadOrder pluginLoadOrder ) {
+    public void enableAllPlugins() {
         LinkedList<Plugin> failed = new LinkedList<>();
 
         for ( Plugin plugin : this.pluginMap.values() ) {
-            if ( plugin.getLoadOrder().equals( pluginLoadOrder ) ) {
-                if (this.enablePlugin(plugin, null)) {
-                    failed.add( plugin );
-                }
+            if (this.enablePlugin(plugin, null)) {
+                failed.add(plugin);
             }
         }
 
@@ -164,6 +171,9 @@ public class PluginManager {
         for ( Plugin plugin : this.pluginMap.values() ) {
             this.logger.info( "Disabling plugin " + plugin.getName() + "" );
             try {
+                PluginUnloadEvent event = new PluginUnloadEvent(plugin);
+                this.callEvent(event);
+
                 plugin.setEnabled( false );
             } catch ( RuntimeException e ) {
                 e.printStackTrace();

@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@VersionInfo(name = "BedrockCloud", version = "1.0.2", developers = { "xxFLORII" }, identifier = "@Beta")
+@VersionInfo(name = "BedrockCloud", version = "1.0.3", developers = { "xxFLORII" }, identifier = "@Beta")
 public class CloudStarter {
 
     @Getter

@@ -1,11 +1,16 @@
 package com.bedrockcloud.bedrockcloud.utils.console.shutdown;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.api.event.cloud.CloudStartEvent;
+import com.bedrockcloud.bedrockcloud.api.event.cloud.CloudStopEvent;
 
 public class ShutdownThread extends Thread {
 
     @Override
     public void run() {
+        CloudStopEvent event = new CloudStopEvent(BedrockCloud.getInstance());
+        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+
         BedrockCloud.getInstance().getPluginManager().disableAllPlugins();
 
         boolean servicesRunning = true;

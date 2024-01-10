@@ -15,7 +15,6 @@ public class PluginYAML {
     public String version;
     public String author;
     public String main;
-    public PluginLoadOrder load = PluginLoadOrder.POSTWORLD;
     public List<String> authors;
     public List<String> depends;
 
@@ -65,13 +64,5 @@ public class PluginYAML {
 
     public void setDepends( List<String> depends ) {
         this.depends = depends;
-    }
-
-    public PluginLoadOrder getLoadOrder() {
-        return this.load;
-    }
-
-    public void setLoad( PluginLoadOrder load ) {
-        this.load = load;
     }
 }
