@@ -95,9 +95,6 @@ public class PluginManager {
 
         PluginLoadEvent event = new PluginLoadEvent(plugin);
         this.callEvent(event);
-        if (event.isCancelled()) {
-            return null;
-        }
 
         this.pluginMap.put( config.getName(), plugin );
 

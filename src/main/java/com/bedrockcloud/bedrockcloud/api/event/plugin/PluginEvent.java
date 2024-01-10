@@ -4,9 +4,9 @@ import com.bedrockcloud.bedrockcloud.api.event.Cancellable;
 import com.bedrockcloud.bedrockcloud.api.event.Event;
 import com.bedrockcloud.bedrockcloud.api.plugin.Plugin;
 
-public class PluginEvent extends Event implements Cancellable {
+public class PluginEvent extends Event {
 
-    private Plugin plugin;
+    private final Plugin plugin;
 
     public PluginEvent(Plugin plugin) {
         this.plugin = plugin;

@@ -38,15 +38,11 @@ public class Template implements Loggable
         TemplateLoadEvent event = new TemplateLoadEvent(this);
         BedrockCloud.getInstance().getPluginManager().callEvent(event);
 
-        if (event.isCancelled()) {
-            return;
-        }
-
         if (!BedrockCloud.getTemplateProvider().existsTemplate(this.getName())) {
             BedrockCloud.getTemplateProvider().addTemplate(this);
         }
-        this.runningTemplateServers = new HashMap<String, Template>();
-        this.templatePlayer = new HashMap<String, String>();
+        this.runningTemplateServers = new HashMap<>();
+        this.templatePlayer = new HashMap<>();
     }
 
     public HashMap<String, Template> getRunningTemplateServers() {

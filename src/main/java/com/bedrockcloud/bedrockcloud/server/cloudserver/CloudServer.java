@@ -80,12 +80,6 @@ public class CloudServer {
         ServerStartEvent event = new ServerStartEvent(this);
         BedrockCloud.getInstance().getPluginManager().callEvent(event);
 
-        if (event.isCancelled()) {
-            BedrockCloud.getCloudServerProvider().removeServer(this);
-            BedrockCloud.getLogger().warning("§cServer start was cancelled because §eServerStartEvent §cis cancelled§7.");
-            return;
-        }
-
         this.copyServer();
         try {
             this.startServer();
@@ -204,11 +198,6 @@ public class CloudServer {
     public void stopServer() {
         ServerStopEvent event = new ServerStopEvent(this);
         BedrockCloud.getInstance().getPluginManager().callEvent(event);
-
-        if (event.isCancelled()) {
-            BedrockCloud.getLogger().warning("§cServer stop was cancelled because §eServerStopEvent §cis cancelled§7.");
-            return;
-        }
 
         String notifyMessage = MessageAPI.stopMessage.replace("%service", this.serverName);
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
