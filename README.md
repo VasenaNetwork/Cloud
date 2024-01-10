@@ -20,7 +20,6 @@
 - RestAPI
 - Automatically downloading server software (PocketMine, WaterdogPE) & plugins (CloudBridge)
 - Notify (In-game notifications)
-- PrivateServerSystem (*W.I.P*)
 - Custom cloud plugins
 
 # Note
