@@ -1,9 +1,7 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.server;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
-import com.bedrockcloud.bedrockcloud.server.privateserver.PrivateGameServer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.helper.serviceKiller.ServiceKiller;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -47,33 +45,9 @@ public class ServerStopRequestHandler implements HttpHandler {
 
         String server = queryParams.get("server");
 
-        if (BedrockCloud.getGameServerProvider().existServer(server)){
-            final GameServer gameServer = BedrockCloud.getGameServerProvider().getGameServer(server);
-            ServiceKiller.killPid(gameServer);
-
-            JSONObject responseObj = new JSONObject();
-            responseObj.put("success", "The server " + server + " was stopped!");
-
-            String response = responseObj.toString();
-            exchange.sendResponseHeaders(200, response.getBytes().length);
-            OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-        } else if (BedrockCloud.getPrivategameServerProvider().existServer(server)){
-            final PrivateGameServer gameServer = BedrockCloud.getPrivategameServerProvider().getGameServer(server);
-            ServiceKiller.killPid(gameServer);
-
-            JSONObject responseObj = new JSONObject();
-            responseObj.put("success", "The server " + server + " was stopped!");
-
-            String response = responseObj.toString();
-            exchange.sendResponseHeaders(200, response.getBytes().length);
-            OutputStream os = exchange.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
-        } else if (BedrockCloud.getProxyServerProvider().existServer(server)){
-            final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(server);
-            ServiceKiller.killPid(proxyServer);
+        if (BedrockCloud.getCloudServerProvider().existServer(server)) {
+            final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(server);
+            ServiceKiller.killPid(cloudServer);
 
             JSONObject responseObj = new JSONObject();
             responseObj.put("success", "The server " + server + " was stopped!");

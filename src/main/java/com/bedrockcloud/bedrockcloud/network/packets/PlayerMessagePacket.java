@@ -1,10 +1,11 @@
 package com.bedrockcloud.bedrockcloud.network.packets;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.json.simple.JSONObject;
 
 public class PlayerMessagePacket extends DataPacket
@@ -28,18 +29,20 @@ public class PlayerMessagePacket extends DataPacket
             playerTextPacket.playerName = playerName;
             playerTextPacket.type = 0;
             playerTextPacket.value = value;
-            for (final String proxy : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
-                final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(proxy);
-                proxyServer.pushPacket(playerTextPacket);
+            for (final CloudServer server : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+                if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
+                    server.pushPacket(playerTextPacket);
+                }
             }
         } else if (playerName.equals("team.members")){
             final PlayerTextPacket playerTextPacket = new PlayerTextPacket();
             playerTextPacket.playerName = playerName;
             playerTextPacket.type = 0;
             playerTextPacket.value = value;
-            for (final String proxy : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
-                final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(proxy);
-                proxyServer.pushPacket(playerTextPacket);
+            for (final CloudServer server : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+                if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
+                    server.pushPacket(playerTextPacket);
+                }
             }
         }
     }

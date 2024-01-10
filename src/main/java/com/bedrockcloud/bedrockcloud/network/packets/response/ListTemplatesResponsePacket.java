@@ -1,6 +1,7 @@
 package com.bedrockcloud.bedrockcloud.network.packets.response;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
 import com.bedrockcloud.bedrockcloud.network.packets.RequestPacket;
 import com.bedrockcloud.bedrockcloud.templates.Template;
@@ -18,7 +19,7 @@ public class ListTemplatesResponsePacket extends RequestPacket
         try {
             for (final Template key : BedrockCloud.getTemplateProvider().getRunningTemplates().values()) {
                 if (key.getName() != null) {
-                    if (key.getType() == GroupAPI.POCKETMINE_SERVER) {
+                    if (key.getType() == SoftwareManager.SOFTWARE_SERVER) {
                         arr.add(key.getName());
                     }
                 }

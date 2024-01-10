@@ -3,7 +3,7 @@ package com.bedrockcloud.bedrockcloud.network.packets.cloudplayer;
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.json.simple.JSONObject;
 
 public class CloudPlayerChangeServerPacket extends DataPacket
@@ -12,12 +12,12 @@ public class CloudPlayerChangeServerPacket extends DataPacket
     @Override
     public void handle(final JSONObject jsonObject, final ClientRequest clientRequest) {
         final String playerName = jsonObject.get("playerName").toString();
-        final String server = jsonObject.get("server").toString();
+        final String toServer = jsonObject.get("serverName").toString();
         if (BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
-            final GameServer gameServer = BedrockCloud.getGameServerProvider().getGameServer(server);
-            BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).setCurrentServer(server);
-            gameServer.getTemplate().removePlayer(BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName));
-            gameServer.getTemplate().addPlayer(BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName), server);
+            final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(toServer);
+            BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).setCurrentServer(toServer);
+            server.getTemplate().removePlayer(BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName));
+            server.getTemplate().addPlayer(BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName), toServer);
         }
         super.handle(jsonObject, clientRequest);
     }

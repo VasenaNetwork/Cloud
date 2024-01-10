@@ -1,15 +1,15 @@
 package com.bedrockcloud.bedrockcloud.network.packets.proxy;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.network.packets.RegisterServerPacket;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
 import org.json.simple.JSONObject;
 
 public class ProxyServerConnectPacket extends DataPacket implements Loggable
@@ -27,21 +27,20 @@ public class ProxyServerConnectPacket extends DataPacket implements Loggable
         config.set("pid", Integer.parseInt(pid));
         config.save();
 
-        final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(serverName);
-        proxyServer.setPid(Integer.parseInt(pid));
-        final Object socketPort = jsonObject.get("socketPort");
-        proxyServer.setSocket(clientRequest.getSocket());
-        for (final String key : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
-            final ProxyServer proxy = BedrockCloud.getProxyServerProvider().getProxyServer(key);
+        final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(serverName);
+        cloudServer.setPid(Integer.parseInt(pid));
+
+        cloudServer.setSocket(clientRequest.getSocket());
+        for (final CloudServer server : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
             final RegisterServerPacket packet = new RegisterServerPacket();
-            for (GameServer server : BedrockCloud.getGameServerProvider().getGameServerMap().values()) {
-                if (server != null) {
+            for (CloudServer proxy : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+                if (server != null && proxy.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY && server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
                     packet.addValue("serverPort", server.getServerPort());
                     packet.addValue("serverName", server.getServerName());
                     proxy.pushPacket(packet);
                 }
             }
         }
-        proxyServer.setConnected(true);
+        cloudServer.setConnected(true);
     }
 }

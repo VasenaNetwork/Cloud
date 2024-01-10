@@ -25,11 +25,6 @@ public class CheckPlayerMaintenanceRequestPacket extends DataPacket {
         checkPlayerMaintenanceResponsePacket.success = success;
         checkPlayerMaintenanceResponsePacket.name = jsonObject.get("playerInfoName").toString();
 
-        final boolean isPrivate = Boolean.parseBoolean(jsonObject.get("isPrivate").toString());
-        if (!isPrivate) {
-            BedrockCloud.getGameServerProvider().getGameServer(jsonObject.get("serverName").toString()).pushPacket(checkPlayerMaintenanceResponsePacket);
-        } else {
-            BedrockCloud.getPrivategameServerProvider().getGameServer(jsonObject.get("serverName").toString()).pushPacket(checkPlayerMaintenanceResponsePacket);
-        }
+        BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(checkPlayerMaintenanceResponsePacket);
     }
 }

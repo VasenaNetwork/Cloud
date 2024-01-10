@@ -4,9 +4,7 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
-import com.bedrockcloud.bedrockcloud.server.privateserver.PrivateGameServer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.json.simple.JSONObject;
 
 public class ProxyPlayerQuitPacket extends DataPacket
@@ -18,35 +16,19 @@ public class ProxyPlayerQuitPacket extends DataPacket
         final String playername = jsonObject.get("playerName").toString();
         final String serverName = jsonObject.get("leftServer").toString();
 
-        if (BedrockCloud.getGameServerProvider().existServer(serverName)) {
-            final GameServer gameServer = BedrockCloud.getGameServerProvider().getGameServer(serverName);
+        if (BedrockCloud.getCloudServerProvider().existServer(serverName)) {
+            final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
             final ProxyPlayerQuitPacket packet = new ProxyPlayerQuitPacket();
             packet.playerName = playername;
-            gameServer.pushPacket(packet);
-        } else if (BedrockCloud.getPrivategameServerProvider().existServer(serverName)){
-            final PrivateGameServer gameServer = BedrockCloud.getPrivategameServerProvider().getGameServer(serverName);
-            final ProxyPlayerQuitPacket packet = new ProxyPlayerQuitPacket();
-            packet.playerName = playername;
-            gameServer.pushPacket(packet);
+            server.pushPacket(packet);
         }
 
         final CloudPlayer cloudPlayer = BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playername);
-        if (cloudPlayer.isHasPrivateServer()){
-            for (PrivateGameServer server : BedrockCloud.getPrivategameServerProvider().getGameServerMap().values()) {
-                if (server.getServerOwner().equals(cloudPlayer.getPlayerName())){
-                    server.stopServer();
-                }
-            }
-        }
+        final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
 
-        final GameServer gameServer = BedrockCloud.getGameServerProvider().getGameServer(serverName);
-        final PrivateGameServer privateGameServer = BedrockCloud.getPrivategameServerProvider().getGameServer(serverName);
-        final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(serverName);
-
-        if (gameServer != null) gameServer.getTemplate().removePlayer(cloudPlayer);
-        if (privateGameServer != null) privateGameServer.getTemplate().removePlayer(cloudPlayer);
-        if (proxyServer != null) proxyServer.getTemplate().removePlayer(cloudPlayer);
-
+        if (server != null) server.getTemplate().removePlayer(cloudPlayer);
+        String proxy = cloudPlayer.getCurrentProxy();
+        if (BedrockCloud.getCloudServerProvider().getServer(proxy) != null) BedrockCloud.getCloudServerProvider().getServer(proxy).getTemplate().removePlayer(cloudPlayer);
         BedrockCloud.getCloudPlayerProvider().removeCloudPlayer(cloudPlayer);
     }
     

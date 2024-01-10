@@ -1,31 +1,33 @@
-package com.bedrockcloud.bedrockcloud.server.gameserver;
-
-import java.io.*;
+package com.bedrockcloud.bedrockcloud.server.cloudserver;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.SoftwareManager;
+import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerStartEvent;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerStopEvent;
-import com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper.ServiceHelper;
-import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
-import com.bedrockcloud.bedrockcloud.utils.manager.FileManager;
-import com.bedrockcloud.bedrockcloud.utils.manager.PushPacketManager;
-import com.bedrockcloud.bedrockcloud.port.PortValidator;
-import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.packets.GameServerDisconnectPacket;
-
-import java.net.*;
-import java.util.concurrent.CompletableFuture;
-
+import com.bedrockcloud.bedrockcloud.network.packets.proxy.ProxyServerDisconnectPacket;
+import com.bedrockcloud.bedrockcloud.port.PortValidator;
 import com.bedrockcloud.bedrockcloud.server.properties.ServerProperties;
-import com.bedrockcloud.bedrockcloud.utils.helper.serviceKiller.ServiceKiller;
 import com.bedrockcloud.bedrockcloud.tasks.KeepALiveTask;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
+import com.bedrockcloud.bedrockcloud.utils.config.Config;
+import com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper.ServiceHelper;
+import com.bedrockcloud.bedrockcloud.utils.helper.serviceKiller.ServiceKiller;
+import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
+import com.bedrockcloud.bedrockcloud.utils.manager.FileManager;
+import com.bedrockcloud.bedrockcloud.utils.manager.PushPacketManager;
 import lombok.Getter;
 import lombok.Setter;
 
-public class GameServer {
+import java.io.File;
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.util.concurrent.CompletableFuture;
+
+public class CloudServer {
     private static final int TIMEOUT = 20;
 
     @Getter
@@ -56,25 +58,30 @@ public class GameServer {
     @Getter
     private boolean isConnected = false;
     private final long startTime;
-    
-    public GameServer(final Template template) {
 
+    public CloudServer(final Template template) {
         this.template = template;
         this.aliveChecks = 0;
         this.serverName = template.getName() + Utils.getServiceSeperator() + FileManager.getFreeNumber("./temp/" + template.getName());
-        this.serverPort = PortValidator.getNextServerPort(this);
+        if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+            this.serverPort = PortValidator.getNextServerPort(this);
+        } else {
+            this.serverPort = PortValidator.getNextProxyServerPort(this);
+        }
         this.playerCount = 0;
         this.state = 0;
         this.pid = -1;
+
         this.startTime = System.currentTimeMillis() / 1000;
+
         ServiceKiller.killPid(this);
-        BedrockCloud.getGameServerProvider().addGameServer(this);
+        BedrockCloud.getCloudServerProvider().addServer(this);
 
         ServerStartEvent event = new ServerStartEvent(this);
         BedrockCloud.getInstance().getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
-            BedrockCloud.getGameServerProvider().removeServer(this);
+            BedrockCloud.getCloudServerProvider().removeServer(this);
             BedrockCloud.getLogger().warning("§cServer start was cancelled because §eServerStartEvent §cis cancelled§7.");
             return;
         }
@@ -90,7 +97,7 @@ public class GameServer {
 
     private void checkAliveAsync() {
         CompletableFuture.supplyAsync(() -> {
-            while (!this.isConnected() && BedrockCloud.getGameServerProvider().existServer(this.getServerName())) {
+            while (!this.isConnected() && BedrockCloud.getCloudServerProvider().existServer(this.getServerName())) {
                 if (!checkAlive()) {
                     String servername = getServerName();
                     this.setAliveChecks(0);
@@ -125,11 +132,11 @@ public class GameServer {
         if (this.isConnected()) return true;
         return false;
     }
-    
+
     private void startServer() throws InterruptedException {
         final File server = new File("./temp/" + this.serverName);
         if (server.exists()) {
-            final ProcessBuilder builder = new ProcessBuilder(new String[0]);
+            final ProcessBuilder builder = new ProcessBuilder();
 
             String notifyMessage = MessageAPI.startMessage.replace("%service", serverName);
             CloudNotifyManager.sendNotifyCloud(notifyMessage);
@@ -140,10 +147,18 @@ public class GameServer {
                 BedrockCloud.getLogger().exception(e);
             }
 
-            try {
-                builder.command("/bin/sh", "-c", "screen -dmS " + this.serverName + " ../../bin/php7/bin/php ../../local/versions/pocketmine/PocketMine-MP.phar").directory(new File("./temp/" + this.serverName)).start();
-            } catch (Exception e) {
-                BedrockCloud.getLogger().exception(e);
+            if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+                try {
+                    builder.command("/bin/sh", "-c", "screen -dmS " + this.serverName + " ../../bin/php7/bin/php ../../local/versions/pocketmine/PocketMine-MP.phar").directory(new File("./temp/" + this.serverName)).start();
+                } catch (Exception e) {
+                    BedrockCloud.getLogger().exception(e);
+                }
+            } else {
+                try {
+                    builder.command("/bin/sh", "-c", "screen -dmS " + this.serverName + " java -jar ../../local/versions/waterdogpe/WaterdogPE.jar").directory(new File("./temp/" + this.serverName)).start();
+                } catch (Exception e) {
+                    BedrockCloud.getLogger().exception(e);
+                }
             }
 
             PortValidator.ports.add(this.getServerPort());
@@ -157,7 +172,7 @@ public class GameServer {
             PortValidator.ports.remove(this.getServerPort()+1);
         }
     }
-    
+
     private void copyServer() {
         final File src = new File("./templates/" + this.template.getName() + "/");
         final File dest = new File("./temp/" + this.serverName);
@@ -165,9 +180,19 @@ public class GameServer {
             FileManager.copy(src, dest);
             ServerProperties.createProperties(this);
         }
-        final File global_plugins = new File("./local/plugins/pocketmine");
-        final File dest_plugs = new File("./temp/" + this.serverName + "/plugins/");
-        FileManager.copy(global_plugins, dest_plugs);
+
+        if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+            final File global_plugins = new File("./local/plugins/pocketmine");
+            final File dest_plugs = new File("./temp/" + this.serverName + "/plugins/");
+            FileManager.copy(global_plugins, dest_plugs);
+        } else {
+            final File global_plugins = new File("./local/plugins/waterdogpe");
+            final File dest_plugs = new File("./temp/" + this.serverName + "/plugins/");
+            FileManager.copy(global_plugins, dest_plugs);
+            final Config config = new Config("./temp/" + this.serverName + "/cloud.yml", Config.YAML);
+            config.set("name", this.serverName);
+            config.save();
+        }
 
         try {
             Thread.sleep(200L);
@@ -175,7 +200,7 @@ public class GameServer {
             e.printStackTrace();
         }
     }
-    
+
     public void stopServer() {
         ServerStopEvent event = new ServerStopEvent(this);
         BedrockCloud.getInstance().getPluginManager().callEvent(event);
@@ -189,17 +214,23 @@ public class GameServer {
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().info(notifyMessage);
 
-        final GameServerDisconnectPacket packet = new GameServerDisconnectPacket();
-        packet.addValue("reason", "Server Stopped");
-        this.pushPacket(packet);
+        if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+            final GameServerDisconnectPacket packet = new GameServerDisconnectPacket();
+            packet.addValue("reason", "Server Stopped");
+            this.pushPacket(packet);
+        } else {
+            final ProxyServerDisconnectPacket packet = new ProxyServerDisconnectPacket();
+            packet.addValue("reason", "Proxy Stopped");
+            this.pushPacket(packet);
+        }
     }
 
     public void pushPacket(final DataPacket cloudPacket) {
         PushPacketManager.pushPacket(cloudPacket, this);
     }
-    
+
     @Override
     public String toString() {
-        return "GameServer{template=" + this.template + ", serverName='" + this.serverName + '\'' + ", serverPort=" + this.serverPort + ", playerCount=" + this.playerCount + ", aliveChecks=" + this.aliveChecks + ", socket=" + this.socket + ", temp_path='" + "./templates/" + '\'' + ", servers_path='" + "./temp/" + '\'' + '}';
+        return "CloudServer{template=" + this.template + ", serverName='" + this.serverName + '\'' + ", serverPort=" + this.serverPort + ", playerCount=" + this.playerCount + ", aliveChecks=" + this.aliveChecks + ", socket=" + this.socket + ", temp_path='" + "./templates/" + '\'' + ", servers_path='" + "./temp/" + '\'' + '}';
     }
 }

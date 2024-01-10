@@ -4,7 +4,7 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.json.simple.JSONObject;
 
 public class ProxyPlayerJoinPacket extends DataPacket
@@ -16,14 +16,14 @@ public class ProxyPlayerJoinPacket extends DataPacket
         final String playername = jsonObject.get("playerName").toString();
         final String serverName = jsonObject.get("joinedServer").toString();
         BedrockCloud.getCloudPlayerProvider().addCloudPlayer(new CloudPlayer(jsonObject.get("playerName").toString().toLowerCase(), jsonObject.get("address").toString(), jsonObject.get("uuid").toString(), jsonObject.get("xuid").toString(), jsonObject.get("currentServer").toString(), jsonObject.get("currentProxy").toString()));
-        if (BedrockCloud.getGameServerProvider().existServer(serverName)) {
-            final GameServer gameServer = BedrockCloud.getGameServerProvider().getGameServer(serverName);
+        if (BedrockCloud.getCloudServerProvider().existServer(serverName)) {
+            final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
             final ProxyPlayerJoinPacket packet = new ProxyPlayerJoinPacket();
 
-            gameServer.getTemplate().addPlayer(BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName), serverName);
+            server.getTemplate().addPlayer(BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName), serverName);
 
             packet.playerName = playername;
-            gameServer.pushPacket(packet);
+            server.pushPacket(packet);
         }
     }
     

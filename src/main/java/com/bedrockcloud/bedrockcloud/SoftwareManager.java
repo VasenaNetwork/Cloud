@@ -8,6 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class SoftwareManager {
+    public final static int SOFTWARE_PROXY = 0;
+    public final static int SOFTWARE_SERVER = 1;
+
 
     //Software URLs
     public final static String POCKETMINE_URL = "https://github.com/pmmp/PocketMine-MP/releases/latest/download/PocketMine-MP.phar";

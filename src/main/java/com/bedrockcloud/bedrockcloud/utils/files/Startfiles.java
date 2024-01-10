@@ -145,8 +145,8 @@ public class Startfiles implements Loggable
                     this.getLogger().debug("Download server is offline.");
                 }
             }
-            GroupAPI.createGroup("Proxy-Master", 0);
-            GroupAPI.createGroup("Lobby", 1);
+            GroupAPI.createGroup("Proxy-Master", SoftwareManager.SOFTWARE_PROXY);
+            GroupAPI.createGroup("Lobby", SoftwareManager.SOFTWARE_SERVER);
 
             BedrockCloud.getLogger().info("§aStarting cloud...");
             Thread.sleep(3000);

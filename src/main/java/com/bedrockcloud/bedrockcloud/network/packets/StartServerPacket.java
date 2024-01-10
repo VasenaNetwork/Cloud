@@ -1,11 +1,9 @@
 package com.bedrockcloud.bedrockcloud.network.packets;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
-import com.bedrockcloud.bedrockcloud.api.GroupAPI;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import org.json.simple.JSONObject;
 
@@ -23,13 +21,7 @@ public class StartServerPacket extends DataPacket
             BedrockCloud.getLogger().error("The group is not running");
         } else {
             for (int i = 0; i < Integer.parseInt(count); ++i) {
-                if (group.getType() == GroupAPI.POCKETMINE_SERVER) {
-                    new GameServer(group);
-                } else {
-                    if (group.getType() == GroupAPI.PROXY_SERVER){
-                        new ProxyServer(group);
-                    }
-                }
+                new CloudServer(group);
             }
         }
     }

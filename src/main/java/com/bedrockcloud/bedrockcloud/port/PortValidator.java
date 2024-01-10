@@ -1,14 +1,11 @@
 package com.bedrockcloud.bedrockcloud.port;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
-import com.bedrockcloud.bedrockcloud.server.privateserver.PrivateGameServer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import com.bedrockcloud.bedrockcloud.SoftwareManager;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 
 import java.net.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 public final class PortValidator {
 
@@ -27,31 +24,17 @@ public final class PortValidator {
         return port;
     }
 
-    public static int getNextServerPort(GameServer server) {
+    public static int getNextServerPort(CloudServer server) {
         var port = PORTS_BOUNCE;
-        while (isPortUsed(port) || isPortUsed(port+1)) {
-            port++;
+        if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+            while (isPortUsed(port) || isPortUsed(port + 1)) {
+                port++;
+            }
         }
         return port;
     }
 
-    public static int getNextPrivateServerPort(PrivateGameServer server) {
-        var port = PORTS_BOUNCE;
-        while ((isPortUsed(port) && isPortUsed(port+1)) && (getPorts().contains(port) && getPorts().contains(port+1))) {
-            port++;
-        }
-        return port;
-    }
-
-    public static int getNextProxyServerPort(ProxyServer server) {
-        var port = PORTS_BOUNCE_PROXY;
-        while ((isPortUsed(port) && isPortUsed(port+1)) && (getPorts().contains(port) && getPorts().contains(port+1))) {
-            port++;
-        }
-        return port;
-    }
-
-    public static int getNextLobbyServerPort(GameServer server) {
+    public static int getNextProxyServerPort(CloudServer server) {
         var port = PORTS_BOUNCE_PROXY;
         while ((isPortUsed(port) && isPortUsed(port+1)) && (getPorts().contains(port) && getPorts().contains(port+1))) {
             port++;
@@ -60,13 +43,7 @@ public final class PortValidator {
     }
 
     private static boolean isPortUsed(int port) {
-        for (final var service : BedrockCloud.getGameServerProvider().getGameServerMap().values()) {
-            if (service.getServerPort() == port || service.getServerPort()+1 == port) return true;
-        }
-        for (final var service : BedrockCloud.getPrivategameServerProvider().getGameServerMap().values()) {
-            if (service.getServerPort() == port || service.getServerPort()+1 == port) return true;
-        }
-        for (final var service : BedrockCloud.getProxyServerProvider().getProxyServerMap().values()) {
+        for (final var service : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
             if (service.getServerPort() == port || service.getServerPort()+1 == port) return true;
         }
 

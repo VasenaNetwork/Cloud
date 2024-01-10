@@ -1,27 +1,21 @@
 package com.bedrockcloud.bedrockcloud.network.packets;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
-import com.bedrockcloud.bedrockcloud.server.privateserver.PrivateGameServer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
 import com.bedrockcloud.bedrockcloud.tasks.KeepALiveTask;
-import com.bedrockcloud.bedrockcloud.tasks.PrivateKeepALiveTask;
 import org.json.simple.JSONObject;
 
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GameServerConnectPacket extends DataPacket
-{
+public class GameServerConnectPacket extends DataPacket {
     @Override
     public void handle(final JSONObject jsonObject, final ClientRequest clientRequest) {
 
@@ -30,95 +24,37 @@ public class GameServerConnectPacket extends DataPacket
         final String serverName = jsonObject.get("serverName").toString();
         final String serverPort = jsonObject.get("serverPort").toString();
         final String serverPid = jsonObject.get("serverPid").toString();
-        final boolean isPrivate = Boolean.parseBoolean(jsonObject.get("isPrivate").toString());
-        if (!isPrivate) {
-            final GameServer gameServer = BedrockCloud.getGameServerProvider().getGameServer(serverName);
-            gameServer.setSocket(clientRequest.getSocket());
-            gameServer.setPid(Integer.parseInt(serverPid));
 
-            Config config = new Config("./archive/server-pids/" + serverName + ".json", Config.JSON);
-            config.set("pid", Integer.parseInt(serverPid));
-            config.save();
+        final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
+        server.setSocket(clientRequest.getSocket());
+        server.setPid(Integer.parseInt(serverPid));
 
-            gameServer.setAliveChecks(0);
+        Config config = new Config("./archive/server-pids/" + serverName + ".json", Config.JSON);
+        config.set("pid", Integer.parseInt(serverPid));
+        config.save();
 
-            gameServer.setTask(new KeepALiveTask(gameServer));
-            gameServer.getTask().setName(gameServer.getServerName());
-            service.scheduleAtFixedRate(gameServer.getTask(), 0, 1, TimeUnit.SECONDS);
+        server.setAliveChecks(0);
 
-            final VersionInfoPacket versionInfoPacket = new VersionInfoPacket();
-            gameServer.pushPacket(versionInfoPacket);
-            for (final String key : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
-                final ProxyServer proxy = BedrockCloud.getProxyServerProvider().getProxyServer(key);
+        server.setTask(new KeepALiveTask(server));
+        server.getTask().setName(server.getServerName());
+        service.scheduleAtFixedRate(server.getTask(), 0, 1, TimeUnit.SECONDS);
+
+        final VersionInfoPacket versionInfoPacket = new VersionInfoPacket();
+        server.pushPacket(versionInfoPacket);
+        for (final CloudServer cloudServer : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+            if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
                 final RegisterServerPacket packet = new RegisterServerPacket();
                 packet.addValue("serverPort", serverPort);
                 packet.addValue("serverName", serverName);
-                proxy.pushPacket(packet);
+                cloudServer.pushPacket(packet);
             }
-
-            String notifyMessage = MessageAPI.startedMessage.replace("%service", serverName);
-            CloudNotifyManager.sendNotifyCloud(notifyMessage);
-            BedrockCloud.getLogger().warning(notifyMessage);
-
-            gameServer.getTemplate().addServer(gameServer.getTemplate(), serverName);
-            gameServer.setConnected(true);
-        } else {
-            final PrivateGameServer gameServer = BedrockCloud.getPrivategameServerProvider().getGameServer(serverName);
-            gameServer.setSocket(clientRequest.getSocket());
-            gameServer.setPid(Integer.parseInt(serverPid));
-
-            Config config = new Config("./archive/server-pids/" + serverName + ".json", Config.JSON);
-            config.set("pid", Integer.parseInt(serverPid));
-            config.save();
-
-            gameServer.setAliveChecks(0);
-
-            gameServer.setTask(new PrivateKeepALiveTask(gameServer));
-            gameServer.getTask().setName(gameServer.getServerName());
-            service.scheduleAtFixedRate(gameServer.getTask(), 0, 1, TimeUnit.SECONDS);
-
-            final VersionInfoPacket versionInfoPacket = new VersionInfoPacket();
-            gameServer.pushPacket(versionInfoPacket);
-            for (final String key : BedrockCloud.getProxyServerProvider().getProxyServerMap().keySet()) {
-                final ProxyServer proxy = BedrockCloud.getProxyServerProvider().getProxyServer(key);
-                final RegisterServerPacket packet = new RegisterServerPacket();
-                packet.addValue("serverPort", serverPort);
-                packet.addValue("serverName", serverName);
-                proxy.pushPacket(packet);
-            }
-
-            String notifyMessage = MessageAPI.startedMessage.replace("%service", serverName);
-            CloudNotifyManager.sendNotifyCloud(notifyMessage);
-            BedrockCloud.getLogger().warning(notifyMessage);
-
-            gameServer.getTemplate().addServer(gameServer.getTemplate(), serverName);
-            gameServer.setConnected(true);
-
-            if (BedrockCloud.getCloudPlayerProvider().existsPlayer(gameServer.getServerOwner())) {
-                BedrockCloud.getCloudPlayerProvider().getCloudPlayer(gameServer.getServerOwner()).setHasPrivateServer(true);
-
-                final PlayerTextPacket playerTextPacket = new PlayerTextPacket();
-                playerTextPacket.playerName = gameServer.getServerOwner();
-                Objects.requireNonNull(playerTextPacket);
-                playerTextPacket.type = 0;
-                playerTextPacket.value = BedrockCloud.prefix + "§aYou will be transferred in §e3 seconds§7.";
-                BedrockCloud.getCloudPlayerProvider().getCloudPlayer(getServerName()).getProxy().pushPacket(playerTextPacket);
-            }
-
-            Timer timer = new Timer(true);
-            TimerTask task = new TimerTask() {
-                @Override
-                public void run() {
-                    PlayerMovePacket pk = new PlayerMovePacket();
-                    pk.playerName = gameServer.getServerOwner();
-                    pk.toServer = pk.getServerName();
-                    for (final ProxyServer proxy : BedrockCloud.getProxyServerProvider().getProxyServerMap().values()) {
-                        proxy.pushPacket(pk);
-                    }
-                    this.cancel();
-                }
-            };
-            timer.schedule(task, 3*1000);
         }
+
+        String notifyMessage = MessageAPI.startedMessage.replace("%service", serverName);
+        CloudNotifyManager.sendNotifyCloud(notifyMessage);
+        BedrockCloud.getLogger().warning(notifyMessage);
+
+        server.getTemplate().addServer(server.getTemplate(), serverName);
+        server.setConnected(true);
     }
 }

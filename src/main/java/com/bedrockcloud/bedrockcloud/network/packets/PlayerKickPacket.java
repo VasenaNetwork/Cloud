@@ -4,7 +4,7 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.json.simple.JSONObject;
 
 public class PlayerKickPacket extends DataPacket
@@ -18,12 +18,12 @@ public class PlayerKickPacket extends DataPacket
         final String reason = jsonObject.get("reason").toString();
         if (BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
             final CloudPlayer cloudPlayer = BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName);
-            if (BedrockCloud.getProxyServerProvider().existServer(cloudPlayer.getCurrentProxy())) {
-                final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(cloudPlayer.getCurrentProxy());
+            if (BedrockCloud.getCloudServerProvider().existServer(cloudPlayer.getCurrentProxy())) {
+                final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(cloudPlayer.getCurrentProxy());
                 final PlayerKickPacket playerKickPacket = new PlayerKickPacket();
                 playerKickPacket.playerName = playerName;
                 playerKickPacket.reason = reason.replace("§", "&");
-                proxyServer.pushPacket(playerKickPacket);
+                cloudServer.pushPacket(playerKickPacket);
             }
         } else {
             //this.getLogger().error(playerName + " is not connected with the BedrockCloud!");

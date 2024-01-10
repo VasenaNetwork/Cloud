@@ -1,18 +1,11 @@
 package com.bedrockcloud.bedrockcloud.api.event.server;
 
 import com.bedrockcloud.bedrockcloud.api.event.Cancellable;
-import com.bedrockcloud.bedrockcloud.api.event.Event;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 
-public class ServerStopEvent extends Event implements Cancellable {
+public class ServerStopEvent extends ServerEvent implements Cancellable {
 
-    private final GameServer server;
-
-    public ServerStopEvent(GameServer server) {
-        this.server = server;
-    }
-
-    public GameServer getServer() {
-        return server;
+    public ServerStopEvent(CloudServer server) {
+        super(server);
     }
 }

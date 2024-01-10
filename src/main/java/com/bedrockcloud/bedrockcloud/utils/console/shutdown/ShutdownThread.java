@@ -17,11 +17,8 @@ public class ShutdownThread extends Thread {
         }
 
         while (servicesRunning) {
-            Integer proxyServerCount = BedrockCloud.getProxyServerProvider().getProxyServerMap().size();
-            Integer gameServerCount = BedrockCloud.getGameServerProvider().getGameServerMap().size();
-            Integer privateServerCount = BedrockCloud.getPrivategameServerProvider().getGameServerMap().size();
-            int count = proxyServerCount + gameServerCount + privateServerCount;
-            if (count <= 0){
+            int serverCount = BedrockCloud.getCloudServerProvider().getCloudServers().size();
+            if (serverCount == 0){
                 servicesRunning = false;
                 BedrockCloud.setRunning(false);
 

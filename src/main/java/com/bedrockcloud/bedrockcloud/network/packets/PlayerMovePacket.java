@@ -4,8 +4,7 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.json.simple.JSONObject;
 
 import java.util.Objects;
@@ -17,14 +16,14 @@ public class PlayerMovePacket extends DataPacket
     @Override
     public void handle(final JSONObject jsonObject, final ClientRequest clientRequest) {
         final String playerName = jsonObject.get("playerName").toString();
-        final String server = jsonObject.get("toServer").toString();
+        final String toServer = jsonObject.get("toServer").toString();
         if (BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
             final CloudPlayer cloudPlayer = BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName);
-            if (BedrockCloud.getProxyServerProvider().existServer(cloudPlayer.getCurrentProxy())) {
-                final GameServer gameServer = BedrockCloud.getGameServerProvider().getGameServer(server);
-                if (gameServer != null) {
-                    if (gameServer.getPlayerCount() < gameServer.getTemplate().getMaxPlayers()) {
-                        if (gameServer.getState() == 1) {
+            if (BedrockCloud.getCloudServerProvider().existServer(cloudPlayer.getCurrentProxy())) {
+                final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(toServer);
+                if (server != null) {
+                    if (server.getPlayerCount() < server.getTemplate().getMaxPlayers()) {
+                        if (server.getState() == 1) {
                             final PlayerTextPacket playerTextPacket = new PlayerTextPacket();
                             playerTextPacket.playerName = playerName;
                             Objects.requireNonNull(playerTextPacket);
@@ -32,11 +31,11 @@ public class PlayerMovePacket extends DataPacket
                             playerTextPacket.value = "§bCloud §8| §cThe Server is running!";
                             BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerTextPacket);
                         } else {
-                            final ProxyServer proxyServer = BedrockCloud.getProxyServerProvider().getProxyServer(cloudPlayer.getCurrentProxy());
+                            final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(cloudPlayer.getCurrentProxy());
                             final PlayerMovePacket playerMovePacket = new PlayerMovePacket();
                             playerMovePacket.playerName = playerName;
-                            playerMovePacket.toServer = server;
-                            proxyServer.pushPacket(playerMovePacket);
+                            playerMovePacket.toServer = toServer;
+                            cloudServer.pushPacket(playerMovePacket);
                         }
                     } else {
                         final PlayerTextPacket playerTextPacket = new PlayerTextPacket();

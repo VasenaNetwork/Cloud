@@ -2,8 +2,7 @@ package com.bedrockcloud.bedrockcloud.rest.handler.server;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.sun.net.httpserver.HttpExchange;
@@ -96,13 +95,7 @@ public class ServerStartRequestHandler implements HttpHandler {
                 } else {
                     final Template group = BedrockCloud.getTemplateProvider().getTemplate(template);
                     for (int i = 0; i < count; ++i) {
-                        if (group.getType() == GroupAPI.POCKETMINE_SERVER) {
-                            new GameServer(group);
-                        } else {
-                            if (group.getType() == GroupAPI.PROXY_SERVER) {
-                                new ProxyServer(group);
-                            }
-                        }
+                        new CloudServer(group);
                     }
                     JSONObject responseObj = new JSONObject();
                     responseObj.put("success", count + " servers from the template " + template + " were started successfully!");

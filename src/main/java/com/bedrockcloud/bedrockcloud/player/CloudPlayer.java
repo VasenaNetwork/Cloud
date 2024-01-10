@@ -1,7 +1,7 @@
 package com.bedrockcloud.bedrockcloud.player;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.jetbrains.annotations.ApiStatus;
 
 public class CloudPlayer
@@ -53,8 +53,8 @@ public class CloudPlayer
         this.currentServer = serverName;
     }
     
-    public ProxyServer getProxy() {
-        return BedrockCloud.getProxyServerProvider().getProxyServer(this.getCurrentProxy());
+    public CloudServer getProxy() {
+        return BedrockCloud.getCloudServerProvider().getServer(this.getCurrentProxy());
     }
 
     public boolean isHasPrivateServer() {

@@ -4,7 +4,7 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.network.packets.response.ListServerResponsePacket;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.json.simple.JSONObject;
 
 public class ListServerRequestPacket extends DataPacket
@@ -14,7 +14,7 @@ public class ListServerRequestPacket extends DataPacket
         final ListServerResponsePacket listServerResponsePacket = new ListServerResponsePacket();
         listServerResponsePacket.type = 1;
         listServerResponsePacket.requestId = jsonObject.get("requestId").toString();
-        final GameServer gameServer = BedrockCloud.getGameServerProvider().getGameServer(jsonObject.get("serverName").toString());
+        final CloudServer gameServer = BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString());
         gameServer.pushPacket(listServerResponsePacket);
     }
 }

@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.io.IOException;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import org.jetbrains.annotations.ApiStatus;
 import org.json.simple.JSONObject;
@@ -16,11 +17,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.io.File;
 
-public class GroupAPI implements Loggable
-{
-    public static final int PROXY_SERVER = 0;
-    public static final int POCKETMINE_SERVER = 1;
-
+public class GroupAPI implements Loggable {
     public static boolean isGroup(final String group) {
         final File theDir = new File("./templates/" + group);
         return theDir.exists();
@@ -79,7 +76,7 @@ public class GroupAPI implements Loggable
                 final ArrayList<String> directories = new ArrayList<>();
                 directories.add("./templates/" + name);
 
-                if (type == POCKETMINE_SERVER) {
+                if (type == SoftwareManager.SOFTWARE_SERVER) {
                     directories.add(directories.get(0) + "/crashdumps");
                     directories.add(directories.get(0) + "/plugins");
                     directories.add(directories.get(0) + "/plugin_data");
@@ -90,13 +87,13 @@ public class GroupAPI implements Loggable
                     final File theDir = new File(directory);
                     if (!theDir.exists()) {
                         theDir.mkdirs();
-                        if (type == POCKETMINE_SERVER) {
+                        if (type == SoftwareManager.SOFTWARE_SERVER) {
                             createConfigEntry(name, type);
                         }
                     }
                 }
 
-                if (type == PROXY_SERVER) {
+                if (type == SoftwareManager.SOFTWARE_PROXY) {
                     createConfigEntry(name, type);
                 }
 
@@ -113,7 +110,7 @@ public class GroupAPI implements Loggable
                 final ArrayList<String> directories = new ArrayList<>();
                 directories.add("./templates/" + name);
 
-                if (type == POCKETMINE_SERVER) {
+                if (type == SoftwareManager.SOFTWARE_SERVER) {
                     directories.add(directories.get(0) + "/crashdumps");
                     directories.add(directories.get(0) + "/plugins");
                     directories.add(directories.get(0) + "/plugin_data");
@@ -124,13 +121,13 @@ public class GroupAPI implements Loggable
                     final File theDir = new File(directory);
                     if (!theDir.exists()) {
                         theDir.mkdirs();
-                        if (type == POCKETMINE_SERVER) {
+                        if (type == SoftwareManager.SOFTWARE_SERVER) {
                             createConfigEntry(name, type);
                         }
                     }
                 }
 
-                if (type == PROXY_SERVER) {
+                if (type == SoftwareManager.SOFTWARE_PROXY) {
                     createConfigEntry(name, type);
                 }
 
@@ -164,9 +161,8 @@ public class GroupAPI implements Loggable
         object.put("type", type);
         object.put("beta", false);
 
-        if (type == POCKETMINE_SERVER) {
+        if (type == SoftwareManager.SOFTWARE_SERVER) {
             object.put("isLobby", false);
-            object.put("canBePrivate", false);
             object.put("proxy", "Proxy-Master");
         }
 

@@ -52,7 +52,7 @@ public class PlayerCommand extends Command
                 final String playerName = args[1];
                 final String server = args[2];
                 if (BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
-                    if (BedrockCloud.getGameServerProvider().existServer(server) || BedrockCloud.getPrivategameServerProvider().existServer(server)) {
+                    if (BedrockCloud.getCloudServerProvider().existServer(server)) {
                         final PlayerMovePacket playerMovePacket = new PlayerMovePacket();
                         playerMovePacket.playerName = playerName;
                         Objects.requireNonNull(playerMovePacket);

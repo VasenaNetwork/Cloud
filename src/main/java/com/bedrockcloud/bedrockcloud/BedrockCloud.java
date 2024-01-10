@@ -3,20 +3,19 @@ package com.bedrockcloud.bedrockcloud;
 import com.bedrockcloud.bedrockcloud.api.event.EventHandler;
 import com.bedrockcloud.bedrockcloud.api.plugin.PluginLoadOrder;
 import com.bedrockcloud.bedrockcloud.api.plugin.PluginManager;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServerProvider;
 import com.bedrockcloud.bedrockcloud.utils.command.CommandRegistry;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import com.bedrockcloud.bedrockcloud.utils.console.shutdown.ShutdownThread;
 import com.bedrockcloud.bedrockcloud.network.packetRegistry.PacketRegistry;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayerProvider;
 import com.bedrockcloud.bedrockcloud.rest.App;
-import com.bedrockcloud.bedrockcloud.server.privateserver.PrivateGameServerProvider;
 import com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper.ServiceHelper;
 import com.bedrockcloud.bedrockcloud.tasks.RestartAllTask;
 import com.bedrockcloud.bedrockcloud.utils.console.reader.ConsoleReader;
 import com.bedrockcloud.bedrockcloud.network.NetworkManager;
 import com.bedrockcloud.bedrockcloud.network.handler.PacketHandler;
-import com.bedrockcloud.bedrockcloud.server.proxyserver.ProxyServerProvider;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServerProvider;
 import com.bedrockcloud.bedrockcloud.templates.TemplateProvider;
 import com.bedrockcloud.bedrockcloud.utils.console.Logger;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
@@ -35,11 +34,7 @@ public class BedrockCloud
     @Getter
     private static TemplateProvider templateProvider;
     @Getter
-    private static GameServerProvider gameServerProvider;
-    @Getter
-    private static PrivateGameServerProvider privategameServerProvider;
-    @Getter
-    private static ProxyServerProvider proxyServerProvider;
+    private static CloudServerProvider cloudServerProvider;
     @Getter
     private static CloudPlayerProvider cloudPlayerProvider;
     @Getter
@@ -110,9 +105,7 @@ public class BedrockCloud
     private void initProvider() {
         BedrockCloud.consoleReader = new ConsoleReader();
         BedrockCloud.templateProvider = new TemplateProvider();
-        BedrockCloud.gameServerProvider = new GameServerProvider();
-        BedrockCloud.privategameServerProvider = new PrivateGameServerProvider();
-        BedrockCloud.proxyServerProvider = new ProxyServerProvider();
+        BedrockCloud.cloudServerProvider = new CloudServerProvider();
         BedrockCloud.cloudPlayerProvider = new CloudPlayerProvider();
         BedrockCloud.packetHandler = new PacketHandler();
         PacketRegistry.registerPackets();

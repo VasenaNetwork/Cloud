@@ -2,7 +2,7 @@ package com.bedrockcloud.bedrockcloud.network.packets.response;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.network.packets.RequestPacket;
-import com.bedrockcloud.bedrockcloud.server.gameserver.GameServer;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
@@ -14,8 +14,8 @@ public class ListServerResponsePacket extends RequestPacket
     public String encode() {
         final JSONArray arr = new JSONArray();
         try {
-            for (final GameServer key : BedrockCloud.getGameServerProvider().getGameServerMap().values()) {
-                if (key.getSocket() != null && key.getTemplate().runningTemplateServers.get(key.getServerName()) != null) {
+            for (final CloudServer key : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+                if (key.getSocket() != null && key.getTemplate().getRunningTemplateServers().get(key.getServerName()) != null) {
                     arr.add(key.getServerName());
                 }
             }
