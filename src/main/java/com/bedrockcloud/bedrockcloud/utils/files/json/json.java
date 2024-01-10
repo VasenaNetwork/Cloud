@@ -37,7 +37,7 @@ public class json
                     final JSONObject tempobj = (JSONObject)tmp;
                     final JSONObject directtemp = (JSONObject) tempobj.get(name);
                     if (directtemp != null) {
-                        if (type != 10) {
+                        if (type != 9) {
                             switch (type) {
                                 case 0 -> {
                                     returnval[0] = directtemp.get("minRunningServer");
