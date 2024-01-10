@@ -87,15 +87,10 @@ public class GroupAPI implements Loggable {
                     final File theDir = new File(directory);
                     if (!theDir.exists()) {
                         theDir.mkdirs();
-                        if (type == SoftwareManager.SOFTWARE_SERVER) {
-                            createConfigEntry(name, type);
-                        }
                     }
                 }
 
-                if (type == SoftwareManager.SOFTWARE_PROXY) {
-                    createConfigEntry(name, type);
-                }
+                createConfigEntry(name, type);
 
                 BedrockCloud.getLogger().debug("The Group " + name + " has been successfully created!");
             } catch (IOException e) {
@@ -121,15 +116,10 @@ public class GroupAPI implements Loggable {
                     final File theDir = new File(directory);
                     if (!theDir.exists()) {
                         theDir.mkdirs();
-                        if (type == SoftwareManager.SOFTWARE_SERVER) {
-                            createConfigEntry(name, type);
-                        }
                     }
                 }
 
-                if (type == SoftwareManager.SOFTWARE_PROXY) {
-                    createConfigEntry(name, type);
-                }
+                createConfigEntry(name, type);
 
                 BedrockCloud.getLogger().debug("The Group " + name + " has been successfully created!");
                 BedrockCloud.getTemplateProvider().loadTemplate(name);
