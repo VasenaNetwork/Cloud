@@ -158,11 +158,11 @@ public class GroupAPI implements Loggable {
         object.put("maxPlayer", 100);
         object.put("maintenance", false);
         object.put("isStatic", false);
+        object.put("isLobby", false);
         object.put("type", type);
         object.put("beta", false);
 
         if (type == SoftwareManager.SOFTWARE_SERVER) {
-            object.put("isLobby", false);
             object.put("proxy", "Proxy-Master");
         }
 
