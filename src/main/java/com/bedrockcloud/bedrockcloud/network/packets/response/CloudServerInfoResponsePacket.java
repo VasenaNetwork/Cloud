@@ -9,14 +9,13 @@ import org.json.simple.JSONValue;
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
 
-public class GameServerInfoResponsePacket extends RequestPacket
+public class CloudServerInfoResponsePacket extends RequestPacket
 {
     public String serverInfoName;
 
     public String templateName;
     public int state;
     public boolean isLobby;
-    public boolean isPrivate;
     public boolean isMaintenance;
     public boolean isBeta;
     public boolean isStatic;
@@ -29,7 +28,6 @@ public class GameServerInfoResponsePacket extends RequestPacket
         this.addValue("templateName", this.templateName);
         this.addValue("state", this.state);
         this.addValue("isLobby", this.isLobby);
-        this.addValue("isPrivate", this.isPrivate);
         this.addValue("isMaintenance", this.isMaintenance);
         this.addValue("isBeta", this.isBeta);
         this.addValue("isStatic", this.isStatic);

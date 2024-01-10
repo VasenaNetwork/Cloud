@@ -17,8 +17,8 @@ public class PacketRegistry {
         BedrockCloud.getPacketHandler().registerPacket(GameServerDisconnectPacket.class);
         BedrockCloud.getPacketHandler().registerPacket(ProxyServerConnectPacket.class);
         BedrockCloud.getPacketHandler().registerPacket(ProxyServerDisconnectPacket.class);
-        BedrockCloud.getPacketHandler().registerPacket(GameServerInfoRequestPacket.class);
-        BedrockCloud.getPacketHandler().registerPacket(GameServerInfoResponsePacket.class);
+        BedrockCloud.getPacketHandler().registerPacket(CloudServerInfoRequestPacket.class);
+        BedrockCloud.getPacketHandler().registerPacket(CloudServerInfoResponsePacket.class);
         BedrockCloud.getPacketHandler().registerPacket(ListServerRequestPacket.class);
         BedrockCloud.getPacketHandler().registerPacket(ListServerResponsePacket.class);
         BedrockCloud.getPacketHandler().registerPacket(ListCloudPlayersRequestPacket.class);

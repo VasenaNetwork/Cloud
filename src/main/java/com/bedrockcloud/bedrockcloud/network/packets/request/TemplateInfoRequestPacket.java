@@ -25,6 +25,9 @@ public class TemplateInfoRequestPacket extends DataPacket {
         templateInfoResponsePacket.isMaintenance = template.getMaintenance();
         templateInfoResponsePacket.isBeta = template.getBeta();
         templateInfoResponsePacket.maxPlayer = template.getMaxPlayers();
+        templateInfoResponsePacket.isStatic = template.getStatic();
+        templateInfoResponsePacket.maxPlayer = template.getMaxPlayers();
+        templateInfoResponsePacket.type = template.getType();
         BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(templateInfoResponsePacket);
     }
 }
