@@ -22,7 +22,7 @@ public class ServerStopRequestPacket extends DataPacket {
             BedrockCloud.getLogger().error("This Server doesn't exist");
         } else {
             serverStopResponsePacket.success = true;
-            serverStopResponsePacket.serverName = server_Name;
+            serverStopResponsePacket.serverInfoName = server_Name;
             server.stopServer();
         }
 

@@ -48,5 +48,9 @@ public class PacketRegistry {
         BedrockCloud.getPacketHandler().registerPacket(CloudPlayerInfoResponsePacket.class);
         BedrockCloud.getPacketHandler().registerPacket(CheckPlayerMaintenanceRequestPacket.class);
         BedrockCloud.getPacketHandler().registerPacket(CheckPlayerMaintenanceResponsePacket.class);
+        BedrockCloud.getPacketHandler().registerPacket(ServerStartRequestPacket.class);
+        BedrockCloud.getPacketHandler().registerPacket(ServerStopRequestPacket.class);
+        BedrockCloud.getPacketHandler().registerPacket(ServerStartResponsePacket.class);
+        BedrockCloud.getPacketHandler().registerPacket(ServerStopResponsePacket.class);
     }
 }

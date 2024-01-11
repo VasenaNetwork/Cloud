@@ -5,7 +5,7 @@ import com.bedrockcloud.bedrockcloud.network.packets.RequestPacket;
 public class ServerStopResponsePacket extends RequestPacket {
     public boolean success;
     public int failureId;
-    public String serverName;
+    public String serverInfoName;
 
     @Override
     public String encode() {
@@ -13,7 +13,7 @@ public class ServerStopResponsePacket extends RequestPacket {
         if (!success) {
             this.addValue("failureId", failureId);
         } else {
-            this.addValue("serverName", serverName);
+            this.addValue("serverInfoName", serverInfoName);
         }
         return super.encode();
     }
