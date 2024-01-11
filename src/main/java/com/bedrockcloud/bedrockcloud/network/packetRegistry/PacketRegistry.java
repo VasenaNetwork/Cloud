@@ -31,9 +31,7 @@ public class PacketRegistry {
         BedrockCloud.getPacketHandler().registerPacket(KeepALivePacket.class);
         BedrockCloud.getPacketHandler().registerPacket(UpdateGameServerInfoPacket.class);
         BedrockCloud.getPacketHandler().registerPacket(StartGroupPacket.class);
-        BedrockCloud.getPacketHandler().registerPacket(StartServerPacket.class);
         BedrockCloud.getPacketHandler().registerPacket(StopGroupPacket.class);
-        BedrockCloud.getPacketHandler().registerPacket(StopServerPacket.class);
         BedrockCloud.getPacketHandler().registerPacket(VersionInfoPacket.class);
         BedrockCloud.getPacketHandler().registerPacket(CloudNotifyMessagePacket.class);
         BedrockCloud.getPacketHandler().registerPacket(PlayerMovePacket.class);
