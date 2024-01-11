@@ -42,7 +42,7 @@ public class CloudServerConnectPacket extends DataPacket {
         final VersionInfoPacket versionInfoPacket = new VersionInfoPacket();
         server.pushPacket(versionInfoPacket);
         for (final CloudServer cloudServer : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
-            if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
+            if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
                 final RegisterServerPacket packet = new RegisterServerPacket();
                 packet.addValue("serverPort", serverPort);
                 packet.addValue("serverName", serverName);
