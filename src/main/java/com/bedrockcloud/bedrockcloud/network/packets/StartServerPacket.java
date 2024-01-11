@@ -15,7 +15,7 @@ public class StartServerPacket extends DataPacket
         final String count = jsonObject.get("count").toString();
         final Template group = BedrockCloud.getTemplateProvider().getTemplate(groupName);
         if (group == null) {
-            BedrockCloud.getLogger().error("This group is not exist");
+            BedrockCloud.getLogger().error("This group does not exist");
         }
         else if (!BedrockCloud.getTemplateProvider().isTemplateRunning(group)) {
             BedrockCloud.getLogger().error("The group is not running");
