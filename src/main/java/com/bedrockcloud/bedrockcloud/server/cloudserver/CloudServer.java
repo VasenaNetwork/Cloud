@@ -27,7 +27,7 @@ import java.net.DatagramSocket;
 import java.util.concurrent.CompletableFuture;
 
 public class CloudServer {
-    private static final int TIMEOUT = 20;
+    private static final int TIMEOUT = 30;
 
     @Getter
     private final Template template;
