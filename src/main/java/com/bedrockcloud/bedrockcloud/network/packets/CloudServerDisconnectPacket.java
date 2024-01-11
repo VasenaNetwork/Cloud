@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 
 import java.io.File;
 
-public class GameServerDisconnectPacket extends DataPacket
+public class CloudServerDisconnectPacket extends DataPacket
 {
     
     @Override

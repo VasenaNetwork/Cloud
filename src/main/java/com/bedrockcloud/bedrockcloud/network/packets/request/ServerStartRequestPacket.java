@@ -12,15 +12,15 @@ import org.json.simple.JSONObject;
 
 public class ServerStartRequestPacket extends DataPacket {
     private static int FAILURE_TEMPLATE_EXISTENCE = 0;
-    private static int FAILURE_GROUP_RUNNING = 1;
+    private static int FAILURE_TEMPLATE_RUNNING = 1;
 
     @Override
     public void handle(JSONObject jsonObject, ClientRequest clientRequest) {
         final ServerStartResponsePacket serverStartResponsePacket = new ServerStartResponsePacket();
 
-        final String groupName = jsonObject.get("groupName").toString();
+        final String templateName = jsonObject.get("templateName").toString();
         final String count = jsonObject.get("count").toString();
-        final Template group = BedrockCloud.getTemplateProvider().getTemplate(groupName);
+        final Template group = BedrockCloud.getTemplateProvider().getTemplate(templateName);
         if (group == null) {
             serverStartResponsePacket.success = false;
             serverStartResponsePacket.failureId = FAILURE_TEMPLATE_EXISTENCE;
@@ -28,7 +28,7 @@ public class ServerStartRequestPacket extends DataPacket {
         }
         else if (!BedrockCloud.getTemplateProvider().isTemplateRunning(group)) {
             serverStartResponsePacket.success = false;
-            serverStartResponsePacket.failureId = FAILURE_GROUP_RUNNING;
+            serverStartResponsePacket.failureId = FAILURE_TEMPLATE_RUNNING;
             BedrockCloud.getLogger().error("The group is not running");
         } else {
             final JSONArray arr = new JSONArray();

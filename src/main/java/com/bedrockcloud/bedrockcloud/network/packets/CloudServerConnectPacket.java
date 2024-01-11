@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class GameServerConnectPacket extends DataPacket {
+public class CloudServerConnectPacket extends DataPacket {
     @Override
     public void handle(final JSONObject jsonObject, final ClientRequest clientRequest) {
 

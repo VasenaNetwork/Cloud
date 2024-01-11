@@ -6,8 +6,7 @@ import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerStartEvent;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerStopEvent;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
-import com.bedrockcloud.bedrockcloud.network.packets.GameServerDisconnectPacket;
-import com.bedrockcloud.bedrockcloud.network.packets.proxy.ProxyServerDisconnectPacket;
+import com.bedrockcloud.bedrockcloud.network.packets.CloudServerDisconnectPacket;
 import com.bedrockcloud.bedrockcloud.port.PortValidator;
 import com.bedrockcloud.bedrockcloud.server.properties.ServerProperties;
 import com.bedrockcloud.bedrockcloud.tasks.KeepALiveTask;
@@ -203,19 +202,34 @@ public class CloudServer {
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().info(notifyMessage);
 
-        if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
-            final GameServerDisconnectPacket packet = new GameServerDisconnectPacket();
-            packet.addValue("reason", "Server Stopped");
-            this.pushPacket(packet);
-        } else {
-            final ProxyServerDisconnectPacket packet = new ProxyServerDisconnectPacket();
-            packet.addValue("reason", "Proxy Stopped");
-            this.pushPacket(packet);
-        }
+        final CloudServerDisconnectPacket packet = new CloudServerDisconnectPacket();
+        packet.addValue("reason", "Server Stopped");
+        this.pushPacket(packet);
     }
 
     public void pushPacket(final DataPacket cloudPacket) {
         PushPacketManager.pushPacket(cloudPacket, this);
+    }
+
+    public void saveServer() {
+        final String template = this.getTemplate().getName();
+        final File serverFile = new File("./temp/" + this.getServerName() + "/worlds/");
+        final File templateworldsFile = new File("./templates/" + this.getServerName() + "/worlds/");
+        final File templateFile = new File("./templates/" + this.getServerName() + "/worlds/");
+        templateworldsFile.delete();
+        templateFile.mkdirs();
+        FileManager.copy(serverFile, templateFile);
+        if (serverFile.isDirectory()) {
+            final String[] var6;
+            final String[] files = var6 = serverFile.list();
+            for (int var7 = files.length, var8 = 0; var8 < var7; ++var8) {
+                final String file = var6[var8];
+                final File srcFile = new File(serverFile, file);
+                final File destFile = new File(template, file);
+                FileManager.copy(srcFile, destFile);
+            }
+            BedrockCloud.getLogger().info("The server was saved!");
+        }
     }
 
     @Override

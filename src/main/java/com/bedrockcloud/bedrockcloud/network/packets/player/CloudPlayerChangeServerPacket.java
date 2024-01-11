@@ -1,4 +1,4 @@
-package com.bedrockcloud.bedrockcloud.network.packets.cloudplayer;
+package com.bedrockcloud.bedrockcloud.network.packets.player;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.api.event.player.CloudPlayerSwitchServerEvent;

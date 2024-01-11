@@ -64,24 +64,8 @@ public class ServerCommand extends Command
                         BedrockCloud.getLogger().error("The Server doesn't exist!");
                         return;
                     }
-                    final String template = server.getTemplate().getName();
-                    final File serverFile = new File("./temp/" + servername + "/worlds/");
-                    final File templateworldsFile = new File("./templates/" + servername + "/worlds/");
-                    final File templateFile = new File("./templates/" + servername + "/worlds/");
-                    templateworldsFile.delete();
-                    templateFile.mkdirs();
-                    FileManager.copy(serverFile, templateFile);
-                    if (serverFile.isDirectory()) {
-                        final String[] var6;
-                        final String[] files = var6 = serverFile.list();
-                        for (int var7 = files.length, var8 = 0; var8 < var7; ++var8) {
-                            final String file = var6[var8];
-                            final File srcFile = new File(serverFile, file);
-                            final File destFile = new File(template, file);
-                            FileManager.copy(srcFile, destFile);
-                        }
-                        BedrockCloud.getLogger().info("The server was saved!");
-                    }
+
+                    server.saveServer();
                 }
             }
         } else {
