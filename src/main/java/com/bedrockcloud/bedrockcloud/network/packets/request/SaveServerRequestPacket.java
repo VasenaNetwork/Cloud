@@ -13,6 +13,7 @@ public class SaveServerRequestPacket extends DataPacket {
     @Override
     public void handle(JSONObject jsonObject, ClientRequest clientRequest) {
         final SaveServerResponsePacket pk = new SaveServerResponsePacket();
+        pk.type = 1;
 
         final String serverName = jsonObject.get("serverName").toString();
         if (!BedrockCloud.getCloudServerProvider().existServer(serverName)) {

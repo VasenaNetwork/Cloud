@@ -13,6 +13,7 @@ public class ServerStopRequestPacket extends DataPacket {
     @Override
     public void handle(JSONObject jsonObject, ClientRequest clientRequest) {
         final ServerStopResponsePacket serverStopResponsePacket = new ServerStopResponsePacket();
+        serverStopResponsePacket.type = 1;
 
         final String server_Name = jsonObject.get("serverName").toString();
         final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(server_Name);

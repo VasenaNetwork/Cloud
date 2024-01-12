@@ -15,6 +15,7 @@ public class StopTemplateRequestPacket extends DataPacket {
     @Override
     public void handle(JSONObject jsonObject, ClientRequest clientRequest) {
         final StopTemplateResponsePacket pk = new StopTemplateResponsePacket();
+        pk.type = 1;
 
         final String templateName = jsonObject.get("templateName").toString();
         final Template template = BedrockCloud.getTemplateProvider().getTemplate(templateName);

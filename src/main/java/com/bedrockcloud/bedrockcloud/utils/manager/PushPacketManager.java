@@ -20,6 +20,11 @@ public class PushPacketManager {
             BedrockCloud.getLogger().error("CloudPacket cannot be push because socket is closed.");
             return;
         }
+
+        if (BedrockCloud.getNetworkManager().datagramSocket == null) {
+            return;
+        }
+
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
             byteArrayOutputStream.write(cloudPacket.encode().getBytes());
@@ -28,28 +33,29 @@ public class PushPacketManager {
         }
 
         byte[] data = byteArrayOutputStream.toByteArray();
-        InetAddress address = null;
         try {
+            InetAddress address;
             if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
                 address = InetAddress.getByName("127.0.0.1");
             } else {
                 address = InetAddress.getByName("0.0.0.0");
             }
+
+            int port = server.getServerPort()+1;
+            DatagramPacket datagramPacket = new DatagramPacket(data, data.length, address, port);
+            DatagramSocket datagramSocket = null;
+            try {
+                datagramSocket = new DatagramSocket();
+            } catch (SocketException ex) {
+                BedrockCloud.getLogger().exception(ex);
+            }
+            try {
+                assert datagramSocket != null;
+                datagramSocket.send(datagramPacket);
+            } catch (IOException ex) {
+                BedrockCloud.getLogger().exception(ex);
+            }
         } catch (UnknownHostException ignored) {
-        }
-        int port = server.getServerPort()+1;
-        DatagramPacket datagramPacket = new DatagramPacket(data, data.length, address, port);
-        DatagramSocket datagramSocket = null;
-        try {
-            datagramSocket = new DatagramSocket();
-        } catch (SocketException ex) {
-            BedrockCloud.getLogger().exception(ex);
-        }
-        try {
-            assert datagramSocket != null;
-            datagramSocket.send(datagramPacket);
-        } catch (IOException ex) {
-            BedrockCloud.getLogger().exception(ex);
         }
     }
 }

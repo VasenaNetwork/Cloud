@@ -42,12 +42,24 @@ public class CloudServerConnectPacket extends DataPacket {
         if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
             final VersionInfoPacket versionInfoPacket = new VersionInfoPacket();
             server.pushPacket(versionInfoPacket);
+
             for (final CloudServer cloudServer : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
                 if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
                     final RegisterServerPacket packet = new RegisterServerPacket();
                     packet.addValue("serverPort", serverPort);
                     packet.addValue("serverName", serverName);
-                    cloudServer.pushPacket(packet);
+                    server.pushPacket(packet);
+                }
+            }
+        }
+
+        if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
+            for (final CloudServer cloudServer : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+                if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+                    final RegisterServerPacket packet = new RegisterServerPacket();
+                    packet.addValue("serverPort", cloudServer.getServerPort());
+                    packet.addValue("serverName", cloudServer.getServerName());
+                    server.pushPacket(packet);
                 }
             }
         }

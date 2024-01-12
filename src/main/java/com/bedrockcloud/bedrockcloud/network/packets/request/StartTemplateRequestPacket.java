@@ -16,6 +16,7 @@ public class StartTemplateRequestPacket extends DataPacket {
     @Override
     public void handle(JSONObject jsonObject, ClientRequest clientRequest) {
         final StartTemplateResponsePacket pk = new StartTemplateResponsePacket();
+        pk.type = 1;
 
         final String templateName = jsonObject.get("templateName").toString();
         final Template template = BedrockCloud.getTemplateProvider().getTemplate(templateName);

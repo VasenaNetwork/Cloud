@@ -188,7 +188,7 @@ public class CloudServer {
         }
 
         try {
-            Thread.sleep(200L);
+            Thread.sleep(2000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

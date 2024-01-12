@@ -17,6 +17,7 @@ public class ServerStartRequestPacket extends DataPacket {
     @Override
     public void handle(JSONObject jsonObject, ClientRequest clientRequest) {
         final ServerStartResponsePacket serverStartResponsePacket = new ServerStartResponsePacket();
+        serverStartResponsePacket.type = 1;
 
         final String templateName = jsonObject.get("templateName").toString();
         final String count = jsonObject.get("count").toString();
@@ -24,12 +25,11 @@ public class ServerStartRequestPacket extends DataPacket {
         if (group == null) {
             serverStartResponsePacket.success = false;
             serverStartResponsePacket.failureId = FAILURE_TEMPLATE_EXISTENCE;
-            BedrockCloud.getLogger().error("This group does not exist");
-        }
-        else if (!BedrockCloud.getTemplateProvider().isTemplateRunning(group)) {
+            BedrockCloud.getLogger().error("This template does not exist");
+        } else if (!BedrockCloud.getTemplateProvider().isTemplateRunning(group)) {
             serverStartResponsePacket.success = false;
             serverStartResponsePacket.failureId = FAILURE_TEMPLATE_RUNNING;
-            BedrockCloud.getLogger().error("The group is not running");
+            BedrockCloud.getLogger().error("The template is not running");
         } else {
             final JSONArray arr = new JSONArray();
             for (int i = 0; i < Integer.parseInt(count); ++i) {
