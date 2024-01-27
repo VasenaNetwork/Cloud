@@ -24,6 +24,7 @@ import lombok.Setter;
 import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class CloudServer {
@@ -57,6 +58,7 @@ public class CloudServer {
     @Getter
     private boolean isConnected = false;
     private final long startTime;
+    private final String uuid;
 
     public CloudServer(final Template template) {
         this.template = template;
@@ -72,6 +74,8 @@ public class CloudServer {
         this.pid = -1;
 
         this.startTime = System.currentTimeMillis() / 1000;
+
+        this.uuid = UUID.fromString(this.serverName).toString();
 
         ServiceKiller.killPid(this);
         BedrockCloud.getCloudServerProvider().addServer(this);
@@ -122,8 +126,7 @@ public class CloudServer {
         long currentTime = System.currentTimeMillis() / 1000;
 
         if ((currentTime - this.startTime) < TIMEOUT) return true;
-        if (this.isConnected()) return true;
-        return false;
+        return this.isConnected();
     }
 
     private void startServer() throws InterruptedException {
@@ -222,6 +225,7 @@ public class CloudServer {
         if (serverFile.isDirectory()) {
             final String[] var6;
             final String[] files = var6 = serverFile.list();
+            assert files != null;
             for (int var7 = files.length, var8 = 0; var8 < var7; ++var8) {
                 final String file = var6[var8];
                 final File srcFile = new File(serverFile, file);
@@ -232,8 +236,12 @@ public class CloudServer {
         }
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
     @Override
     public String toString() {
-        return "CloudServer{template=" + this.template + ", serverName='" + this.serverName + '\'' + ", serverPort=" + this.serverPort + ", playerCount=" + this.playerCount + ", aliveChecks=" + this.aliveChecks + ", socket=" + this.socket + ", temp_path='" + "./templates/" + '\'' + ", servers_path='" + "./temp/" + '\'' + '}';
+        return "CloudServer{template=" + this.template + ", serverName='" + this.serverName + '\'' + ", serverPort=" + this.serverPort + ", playerCount=" + this.playerCount + ", aliveChecks=" + this.aliveChecks + ", socket=" + this.socket + ", uuid=" + this.uuid + ", temp_path='" + "./templates/" + '\'' + ", servers_path='" + "./temp/" + '\'' + '}';
     }
 }

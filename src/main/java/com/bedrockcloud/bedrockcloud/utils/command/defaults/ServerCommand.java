@@ -23,7 +23,7 @@ public class ServerCommand extends Command
                 int services = BedrockCloud.getCloudServerProvider().getCloudServers().size();
                 this.getLogger().info("§e»§r §7There are currently " + services + " Services online! §e«");
                 for (final CloudServer server : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
-                    this.getLogger().info("§c➤ §rServer: " + server.getServerName() + " | Players: " + server.getPlayerCount() + " ᐅ " + server.getTemplate().getName() + " | Static: " + Utils.boolToString(server.getTemplate().getStatic()));
+                    this.getLogger().info("§c➤ §rServer: " + server.getServerName() + " | UUID: " + server.getUuid() + " | Players: " + server.getPlayerCount() + " ᐅ " + server.getTemplate().getName() + " | Static: " + Utils.boolToString(server.getTemplate().getStatic()));
                 }
             } else if (args.length > 1) {
                 if (args[0].equalsIgnoreCase("start")) {

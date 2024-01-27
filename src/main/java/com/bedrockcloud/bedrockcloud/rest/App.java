@@ -35,20 +35,20 @@ public class App {
             };
 
             //Template
-            server.createContext("/template/start/", new TemplateStartRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/template/stop/", new TemplateStopRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/template/restart/", new TemplateRestartRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/template/delete/", new TemplateDeleteRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/template/start/", new TemplateStartRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/template/stop/", new TemplateStopRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/template/restart/", new TemplateRestartRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/template/delete/", new TemplateDeleteRequestHandler()).setAuthenticator(authenticator);
 
             //Player
-            server.createContext("/player/kick/", new PlayerKickRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/player/list/", new PlayerListRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/player/info/", new PlayerInfoRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/player/kick/", new PlayerKickRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/player/list/", new PlayerListRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/player/info/", new PlayerInfoRequestHandler()).setAuthenticator(authenticator);
 
             //Server
-            server.createContext("/server/list/", new ServerListRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/server/start/", new ServerStartRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/server/stop/", new ServerStopRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/server/list/", new ServerListRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/server/start/", new ServerStartRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/server/stop/", new ServerStopRequestHandler()).setAuthenticator(authenticator);
 
             server.setExecutor(null);
             server.start();
