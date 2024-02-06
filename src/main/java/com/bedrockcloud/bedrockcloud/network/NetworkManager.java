@@ -3,12 +3,14 @@ package com.bedrockcloud.bedrockcloud.network;
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.HashMap;
 
+@ApiStatus.Internal
 public class NetworkManager implements Loggable {
     public DatagramSocket datagramSocket;
     public HashMap<String, DatagramPacket> channelList;

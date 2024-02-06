@@ -16,10 +16,12 @@ import com.sun.net.httpserver.Authenticator;
 import com.sun.net.httpserver.BasicAuthenticator;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+@ApiStatus.Internal
 public class App {
 
     public App(){

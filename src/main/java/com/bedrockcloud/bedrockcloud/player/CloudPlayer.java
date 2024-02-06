@@ -12,7 +12,6 @@ public class CloudPlayer
     private String currentServer;
     private final String xuid;
     private final String currentProxy;
-    private boolean hasPrivateServer;
     
     public CloudPlayer(String playerName, String address, String uuid, String xuid, String currentServer, String currentProxy) {
         this.playerName = playerName.replace(" ", "_");
@@ -21,7 +20,6 @@ public class CloudPlayer
         this.xuid = xuid;
         this.currentServer = currentServer;
         this.currentProxy = currentProxy;
-        this.hasPrivateServer = false;
     }
     
     public String getPlayerName() {
@@ -55,15 +53,6 @@ public class CloudPlayer
     
     public CloudServer getProxy() {
         return BedrockCloud.getCloudServerProvider().getServer(this.getCurrentProxy());
-    }
-
-    public boolean isHasPrivateServer() {
-        return hasPrivateServer;
-    }
-
-    @ApiStatus.Internal
-    public void setHasPrivateServer(boolean bool){
-        this.hasPrivateServer = bool;
     }
 
     @Override
