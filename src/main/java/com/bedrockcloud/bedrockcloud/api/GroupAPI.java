@@ -144,9 +144,9 @@ public class GroupAPI implements Loggable {
 
         JSONObject object = new JSONObject();
         object.put("minRunningServer", 1);
-        object.put("maxRunningServer", 10);
-        object.put("maxPlayer", 100);
-        object.put("maintenance", false);
+        object.put("maxRunningServer", 1);
+        object.put("maxPlayer", 20);
+        object.put("maintenance", true);
         object.put("isStatic", false);
         object.put("isLobby", false);
         object.put("type", type);

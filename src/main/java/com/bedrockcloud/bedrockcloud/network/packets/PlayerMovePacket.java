@@ -28,7 +28,7 @@ public class PlayerMovePacket extends DataPacket
                             playerTextPacket.playerName = playerName;
                             Objects.requireNonNull(playerTextPacket);
                             playerTextPacket.type = 0;
-                            playerTextPacket.value = "§bCloud §8| §cThe Server is running!";
+                            playerTextPacket.value = BedrockCloud.getLoggerPrefix() + "§cThe Server is ingame!";
                             BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerTextPacket);
                         } else {
                             final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(cloudPlayer.getCurrentProxy());
@@ -42,7 +42,7 @@ public class PlayerMovePacket extends DataPacket
                         playerTextPacket.playerName = playerName;
                         Objects.requireNonNull(playerTextPacket);
                         playerTextPacket.type = 0;
-                        playerTextPacket.value = "§bCloud §8| §cThe Server is full!";
+                        playerTextPacket.value = BedrockCloud.getLoggerPrefix() + "§cThe Server is full!";
                         BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerTextPacket);
                     }
                 } else {
@@ -50,12 +50,10 @@ public class PlayerMovePacket extends DataPacket
                     playerTextPacket.playerName = playerName;
                     Objects.requireNonNull(playerTextPacket);
                     playerTextPacket.type = 0;
-                    playerTextPacket.value = "§bCloud §8| §4The Server is not registered!";
+                    playerTextPacket.value = BedrockCloud.getLoggerPrefix() + "§4The Server is not registered!";
                     BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerTextPacket);
                 }
             }
-        } else {
-            //this.getLogger().error(playerName + " is not connected with the BedrockCloud!");
         }
         super.handle(jsonObject, clientRequest);
     }
