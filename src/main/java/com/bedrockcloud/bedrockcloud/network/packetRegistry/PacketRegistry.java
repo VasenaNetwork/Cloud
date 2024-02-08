@@ -50,5 +50,6 @@ public class PacketRegistry {
         BedrockCloud.getPacketHandler().registerPacket(StopTemplateResponsePacket.class);
         BedrockCloud.getPacketHandler().registerPacket(SaveServerRequestPacket.class);
         BedrockCloud.getPacketHandler().registerPacket(SaveServerResponsePacket.class);
+        BedrockCloud.getPacketHandler().registerPacket(TemplateUpdatePacket.class);
     }
 }
