@@ -24,9 +24,6 @@ public class Scheduler {
     @Getter
     private final ExecutorService threadedExecutor;
 
-    @Getter
-    private final ExecutorService chunkExecutor;
-
     private final Map<Integer, TaskHandler> taskHandlerMap = new ConcurrentHashMap<>();
     private final Map<Long, LinkedList<TaskHandler>> assignedTasks = new ConcurrentHashMap<>();
     private final LinkedList<TaskHandler> pendingTasks = new LinkedList<>();
@@ -43,7 +40,6 @@ public class Scheduler {
         ThreadFactoryBuilder builder = new ThreadFactoryBuilder();
         builder.setNameFormat( "Cloud Scheduler Executor" );
         this.threadedExecutor = Executors.newFixedThreadPool( Runtime.getRuntime().availableProcessors(), builder.build() );
-        this.chunkExecutor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat( "JukeboxMC Chunk Executor" ).build());
     }
 
     public void onTick( long currentTick ) {
@@ -148,7 +144,7 @@ public class Scheduler {
     }
 
     public void shutdown() {
-        this.cloud.getLogger().debug( "Scheduler shutdown initialized!" );
+        BedrockCloud.getLogger().debug( "Scheduler shutdown initialized!" );
         this.threadedExecutor.shutdown();
 
         int count = 25;
