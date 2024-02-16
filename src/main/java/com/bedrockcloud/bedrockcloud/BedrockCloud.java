@@ -127,6 +127,7 @@ public class BedrockCloud
         BedrockCloud.cloudServerProvider = new CloudServerProvider();
         BedrockCloud.cloudPlayerProvider = new CloudPlayerProvider();
         BedrockCloud.packetHandler = new PacketHandler();
+        
         PacketRegistry.registerPackets();
         BedrockCloud.consoleReader.start();
     }
