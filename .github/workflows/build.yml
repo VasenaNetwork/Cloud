@@ -2,21 +2,23 @@ name: Maven Build
 
 on:
   push:
-    jobs:
-      build:
-      runs-on: ubuntu-latest
-      if: "!contains(github.event.head_commit.message, 'ci ignore')"
-      steps:
-        - uses: actions/checkout@v4
-        - name: Set up Java 17
-          uses: actions/setup-java@v4
-          with:
-            java-version: 17
-            distribution: adopt-hotspot
-        - name: Build with Maven
-          run: mvn -B package --file pom.xml
-        - name: Upload artifacts
-          uses: actions/upload-artifact@v4
-          with:
-            name: bedrockcloud
-            path: target/Cloud.jar
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci ignore')"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: adopt-hotspot
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bedrockcloud
+          path: target/Cloud.jar
