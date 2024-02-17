@@ -103,19 +103,23 @@ public class Startfiles implements Loggable
             final File waterdogFile = new File("./local/versions/waterdogpe/WaterdogPE.jar");
 
             if (!pocketmineFile.exists()) {
-                if (SoftwareManager.download(SoftwareManager.POCKETMINE_URL, "./local/versions/pocketmine/PocketMine-MP.phar")) {
-                    this.getLogger().debug("PocketMine Downloaded");
-                } else {
-                    this.getLogger().debug("Download server is offline.");
-                }
+                SoftwareManager.downloadAsync(SoftwareManager.POCKETMINE_URL, "./local/versions/pocketmine/PocketMine-MP.phar").whenComplete((success, error) -> {
+                    if (success) {
+                        BedrockCloud.getLogger().info("WaterdogPE downloaded!");
+                    } else {
+                        BedrockCloud.getLogger().error("Download failed: " + error.getMessage());
+                    }
+                });
             }
 
             if (!waterdogFile.exists()) {
-                if (SoftwareManager.download(SoftwareManager.WATERDOGPE_URL, "./local/versions/waterdogpe/WaterdogPE.jar")) {
-                    this.getLogger().debug("WaterdogPE downloaded");
-                } else {
-                    this.getLogger().debug("Download server is offline.");
-                }
+                SoftwareManager.downloadAsync(SoftwareManager.WATERDOGPE_URL, "./local/versions/waterdogpe/WaterdogPE.jar").whenComplete((success, error) -> {
+                    if (success) {
+                        BedrockCloud.getLogger().info("WaterdogPE downloaded!");
+                    } else {
+                        BedrockCloud.getLogger().error("Download failed: " + error.getMessage());
+                    }
+                });
             }
 
             final File cloudbridgepmFile = new File("./local/plugins/pocketmine/CloudBridge-PM.phar");
@@ -123,27 +127,33 @@ public class Startfiles implements Loggable
             final File cloudbridgewdFile = new File("./local/plugins/waterdogpe/CloudBridge-WD.jar");
 
             if (!cloudbridgepmFile.exists()) {
-                if (SoftwareManager.download(SoftwareManager.CLOUDBRIDGEPM_URL, "./local/plugins/pocketmine/CloudBridge-PM.phar")) {
-                    this.getLogger().debug("CloudBridge-PM downloaded");
-                } else {
-                    this.getLogger().debug("Download server is offline.");
-                }
+                SoftwareManager.downloadAsync(SoftwareManager.CLOUDBRIDGEPM_URL, "./local/plugins/pocketmine/CloudBridge-PM.phar").whenComplete((success, error) -> {
+                    if (success) {
+                        BedrockCloud.getLogger().info("CloudBridge-PM downloaded!");
+                    } else {
+                        BedrockCloud.getLogger().error("Download failed: " + error.getMessage());
+                    }
+                });
             }
 
             if (!devtools.exists()) {
-                if (SoftwareManager.download(SoftwareManager.DEVTOOLS_URL, "./local/plugins/pocketmine/DevTools.phar")) {
-                    this.getLogger().debug("DevTools downloaded");
-                } else {
-                    this.getLogger().debug("Download server is offline.");
-                }
+                SoftwareManager.downloadAsync(SoftwareManager.DEVTOOLS_URL, "./local/plugins/pocketmine/DevTools.phar").whenComplete((success, error) -> {
+                    if (success) {
+                        BedrockCloud.getLogger().info("DevTools downloaded!");
+                    } else {
+                        BedrockCloud.getLogger().error("Download failed: " + error.getMessage());
+                    }
+                });
             }
 
             if (!cloudbridgewdFile.exists()) {
-                if (SoftwareManager.download(SoftwareManager.CLOUDBRIDGEWD_URL, "./local/plugins/waterdogpe/CloudBridge-WD.jar")) {
-                    this.getLogger().debug("CloudBridge-WD downloaded");
-                } else {
-                    this.getLogger().debug("Download server is offline.");
-                }
+                SoftwareManager.downloadAsync(SoftwareManager.CLOUDBRIDGEWD_URL, "./local/plugins/waterdogpe/CloudBridge-WD.jar").whenComplete((success, error) -> {
+                    if (success) {
+                        BedrockCloud.getLogger().info("CloudBridge-WD downloaded!");
+                    } else {
+                        BedrockCloud.getLogger().error("Download failed: " + error.getMessage());
+                    }
+                });
             }
             GroupAPI.createGroup("Proxy-Master", SoftwareManager.SOFTWARE_PROXY);
             GroupAPI.createGroup("Lobby", SoftwareManager.SOFTWARE_SERVER);
