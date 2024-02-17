@@ -17,12 +17,12 @@ public class Template implements Loggable
     private final int maxRunningServer;
     private final int maxPlayers;
     private final int type;
-    public final Boolean isBeta;
-    public final Boolean isMaintenance;
-    public final Boolean isLobby;
-    public final Boolean isStatic;
-    public HashMap<String, Template> runningServers;
-    public HashMap<String, String> currentPlayers;
+    private final Boolean isBeta;
+    private final Boolean isMaintenance;
+    private final Boolean isLobby;
+    private final Boolean isStatic;
+    private final HashMap<String, Template> runningServers;
+    private final HashMap<String, String> currentPlayers;
     
     public Template(final String name, final Integer minRunningServer, final Integer maxRunningServer, final Integer maxPlayers, final Integer type, final Boolean isBeta, final Boolean isMaintenance, final Boolean isLobby, final Boolean isStatic) {
         this.name = name;
