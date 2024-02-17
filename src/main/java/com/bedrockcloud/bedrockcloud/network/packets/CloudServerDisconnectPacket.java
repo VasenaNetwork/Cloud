@@ -48,7 +48,7 @@ public class CloudServerDisconnectPacket extends DataPacket
         server.getTemplate().removeServer(server.getServerName());
         BedrockCloud.getCloudServerProvider().removeServer(server.getServerName());
 
-        if (template.getRunningTemplateServers().size() < template.getMinRunningServer()) {
+        if (template.getRunningServers().size() < template.getMinRunningServer()) {
             if (BedrockCloud.getTemplateProvider().isTemplateRunning(template) && !template.getMaintenance()) {
                 new CloudServer(template);
             }

@@ -101,9 +101,11 @@ public class TemplateProvider implements Loggable
     public void loadTemplates() {
         for (final String name : GroupAPI.getGroups()) {
             try {
-                final HashMap<String, Object> stats = (HashMap<String, Object>) json.get(name, json.ALL);
-                if (stats != null && !stats.isEmpty()) {
-                    new Template(name, Math.toIntExact((Long) stats.get("minRunningServer")), Math.toIntExact((Long) stats.get("maxRunningServer")), Math.toIntExact((Long) stats.get("maxPlayer")), Math.toIntExact((Long) stats.get("type")), (Boolean) stats.get("beta"), (Boolean) stats.get("maintenance"), (Boolean) stats.get("isLobby"), (Boolean) stats.get("isStatic"));
+                if (!BedrockCloud.getTemplateProvider().existsTemplate(name)) {
+                    final HashMap<String, Object> stats = (HashMap<String, Object>) json.get(name, json.ALL);
+                    if (stats != null && !stats.isEmpty()) {
+                        new Template(name, Math.toIntExact((Long) stats.get("minRunningServer")), Math.toIntExact((Long) stats.get("maxRunningServer")), Math.toIntExact((Long) stats.get("maxPlayer")), Math.toIntExact((Long) stats.get("type")), (Boolean) stats.get("beta"), (Boolean) stats.get("maintenance"), (Boolean) stats.get("isLobby"), (Boolean) stats.get("isStatic"));
+                    }
                 }
             } catch (IOException e) {
                 BedrockCloud.getLogger().exception(e);
@@ -119,7 +121,7 @@ public class TemplateProvider implements Loggable
                     for (Template template : this.getTemplateMap().values()) {
                         if (template != null) {
                             if (folder.getName().startsWith(template.getName())) {
-                                if (!template.getStatic()) {
+                                if (!template.getStatic() && template.getRunningServers().size() == 0) {
                                     folder.delete();
                                 }
                             }

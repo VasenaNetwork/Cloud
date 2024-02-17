@@ -21,8 +21,8 @@ public class Template implements Loggable
     public final Boolean isMaintenance;
     public final Boolean isLobby;
     public final Boolean isStatic;
-    public HashMap<String, Template> runningTemplateServers;
-    public HashMap<String, String> templatePlayer;
+    public HashMap<String, Template> runningServers;
+    public HashMap<String, String> currentPlayers;
     
     public Template(final String name, final Integer minRunningServer, final Integer maxRunningServer, final Integer maxPlayers, final Integer type, final Boolean isBeta, final Boolean isMaintenance, final Boolean isLobby, final Boolean isStatic) {
         this.name = name;
@@ -41,36 +41,36 @@ public class Template implements Loggable
         if (!BedrockCloud.getTemplateProvider().existsTemplate(this.getName())) {
             BedrockCloud.getTemplateProvider().addTemplate(this);
         }
-        this.runningTemplateServers = new HashMap<>();
-        this.templatePlayer = new HashMap<>();
+        this.runningServers = new HashMap<>();
+        this.currentPlayers = new HashMap<>();
     }
 
-    public HashMap<String, Template> getRunningTemplateServers() {
-        return this.runningTemplateServers;
+    public HashMap<String, Template> getRunningServers() {
+        return this.runningServers;
     }
 
     @ApiStatus.Internal
     public void addServer(final Template template, final String serverName) {
-        this.runningTemplateServers.put(serverName, template);
+        this.runningServers.put(serverName, template);
     }
 
     @ApiStatus.Internal
     public void removeServer(final String name) {
-        this.runningTemplateServers.remove(name);
+        this.runningServers.remove(name);
     }
 
-    public HashMap<String, String> getTemplatePlayers() {
-        return this.templatePlayer;
+    public HashMap<String, String> getPlayers() {
+        return this.currentPlayers;
     }
 
     @ApiStatus.Internal
     public void addPlayer(final CloudPlayer player, final String serverName) {
-        this.templatePlayer.put(serverName, player.getPlayerName());
+        this.currentPlayers.put(serverName, player.getPlayerName());
     }
 
     @ApiStatus.Internal
     public void removePlayer(final CloudPlayer name) {
-        this.templatePlayer.remove(name.getPlayerName());
+        this.currentPlayers.remove(name.getPlayerName());
     }
     
     public String getName() {
@@ -81,8 +81,8 @@ public class Template implements Loggable
         return this.maxPlayers;
     }
 
-    public int getCurrentPlayers() {
-        return this.templatePlayer.size();
+    public int getPlayerCount() {
+        return this.currentPlayers.size();
     }
     
     public int getMaxRunningServer() {

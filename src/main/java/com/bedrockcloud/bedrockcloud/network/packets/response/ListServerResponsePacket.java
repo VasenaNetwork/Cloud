@@ -15,7 +15,7 @@ public class ListServerResponsePacket extends RequestPacket
         final JSONArray arr = new JSONArray();
         try {
             for (final CloudServer key : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
-                if (key.getSocket() != null && key.getTemplate().getRunningTemplateServers().get(key.getServerName()) != null) {
+                if (key.getSocket() != null && key.getTemplate().getRunningServers().get(key.getServerName()) != null) {
                     arr.add(key.getServerName());
                 }
             }

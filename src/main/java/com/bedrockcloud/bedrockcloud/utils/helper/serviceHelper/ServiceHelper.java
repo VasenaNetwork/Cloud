@@ -105,7 +105,7 @@ public class ServiceHelper {
 
         if (!startNewService) return;
         if (BedrockCloud.getTemplateProvider().isTemplateRunning(template)) {
-            if (server.getTemplate().getRunningTemplateServers().size() < server.getTemplate().getMinRunningServer()) {
+            if (server.getTemplate().getRunningServers().size() < server.getTemplate().getMinRunningServer()) {
                 new CloudServer(template);
             }
         }
