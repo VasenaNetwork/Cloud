@@ -3,72 +3,104 @@ package com.bedrockcloud.bedrockcloud.utils.command.defaults;
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.network.packets.PlayerKickPacket;
 import com.bedrockcloud.bedrockcloud.network.packets.PlayerMovePacket;
-import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
-
-import java.util.Objects;
 import com.bedrockcloud.bedrockcloud.network.packets.PlayerTextPacket;
+import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
 import com.bedrockcloud.bedrockcloud.utils.command.Command;
 
-public class PlayerCommand extends Command
-{
+public class PlayerCommand extends Command {
+
     public PlayerCommand() {
         super("player", "player <list | message | kick | transfer> [player] [message | reason | server]", "Manage players");
     }
-    
+
     @Override
     public void onCommand(final String[] args) {
-        if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("list")) {
-                this.getLogger().info("§e»§r §7There are currently " + BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().size() + " Player connected! §e«");
-                for (CloudPlayer cloudPlayer : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
-                    this.getLogger().info("§c➤ §rPlayer: " + cloudPlayer.getPlayerName() + " (" + cloudPlayer.getAddress() + ") | (" + cloudPlayer.getXuid() + ") ᐅ " + cloudPlayer.getCurrentProxy() + " / " + cloudPlayer.getCurrentServer());
-                }
-            } else if (args[0].equalsIgnoreCase("message") && args.length != 2) {
-                final String value = args[1];
-                final String playerName = args[2];
-                if (BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
-                    final PlayerTextPacket playerTextPacket = new PlayerTextPacket();
-                    playerTextPacket.playerName = playerName;
-                    Objects.requireNonNull(playerTextPacket);
-                    playerTextPacket.type = 0;
-                    playerTextPacket.value = value;
-                    BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerTextPacket);
-                } else {
-                    BedrockCloud.getLogger().command("§cThis player don't exists.");
-                }
-            } else if (args[0].equalsIgnoreCase("kick") && args.length != 2) {
-                final String playerName = args[1];
-                final String reason = args[2];
-                if (BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
-                    final PlayerKickPacket playerKickPacket = new PlayerKickPacket();
-                    playerKickPacket.playerName = playerName;
-                    Objects.requireNonNull(playerKickPacket);
-                    playerKickPacket.reason = reason;
-                    BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerKickPacket);
-                } else {
-                    BedrockCloud.getLogger().command("§cThis player don't exists.");
-                }
-            } else if (args[0].equalsIgnoreCase("transfer")) {
-                final String playerName = args[1];
-                final String server = args[2];
-                if (BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
-                    if (BedrockCloud.getCloudServerProvider().existServer(server)) {
-                        final PlayerMovePacket playerMovePacket = new PlayerMovePacket();
-                        playerMovePacket.playerName = playerName;
-                        Objects.requireNonNull(playerMovePacket);
-                        playerMovePacket.toServer = server;
-                        BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerMovePacket);
-                    } else {
-                        BedrockCloud.getLogger().command("§cThis server don't exists.");
-                    }
-                } else {
-                    BedrockCloud.getLogger().command("§cThis player don't exists.");
-                }
-            } else {
-                BedrockCloud.getLogger().warning("Try to execute: " + this.getUsage());
-            }
-        } else {
+        if (args.length == 0) {
             BedrockCloud.getLogger().warning("Try to execute: " + this.getUsage());
+            return;
         }
+
+        String subcommand = args[0].toLowerCase();
+
+        switch (subcommand) {
+            case "list" -> listPlayers();
+            case "message" -> sendMessage(args);
+            case "kick" -> kickPlayer(args);
+            case "transfer" -> transferPlayer(args);
+            default -> BedrockCloud.getLogger().warning("Try to execute: " + this.getUsage());
+        }
+    }
+
+    private void listPlayers() {
+        BedrockCloud.getLogger().info("§e»§r §7There are currently " + BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().size() + " Player connected! §e«");
+        for (CloudPlayer cloudPlayer : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
+            BedrockCloud.getLogger().info("§c➤ §rPlayer: " + cloudPlayer.getPlayerName() + " (" + cloudPlayer.getAddress() + ") | (" + cloudPlayer.getXuid() + ") ᐅ " + cloudPlayer.getCurrentProxy() + " / " + cloudPlayer.getCurrentServer());
+        }
+    }
+
+    private void sendMessage(String[] args) {
+        if (args.length != 3) {
+            BedrockCloud.getLogger().warning("Try to execute: player message [player] [message]");
+            return;
+        }
+
+        String playerName = args[1];
+        String message = args[2];
+
+        if (!BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
+            BedrockCloud.getLogger().error("This player doesn't exist.");
+            return;
+        }
+
+        PlayerTextPacket playerTextPacket = new PlayerTextPacket();
+        playerTextPacket.playerName = playerName;
+        playerTextPacket.type = 0;
+        playerTextPacket.value = message;
+        BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerTextPacket);
+    }
+
+    private void kickPlayer(String[] args) {
+        if (args.length != 3) {
+            BedrockCloud.getLogger().warning("Try to execute: player kick [player] [reason]");
+            return;
+        }
+
+        String playerName = args[1];
+        String reason = args[2];
+
+        if (!BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
+            BedrockCloud.getLogger().error("This player doesn't exist.");
+            return;
+        }
+
+        PlayerKickPacket playerKickPacket = new PlayerKickPacket();
+        playerKickPacket.playerName = playerName;
+        playerKickPacket.reason = reason;
+        BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerKickPacket);
+    }
+
+    private void transferPlayer(String[] args) {
+        if (args.length != 3) {
+            BedrockCloud.getLogger().warning("Try to execute: player transfer [player] [server]");
+            return;
+        }
+
+        String playerName = args[1];
+        String server = args[2];
+
+        if (!BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
+            BedrockCloud.getLogger().error("This player doesn't exist.");
+            return;
+        }
+
+        if (!BedrockCloud.getCloudServerProvider().existServer(server)) {
+            BedrockCloud.getLogger().error("This server doesn't exist.");
+            return;
+        }
+
+        PlayerMovePacket playerMovePacket = new PlayerMovePacket();
+        playerMovePacket.playerName = playerName;
+        playerMovePacket.toServer = server;
+        BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerMovePacket);
     }
 }
