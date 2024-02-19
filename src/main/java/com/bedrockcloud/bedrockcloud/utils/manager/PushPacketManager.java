@@ -17,7 +17,6 @@ public class PushPacketManager {
         }
 
         if (server.getSocket().isClosed()) {
-            BedrockCloud.getLogger().error("CloudPacket cannot be push because socket is closed.");
             return;
         }
 
@@ -29,7 +28,7 @@ public class PushPacketManager {
         try {
             byteArrayOutputStream.write(cloudPacket.encode().getBytes());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            BedrockCloud.getLogger().exception(e);
         }
 
         byte[] data = byteArrayOutputStream.toByteArray();
@@ -43,19 +42,22 @@ public class PushPacketManager {
 
             int port = server.getServerPort()+1;
             DatagramPacket datagramPacket = new DatagramPacket(data, data.length, address, port);
-            DatagramSocket datagramSocket = null;
-            try {
-                datagramSocket = new DatagramSocket();
-            } catch (SocketException ex) {
-                BedrockCloud.getLogger().exception(ex);
-            }
-            try {
-                assert datagramSocket != null;
+
+            try (DatagramSocket datagramSocket = new DatagramSocket()) {
                 datagramSocket.send(datagramPacket);
             } catch (IOException ex) {
                 BedrockCloud.getLogger().exception(ex);
             }
-        } catch (UnknownHostException ignored) {
+        } catch (UnknownHostException ex) {
+            BedrockCloud.getLogger().exception(ex);
+        }
+    }
+
+    public static void broadcastPacket(final DataPacket packet) {
+        for (CloudServer server : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+            if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+                if (server.isConnected()) pushPacket(packet, server);
+            }
         }
     }
 }
