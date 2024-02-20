@@ -37,13 +37,15 @@ public class RestartTask extends TimerTask {
     }
 
     private void sendRestartMessage(String timeLeft, String currentTime) {
-        PlayerTextPacket pk = new PlayerTextPacket();
-        pk.playerName = "all.players";
-        pk.type = pk.TYPE_MESSAGE;
-        pk.value = BedrockCloud.prefix + "§cThe server is restarting in " + timeLeft + "§8.";
+
         for (CloudPlayer player : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
+            PlayerTextPacket pk = new PlayerTextPacket();
+            pk.playerName = player.getPlayerName();
+            pk.type = pk.TYPE_MESSAGE;
+            pk.value = BedrockCloud.prefix + "§cThe server is restarting in " + timeLeft + "§8.";
             player.getProxy().pushPacket(pk);
         }
+
         BedrockCloud.getLogger().warning("§cRestarting all servers. Current time: " + currentTime);
     }
 
