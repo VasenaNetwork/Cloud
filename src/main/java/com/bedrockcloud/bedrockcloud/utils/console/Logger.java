@@ -4,8 +4,6 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 
 import java.io.*;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 
 public class Logger
 {
@@ -50,12 +48,11 @@ public class Logger
 
     public void log(final String prefix, final String message) {
         System.out.println(Colors.toColor(BedrockCloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r"));
-        try {
+        try (FileWriter cloudLogWriter = new FileWriter(this.cloudLog, true)) {
             File file = new File("./local/config.yml");
             if (!file.exists()) return;
             if (!Utils.getConfig().getBoolean("enable-cloudlog-file")) return;
-            FileWriter cloudLogWriter;
-            (cloudLogWriter = new FileWriter(this.cloudLog, true)).append(Colors.removeColor(BedrockCloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r")).append("\n");
+            cloudLogWriter.append(Colors.removeColor(BedrockCloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r")).append("\n");
             cloudLogWriter.flush();
         } catch (IOException ignored) {}
     }
