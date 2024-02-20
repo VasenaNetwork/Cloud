@@ -45,8 +45,6 @@ public class RestartTask extends TimerTask {
             pk.value = BedrockCloud.prefix + "§cThe server is restarting in " + timeLeft + "§8.";
             player.getProxy().pushPacket(pk);
         }
-
-        BedrockCloud.getLogger().warning("§cRestarting all servers. Current time: " + currentTime);
     }
 
     private void initiateServerRestart() {
