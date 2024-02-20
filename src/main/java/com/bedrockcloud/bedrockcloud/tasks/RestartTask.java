@@ -24,19 +24,19 @@ public class RestartTask extends TimerTask {
         String currentTime = sdf.format(timestamp);
 
         if (currentTime.equals("01:55:00") && !send1) {
-            sendRestartMessage("§45 minutes", currentTime);
+            sendRestartMessage("§45 minutes");
             send1 = true;
         } else if (currentTime.equals("01:59:00") && !send2) {
-            sendRestartMessage("§41 minute", currentTime);
+            sendRestartMessage("§41 minute");
             send2 = true;
         } else if ((currentTime.equals("02:00:00") || currentTime.equals("02:00:01") || currentTime.equals("02:00:02")) && !send3) {
-            sendRestartMessage("§4now", currentTime);
+            sendRestartMessage("§4now");
             send3 = true;
             initiateServerRestart();
         }
     }
 
-    private void sendRestartMessage(String timeLeft, String currentTime) {
+    private void sendRestartMessage(String timeLeft) {
 
         for (CloudPlayer player : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
             PlayerTextPacket pk = new PlayerTextPacket();
