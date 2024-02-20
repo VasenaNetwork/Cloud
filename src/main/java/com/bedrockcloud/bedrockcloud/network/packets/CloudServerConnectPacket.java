@@ -36,7 +36,6 @@ public class CloudServerConnectPacket extends DataPacket {
         server.setAliveChecks(0);
 
         server.setTask(new KeepALiveTask(server));
-        server.getTask().setName(server.getServerName());
         service.scheduleAtFixedRate(server.getTask(), 0, 1, TimeUnit.SECONDS);
 
         if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
