@@ -12,7 +12,7 @@ import com.bedrockcloud.bedrockcloud.network.packetRegistry.PacketRegistry;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayerProvider;
 import com.bedrockcloud.bedrockcloud.rest.App;
 import com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper.ServiceHelper;
-import com.bedrockcloud.bedrockcloud.tasks.RestartAllTask;
+import com.bedrockcloud.bedrockcloud.tasks.RestartTask;
 import com.bedrockcloud.bedrockcloud.utils.console.reader.ConsoleReader;
 import com.bedrockcloud.bedrockcloud.network.NetworkManager;
 import com.bedrockcloud.bedrockcloud.network.handler.PacketHandler;
@@ -99,7 +99,7 @@ public class BedrockCloud
 
         final Timer restartTimer = new Timer();
         if (Utils.getConfig().getBoolean("auto-restart-cloud", false)) {
-            restartTimer.schedule(new RestartAllTask(), 1000L, 1000L);
+            restartTimer.schedule(new RestartTask(), 1000L, 1000L);
         }
 
         ThreadFactoryBuilder builder = ThreadFactoryBuilder
