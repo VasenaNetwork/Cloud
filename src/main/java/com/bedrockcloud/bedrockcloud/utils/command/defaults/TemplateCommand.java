@@ -98,8 +98,8 @@ public class TemplateCommand extends Command {
             String name = args[1];
             String type = args[2].toLowerCase();
             switch (type) {
-                case "waterdogpe" -> GroupAPI.createNewGroup(name, 0);
-                case "pocketmine" -> GroupAPI.createNewGroup(name, 1);
+                case "waterdogpe" -> GroupAPI.createNewGroup(name, 0, false);
+                case "pocketmine" -> GroupAPI.createNewGroup(name, 1, false);
                 default ->
                         BedrockCloud.getLogger().warning("Try to execute: template <create> <name> [pocketmine | waterdogpe]");
             }

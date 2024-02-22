@@ -63,7 +63,7 @@ public class BedrockCloud
     public final static String prefix = "§l§bCloud §r§8» §r";
     private Scheduler scheduler;
     private final ScheduledExecutorService tickExecutor;
-    private ScheduledFuture<?> tickFuture;
+    private final ScheduledFuture<?> tickFuture;
     private int currentTick = 0;
     
     public static Logger getLogger() {

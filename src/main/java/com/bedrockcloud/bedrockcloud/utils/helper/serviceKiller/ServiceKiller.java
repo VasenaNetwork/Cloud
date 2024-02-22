@@ -10,16 +10,16 @@ public class ServiceKiller {
 
     @ApiStatus.Internal
     public static void killPid(CloudServer server){
-        final File pidFile = new File("./archive/server-pids/" + server.getServerName() + ".json");
-        if (pidFile.exists()) {
-            Config config = new Config("./archive/server-pids/" + server.getServerName() + ".json", Config.JSON);
+        final File file = new File("./archive/processes/" + server.getServerName() + ".json");
+        if (file.exists()) {
+            Config config = new Config("./archive/processes/" + server.getServerName() + ".json", Config.JSON);
 
             final ProcessBuilder builder = new ProcessBuilder();
             try {
                 builder.command("/bin/sh", "-c", "kill " + config.get("pid")).start();
             } catch (Exception ignored) {}
 
-            pidFile.delete();
+            file.delete();
         }
     }
 }

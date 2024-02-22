@@ -36,7 +36,7 @@ public class Startfiles implements Loggable {
         this.directories.add(this.directories.get(2) + "/versions/waterdogpe");
         this.directories.add(this.directories.get(2) + "/notify");
         this.directories.add(this.directories.get(3) + "/crashdumps");
-        this.directories.add(this.directories.get(3) + "/server-pids");
+        this.directories.add(this.directories.get(3) + "/processes");
     }
 
     private void checkFolders() {
@@ -106,7 +106,7 @@ public class Startfiles implements Loggable {
     }
 
     private void createDefaultGroups() {
-        GroupAPI.createGroup("Proxy-Master", SoftwareManager.SOFTWARE_PROXY);
-        GroupAPI.createGroup("Lobby", SoftwareManager.SOFTWARE_SERVER);
+        GroupAPI.createGroup("Proxy-Master", SoftwareManager.SOFTWARE_PROXY, false);
+        GroupAPI.createGroup("Lobby", SoftwareManager.SOFTWARE_SERVER, true);
     }
 }
