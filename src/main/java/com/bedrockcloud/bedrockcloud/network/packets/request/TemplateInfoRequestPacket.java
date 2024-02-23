@@ -21,11 +21,11 @@ public class TemplateInfoRequestPacket extends DataPacket {
             template = BedrockCloud.getTemplateProvider().getTemplate(jsonObject.get("templateName").toString());
         }
         templateInfoResponsePacket.templateName = template.getName();
-        templateInfoResponsePacket.isLobby = template.getLobby();
-        templateInfoResponsePacket.isMaintenance = template.getMaintenance();
-        templateInfoResponsePacket.isBeta = template.getBeta();
+        templateInfoResponsePacket.isLobby = template.isLobby();
+        templateInfoResponsePacket.isMaintenance = template.isMaintenance();
+        templateInfoResponsePacket.isBeta = template.isBeta();
         templateInfoResponsePacket.maxPlayer = template.getMaxPlayers();
-        templateInfoResponsePacket.isStatic = template.getStatic();
+        templateInfoResponsePacket.isStatic = template.isStatic();
         templateInfoResponsePacket.maxPlayer = template.getMaxPlayers();
         templateInfoResponsePacket.type = template.getType();
         BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(templateInfoResponsePacket);

@@ -9,80 +9,82 @@ import java.util.HashMap;
 import java.util.Map;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 
-public class PacketHandler implements Loggable
-{
-    public Map<String, Class> registeredPackets;
+public class PacketHandler implements Loggable {
+    private final Map<String, Class<? extends DataPacket>> registeredPackets;
 
     public PacketHandler() {
-        this.registeredPackets = new HashMap<String, Class>();
+        this.registeredPackets = new HashMap<>();
     }
 
-    public void registerPacket(final Class packet) {
+    public void registerPacket(final Class<? extends DataPacket> packet) {
         String packetName = packet.getSimpleName();
-        if (!this.isPacketRegistered(packetName)) {
-            this.registeredPackets.put(packetName, packet);
+        if (!isPacketRegistered(packetName)) {
+            registeredPackets.put(packetName, packet);
         } else {
             BedrockCloud.getLogger().warning("§cPacket §e" + packetName + " §cis already registered.");
         }
     }
 
     public void unregisterPacket(final String name) {
-        this.registeredPackets.remove(name);
+        registeredPackets.remove(name);
     }
 
     public boolean isPacketRegistered(final String name) {
-        return this.registeredPackets.get(name) != null;
+        return registeredPackets.containsKey(name);
     }
 
-    public Map<String, Class> getRegisteredPackets() {
-        return this.registeredPackets;
+    public Map<String, Class<? extends DataPacket>> getRegisteredPackets() {
+        return registeredPackets;
     }
 
-    public Class getPacketByName(final String packetName) {
-        return this.registeredPackets.get(packetName);
+    public Class<? extends DataPacket> getPacketByName(final String packetName) {
+        return registeredPackets.get(packetName);
     }
 
     public String getPacketNameByRequest(final String request) {
-        final Object obj = JSONValue.parse(request);
+        Object obj = JSONValue.parse(request);
         if (obj != null) {
-            final JSONObject jsonObject = (JSONObject)obj;
-            if (jsonObject.get("packetName") != null) {
-                return jsonObject.get("packetName").toString();
+            JSONObject jsonObject = (JSONObject) obj;
+            Object packetNameObj = jsonObject.get("packetName");
+            if (packetNameObj != null) {
+                return packetNameObj.toString();
             }
         }
-        this.getLogger().warning("Handling of packet cancelled because the packet is unknown!");
+        getLogger().warning("Handling of packet cancelled because the packet is unknown!");
         return "Unknown Packet";
     }
 
     public JSONObject handleJsonObject(final String packetName, final String input) {
-        if (this.isPacketRegistered(packetName)) {
-            final Object obj = JSONValue.parse(input);
-            final JSONObject jsonObject = (JSONObject)obj;
-            return jsonObject;
+        if (isPacketRegistered(packetName)) {
+            Object obj = JSONValue.parse(input);
+            return (JSONObject) obj;
         }
 
-        this.getLogger().warning("§eFailed to handle packet: " + packetName);
+        getLogger().warning("§eFailed to handle packet: " + packetName);
         return new JSONObject();
     }
 
     public void handleCloudPacket(final JSONObject jsonObject, final ClientRequest clientRequest) {
-        if (this.isLocalHost(clientRequest) && clientRequest.isAlive()) {
-            if (jsonObject.get("packetName") != null) {
-                final String packetName = jsonObject.get("packetName").toString();
-                final Class c = this.getPacketByName(packetName);
-                try {
-                    final DataPacket packet = (DataPacket) c.newInstance();
-                    packet.handle(jsonObject, clientRequest);
-                } catch (InstantiationException | IllegalAccessException ex2) {
-                    BedrockCloud.getLogger().exception(ex2);
+        if (isLocalHost(clientRequest) && clientRequest.isAlive()) {
+            Object packetNameObj = jsonObject.get("packetName");
+            if (packetNameObj != null) {
+                String packetName = packetNameObj.toString();
+                Class<? extends DataPacket> packetClass = getPacketByName(packetName);
+                if (packetClass != null) {
+                    try {
+                        DataPacket packet = packetClass.newInstance();
+                        packet.handle(jsonObject, clientRequest);
+                    } catch (InstantiationException | IllegalAccessException ex) {
+                        BedrockCloud.getLogger().exception(ex);
+                    }
                 }
             }
         } else {
-            this.getLogger().warning("§cAuthorization failed. Client information:" + clientRequest.getDatagramPacket().getAddress().toString() + ":" + clientRequest.getDatagramPacket().getPort());
+            getLogger().warning("§cAuthorization failed. Client information:" + clientRequest.getDatagramPacket().getAddress().toString() + ":" + clientRequest.getDatagramPacket().getPort());
         }
     }
 
-    public boolean isLocalHost(ClientRequest request){
+    public boolean isLocalHost(ClientRequest request) {
         return request.getDatagramPacket().getAddress().isLoopbackAddress();
     }
 }

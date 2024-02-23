@@ -19,12 +19,12 @@ public class CloudServerInfoRequestPacket extends DataPacket
         cloudServerInfoResponsePacket.serverInfoName = server.getServerName();
         cloudServerInfoResponsePacket.templateName = server.getTemplate().getName();
         cloudServerInfoResponsePacket.state = server.getState();
-        cloudServerInfoResponsePacket.isLobby = server.getTemplate().getLobby();
-        cloudServerInfoResponsePacket.isMaintenance = server.getTemplate().getMaintenance();
-        cloudServerInfoResponsePacket.isBeta = server.getTemplate().getBeta();
+        cloudServerInfoResponsePacket.isLobby = server.getTemplate().isLobby();
+        cloudServerInfoResponsePacket.isMaintenance = server.getTemplate().isMaintenance();
+        cloudServerInfoResponsePacket.isBeta = server.getTemplate().isBeta();
         cloudServerInfoResponsePacket.playerCount = server.getPlayerCount();
         cloudServerInfoResponsePacket.maxPlayer = server.getTemplate().getMaxPlayers();
-        cloudServerInfoResponsePacket.isStatic = server.getTemplate().getStatic();
+        cloudServerInfoResponsePacket.isStatic = server.getTemplate().isStatic();
         BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(cloudServerInfoResponsePacket);
     }
 }

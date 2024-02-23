@@ -1,8 +1,5 @@
 package com.bedrockcloud.bedrockcloud.templates;
 
-import java.util.HashMap;
-import java.util.Objects;
-
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.api.event.template.TemplateLoadEvent;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
@@ -10,8 +7,10 @@ import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import org.jetbrains.annotations.ApiStatus;
 
-public class Template implements Loggable
-{
+import java.util.HashMap;
+import java.util.Objects;
+
+public class Template implements Loggable {
     private final String name;
     private final int minRunningServer;
     private final int maxRunningServer;
@@ -21,14 +20,14 @@ public class Template implements Loggable
     private final Boolean isMaintenance;
     private final Boolean isLobby;
     private final Boolean isStatic;
-    private final HashMap<String, Template> runningServers;
+    private final HashMap<String, CloudServer> runningServers;
     private final HashMap<String, String> currentPlayers;
-    
-    public Template(final String name, final Integer minRunningServer, final Integer maxRunningServer, final Integer maxPlayers, final Integer type, final Boolean isBeta, final Boolean isMaintenance, final Boolean isLobby, final Boolean isStatic) {
+
+    public Template(String name, Integer minRunningServer, Integer maxRunningServer, Integer maxPlayers, Integer type, Boolean isBeta, Boolean isMaintenance, Boolean isLobby, Boolean isStatic) {
         this.name = name;
-        this.minRunningServer = Math.round(minRunningServer);
-        this.maxRunningServer = Math.round(maxRunningServer);
-        this.maxPlayers = Math.round(maxPlayers);
+        this.minRunningServer = minRunningServer;
+        this.maxRunningServer = maxRunningServer;
+        this.maxPlayers = maxPlayers;
         this.type = type;
         this.isBeta = isBeta;
         this.isMaintenance = isMaintenance;
@@ -41,123 +40,102 @@ public class Template implements Loggable
         if (!BedrockCloud.getTemplateProvider().existsTemplate(this.getName())) {
             BedrockCloud.getTemplateProvider().addTemplate(this);
         }
+
         this.runningServers = new HashMap<>();
         this.currentPlayers = new HashMap<>();
     }
 
-    public HashMap<String, Template> getRunningServers() {
-        return this.runningServers;
+    public void addServer(CloudServer server) {
+        this.runningServers.put(server.getServerName(), server);
     }
 
-    @ApiStatus.Internal
-    public void addServer(final Template template, final String serverName) {
-        this.runningServers.put(serverName, template);
+    public void removeServer(String serverName) {
+        this.runningServers.remove(serverName);
     }
 
-    @ApiStatus.Internal
-    public void removeServer(final String name) {
-        this.runningServers.remove(name);
+    public void addPlayer(CloudPlayer player, String serverName) {
+        this.currentPlayers.put(player.getPlayerName(), serverName);
     }
 
-    public HashMap<String, String> getPlayers() {
-        return this.currentPlayers;
+    public void removePlayer(CloudPlayer player) {
+        this.currentPlayers.remove(player.getPlayerName());
     }
 
-    @ApiStatus.Internal
-    public void addPlayer(final CloudPlayer player, final String serverName) {
-        this.currentPlayers.put(serverName, player.getPlayerName());
-    }
-
-    @ApiStatus.Internal
-    public void removePlayer(final CloudPlayer name) {
-        this.currentPlayers.remove(name.getPlayerName());
-    }
-    
     public String getName() {
-        return this.name;
+        return name;
     }
-    
+
     public int getMaxPlayers() {
-        return this.maxPlayers;
+        return maxPlayers;
     }
 
     public int getPlayerCount() {
-        return this.currentPlayers.size();
+        return currentPlayers.size();
     }
-    
+
     public int getMaxRunningServer() {
-        return this.maxRunningServer;
+        return maxRunningServer;
     }
-    
+
     public int getMinRunningServer() {
-        return this.minRunningServer;
+        return minRunningServer;
     }
-    
+
     public int getType() {
-        return this.type;
+        return type;
     }
 
     public void start(boolean force) {
-        if (this.getMaintenance()) {
-            if (!force) {
-                BedrockCloud.getLogger().warning("§cThe group §e" + this.getName() + " §cwas not started because it is in maintenance, but you can start it yourself with the command §7'§etemplate start <template>§7'§c.");
-                return;
-            }
+        if (isMaintenance && !force) {
+            BedrockCloud.getLogger().warning("§cThe group §e" + getName() + " §cwas not started because it is in maintenance, but you can start it yourself with the command §7'§etemplate start <template>§7'§c.");
+            return;
         }
 
-        BedrockCloud.getLogger().info("Starting group " + this.getName() + "...");
-        for (int i = 0; i < this.getMinRunningServer(); ++i) {
+        BedrockCloud.getLogger().info("Starting group " + getName() + "...");
+        for (int i = 0; i < getMinRunningServer(); ++i) {
             new CloudServer(this);
         }
         BedrockCloud.getTemplateProvider().addRunningTemplate(this);
     }
 
     public void restart() {
-        BedrockCloud.getLogger().info("Restarting group " + this.getName() + "...");
-        for (final String servername : BedrockCloud.getCloudServerProvider().getCloudServers().keySet()) {
-            if (Objects.equals(BedrockCloud.getCloudServerProvider().getServer(servername).getTemplate().getName(), this.getName())) {
-                final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(servername);
-                if (server == null) {
-                    return;
-                }
-                server.stopServer();
-            }
+        BedrockCloud.getLogger().info("Restarting group " + getName() + "...");
+        for (CloudServer server : runningServers.values()) {
+            server.stopServer();
         }
     }
-    
+
     public void stop() {
-        BedrockCloud.getLogger().info("Stopping group " + this.getName() + "...");
-        BedrockCloud.getTemplateProvider().removeRunningGroup(this);
+        BedrockCloud.getLogger().info("Stopping group " + getName() + "...");
+        BedrockCloud.getTemplateProvider().removeRunningTemplate(this);
 
-        for (final String servername : BedrockCloud.getCloudServerProvider().getCloudServers().keySet()) {
-            if (Objects.equals(BedrockCloud.getCloudServerProvider().getServer(servername).getTemplate().getName(), this.getName())) {
-                final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(servername);
-                if (server == null) {
-                    return;
-                }
-                server.stopServer();
-            }
+        for (CloudServer server : runningServers.values()) {
+            server.stopServer();
         }
     }
-    
-    public Boolean getBeta() {
-        return this.isBeta;
-    }
-    
-    public Boolean getLobby() {
-        return this.isLobby;
-    }
-    
-    public Boolean getMaintenance() {
-        return this.isMaintenance;
+
+    public Boolean isBeta() {
+        return isBeta;
     }
 
-    public Boolean getStatic() {
+    public Boolean isLobby() {
+        return isLobby;
+    }
+
+    public Boolean isMaintenance() {
+        return isMaintenance;
+    }
+
+    public Boolean isStatic() {
         return isStatic;
+    }
+
+    public HashMap<String, CloudServer> getRunningServers() {
+        return runningServers;
     }
 
     @Override
     public String toString() {
-        return "Template{name='" + this.name + '\'' + ", minRunningServer=" + this.minRunningServer + ", maxRunningServer=" + this.maxRunningServer + ", maxPlayers=" + this.maxPlayers + ", type='" + this.type + '\'' + '}';
+        return "Template{name='" + name + '\'' + ", minRunningServer=" + minRunningServer + ", maxRunningServer=" + maxRunningServer + ", maxPlayers=" + maxPlayers + ", type='" + type + '\'' + '}';
     }
 }

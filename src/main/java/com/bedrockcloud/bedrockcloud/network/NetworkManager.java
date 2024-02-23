@@ -12,18 +12,20 @@ import java.util.HashMap;
 
 @ApiStatus.Internal
 public class NetworkManager implements Loggable {
-    public DatagramSocket datagramSocket;
-    public HashMap<String, DatagramPacket> channelList;
+    private final DatagramSocket datagramSocket;
+    private final HashMap<String, DatagramPacket> channelList;
 
     public NetworkManager(final int port) {
+        this.channelList = new HashMap<>();
+        DatagramSocket socket = null;
         try {
-            this.getLogger().info("Listening on 127.0.0.1:" + port);
-            this.datagramSocket = new DatagramSocket(port);
-            this.datagramSocket.setReuseAddress(true);
-            this.channelList = new HashMap<>();
+            socket = new DatagramSocket(port);
+            socket.setReuseAddress(true);
+            getLogger().info("Listening on 127.0.0.1:" + port);
         } catch (IOException e) {
-            BedrockCloud.getLogger().exception(e);
+            getLogger().exception(e);
         }
+        this.datagramSocket = socket;
     }
 
     public void start() {
@@ -42,5 +44,13 @@ public class NetworkManager implements Loggable {
                 }
             }
         }
+    }
+
+    public DatagramSocket getDatagramSocket() {
+        return datagramSocket;
+    }
+
+    public HashMap<String, DatagramPacket> getChannelList() {
+        return channelList;
     }
 }

@@ -178,6 +178,18 @@ public class PluginManager {
         }
     }
 
+    public void disablePlugin(Plugin plugin) {
+        this.logger.info( "Disabling plugin " + plugin.getName() + "" );
+        try {
+            PluginUnloadEvent event = new PluginUnloadEvent(plugin);
+            this.callEvent(event);
+
+            plugin.setEnabled( false );
+        } catch ( RuntimeException e ) {
+            e.printStackTrace();
+        }
+    }
+
     Class<?> getClassFromCache( String className ) {
         Class<?> clazz = this.cachedClasses.get( className );
         if ( clazz != null ) {

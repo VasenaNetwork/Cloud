@@ -67,7 +67,7 @@ public class CloudServerConnectPacket extends DataPacket {
         CloudNotifyManager.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().warning(notifyMessage);
 
-        server.getTemplate().addServer(server.getTemplate(), serverName);
+        server.getTemplate().addServer(server);
         server.setConnected(true);
     }
 }

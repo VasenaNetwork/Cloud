@@ -36,7 +36,7 @@ public class CloudServerDisconnectPacket extends DataPacket
         PortValidator.ports.remove(server.getServerPort() + 1);
 
         try {
-            FileManager.deleteServer(new File("./temp/" + serverName), serverName, server.getTemplate().getStatic());
+            FileManager.deleteServer(new File("./temp/" + serverName), serverName, server.getTemplate().isStatic());
         } catch (NullPointerException ex) {
             BedrockCloud.getLogger().exception(ex);
         }
@@ -49,7 +49,7 @@ public class CloudServerDisconnectPacket extends DataPacket
         BedrockCloud.getCloudServerProvider().removeServer(server.getServerName());
 
         if (template.getRunningServers().size() < template.getMinRunningServer()) {
-            if (BedrockCloud.getTemplateProvider().isTemplateRunning(template) && !template.getMaintenance()) {
+            if (BedrockCloud.getTemplateProvider().isTemplateRunning(template) && !template.isMaintenance()) {
                 new CloudServer(template);
             }
         }

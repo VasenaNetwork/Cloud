@@ -35,7 +35,7 @@ public class TemplateCommand extends Command {
         BedrockCloud.getLogger().info("§e»§r §7There are currently " + BedrockCloud.getTemplateProvider().getTemplateMap().size() + " Templates online! §e«");
         for (Template template : BedrockCloud.getTemplateProvider().getTemplateMap().values()) {
             String type = template.getType() == 0 ? "WATERDOGPE" : "POCKETMINE";
-            BedrockCloud.getLogger().info("§c➤ §rName: " + template.getName() + " | Maintenance: " + template.getMaintenance() + " | Beta: " + template.getBeta() + " | TYPE: " + type);
+            BedrockCloud.getLogger().info("§c➤ §rName: " + template.getName() + " | Maintenance: " + template.isMaintenance() + " | Beta: " + template.isBeta() + " | TYPE: " + type);
         }
     }
 

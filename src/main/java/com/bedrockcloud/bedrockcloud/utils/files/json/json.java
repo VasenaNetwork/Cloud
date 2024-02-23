@@ -4,6 +4,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+
+import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -66,6 +68,18 @@ public class json {
         } catch (FileNotFoundException | ParseException ex) {
             ex.printStackTrace();
             return false;
+        }
+    }
+
+    public static JSONObject readJsonFromFile(String filePath) throws IOException {
+        JSONParser parser = new JSONParser();
+        try (FileReader reader = new FileReader(filePath)) {
+            Object obj = parser.parse(reader);
+            return (JSONObject) obj;
+        } catch (ParseException | IOException e) {
+            BedrockCloud.getLogger().error("Error reading JSON file from path: " + filePath);
+            BedrockCloud.getLogger().exception(e);
+            return null;
         }
     }
 }
