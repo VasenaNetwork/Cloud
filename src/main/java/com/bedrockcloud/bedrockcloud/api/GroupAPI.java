@@ -57,8 +57,10 @@ public class GroupAPI implements Loggable {
             }
         }
 
-        try (FileWriter writer = new FileWriter("./templates/config.json")) {
-            writer.write(updatedTemplateArray.toJSONString());
+        try (FileWriter fileWriter = new FileWriter("./templates/config.json")) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String jsonString = gson.toJson(updatedTemplateArray);
+            fileWriter.write(jsonString);
         } catch (IOException e) {
             BedrockCloud.getLogger().exception(e);
             return false;
