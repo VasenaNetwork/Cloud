@@ -11,7 +11,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class json {
+public class JsonUtils {
 
     public static final int MIN_RUNNING_SERVER = 0;
     public static final int MAX_RUNNING_SERVER = 1;

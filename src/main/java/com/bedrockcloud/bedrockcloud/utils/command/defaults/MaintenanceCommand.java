@@ -1,9 +1,9 @@
 package com.bedrockcloud.bedrockcloud.utils.command.defaults;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.utils.command.Command;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
-import com.bedrockcloud.bedrockcloud.utils.manager.MaintenanceManager;
 
 public class MaintenanceCommand extends Command implements Loggable {
 
@@ -46,8 +46,8 @@ public class MaintenanceCommand extends Command implements Loggable {
     }
 
     private void addMaintenancePlayer(String playerName) {
-        if (!MaintenanceManager.isMaintenance(playerName)) {
-            MaintenanceManager.addMaintenance(playerName);
+        if (!Utils.isMaintenance(playerName)) {
+            Utils.addMaintenance(playerName);
             BedrockCloud.getLogger().command("§aThe player §e" + playerName + " §awas added to the maintenance list.");
         } else {
             BedrockCloud.getLogger().command("§cThe player §e" + playerName + " §cis already in the maintenance list.");
@@ -55,8 +55,8 @@ public class MaintenanceCommand extends Command implements Loggable {
     }
 
     private void removeMaintenancePlayer(String playerName) {
-        if (MaintenanceManager.isMaintenance(playerName)) {
-            MaintenanceManager.removeMaintenance(playerName);
+        if (Utils.isMaintenance(playerName)) {
+            Utils.removeMaintenance(playerName);
             BedrockCloud.getLogger().command("§aThe player §e" + playerName + " §awas removed from the maintenance list.");
         } else {
             BedrockCloud.getLogger().command("§cThe player §e" + playerName + " §cis not in the maintenance list.");

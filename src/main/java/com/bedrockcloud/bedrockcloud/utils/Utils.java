@@ -2,14 +2,20 @@ package com.bedrockcloud.bedrockcloud.utils;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.CloudStarter;
+import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.VersionInfo;
+import com.bedrockcloud.bedrockcloud.network.DataPacket;
+import com.bedrockcloud.bedrockcloud.network.packets.CloudNotifyMessagePacket;
+import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
-import com.bedrockcloud.bedrockcloud.utils.manager.MemoryManager;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
 
@@ -30,16 +36,16 @@ public class Utils {
     public static void printCloudInfos() {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-        long usedMemoryBytes = MemoryManager.getTotalMemory() - MemoryManager.getFreeMemory();
+        long usedMemoryBytes = Utils.getTotalMemory() - Utils.getFreeMemory();
         double usedMemoryGB = (double) usedMemoryBytes / (1024 * 1024 * 1024);
 
-        long freeMemoryBytes = MemoryManager.getFreeMemory();
+        long freeMemoryBytes = Utils.getFreeMemory();
         double freeMemoryGB = (double) freeMemoryBytes / (1024 * 1024 * 1024);
 
-        long totalMemoryBytes = MemoryManager.getTotalMemory();
+        long totalMemoryBytes = Utils.getTotalMemory();
         double totalMemoryGB = (double) totalMemoryBytes / (1024 * 1024 * 1024);
 
-        long maxMemoryBytes = MemoryManager.getMaxMemory();
+        long maxMemoryBytes = Utils.getMaxMemory();
         double maxMemoryGB = (double) maxMemoryBytes / (1024 * 1024 * 1024);
 
         BedrockCloud.getLogger().command("Used Memory   : " + decimalFormat.format(usedMemoryGB) + " GB");
@@ -102,5 +108,55 @@ public class Utils {
         }
         content.close();
         stream.close();
+    }
+
+    public static void addMaintenance(String player){
+        BedrockCloud.getMaintenanceFile().set(player.toLowerCase(), true);
+        BedrockCloud.getMaintenanceFile().save();
+    }
+
+    public static void removeMaintenance(String player){
+        BedrockCloud.getMaintenanceFile().remove(player.toLowerCase());
+        BedrockCloud.getMaintenanceFile().save();
+    }
+
+    public static boolean isMaintenance(String player){
+        return BedrockCloud.getMaintenanceFile().exists(player.toLowerCase(), true);
+    }
+
+    public static long getMaxMemory() {
+        return Runtime.getRuntime().maxMemory();
+    }
+
+    public static long getUsedMemory() {
+        MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        return heapMemoryUsage.getUsed();
+    }
+
+    public static long getTotalMemory() {
+        return Runtime.getRuntime().totalMemory();
+    }
+
+    public static long getFreeMemory() {
+        return Runtime.getRuntime().freeMemory();
+    }
+
+    public static void broadcastPacket(final DataPacket packet) {
+        for (CloudServer server : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+            if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+                if (server.isConnected()) server.pushPacket(packet);
+            }
+        }
+    }
+
+    @ApiStatus.Internal
+    public static void sendNotifyCloud(final String message) {
+        for (final CloudServer cloudServer : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+            if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
+                final CloudNotifyMessagePacket packet = new CloudNotifyMessagePacket();
+                packet.message = BedrockCloud.prefix + message;
+                cloudServer.pushPacket(packet);
+            }
+        }
     }
 }

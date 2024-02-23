@@ -4,7 +4,7 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
 import com.bedrockcloud.bedrockcloud.api.event.template.TemplateUnloadEvent;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
-import com.bedrockcloud.bedrockcloud.utils.files.json.json;
+import com.bedrockcloud.bedrockcloud.utils.files.json.JsonUtils;
 import org.jetbrains.annotations.ApiStatus;
 import org.json.simple.JSONObject;
 
@@ -80,7 +80,7 @@ public class TemplateProvider implements Loggable {
     public void loadTemplate(String name) {
         if (!existsTemplate(name)) {
             try {
-                JSONObject stats = json.readJsonFromFile("./templates/" + name + "/config.json");
+                JSONObject stats = JsonUtils.readJsonFromFile("./templates/" + name + "/config.json");
                 if (stats != null && !stats.isEmpty()) {
                     new Template(name, (int) stats.get("minRunningServer"), (int) stats.get("maxRunningServer"),
                             (int) stats.get("maxPlayer"), (int) stats.get("type"), (boolean) stats.get("beta"),
@@ -100,7 +100,7 @@ public class TemplateProvider implements Loggable {
         for (String name : GroupAPI.getGroups()) {
             if (!existsTemplate(name)) {
                 try {
-                    HashMap<String, Object> stats = json.readJsonFromFile("./templates/" + name + "/config.json");
+                    HashMap<String, Object> stats = JsonUtils.readJsonFromFile("./templates/" + name + "/config.json");
                     if (stats != null && !stats.isEmpty()) {
                         new Template(name, (int) stats.get("minRunningServer"), (int) stats.get("maxRunningServer"),
                                 (int) stats.get("maxPlayer"), (int) stats.get("type"), (boolean) stats.get("beta"),

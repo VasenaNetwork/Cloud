@@ -4,7 +4,7 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.network.packets.response.CheckPlayerMaintenanceResponsePacket;
-import com.bedrockcloud.bedrockcloud.utils.manager.MaintenanceManager;
+import com.bedrockcloud.bedrockcloud.utils.Utils;
 import org.json.simple.JSONObject;
 
 public class CheckPlayerMaintenanceRequestPacket extends DataPacket {
@@ -19,7 +19,7 @@ public class CheckPlayerMaintenanceRequestPacket extends DataPacket {
         if (jsonObject.get("playerInfoName") == null) {
             success = false;
         } else {
-            success = MaintenanceManager.isMaintenance(jsonObject.get("playerInfoName").toString());
+            success = Utils.isMaintenance(jsonObject.get("playerInfoName").toString());
         }
 
         checkPlayerMaintenanceResponsePacket.success = success;

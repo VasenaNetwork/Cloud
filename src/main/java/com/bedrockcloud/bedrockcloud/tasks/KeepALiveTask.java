@@ -3,8 +3,8 @@ package com.bedrockcloud.bedrockcloud.tasks;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerTimeoutEvent;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
-import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
-import com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper.ServiceHelper;
+import com.bedrockcloud.bedrockcloud.utils.ServerUtils;
+import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.port.PortValidator;
 import com.bedrockcloud.bedrockcloud.server.query.api.Protocol;
 import com.bedrockcloud.bedrockcloud.server.query.api.QueryException;
@@ -77,7 +77,7 @@ public class KeepALiveTask implements Runnable {
         BedrockCloud.getInstance().getPluginManager().callEvent(event);
 
         String notifyMessage = MessageAPI.timedOut.replace("%service", server.getServerName());
-        CloudNotifyManager.sendNotifyCloud(notifyMessage);
+        Utils.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().warning(notifyMessage);
 
         try {
@@ -85,9 +85,9 @@ public class KeepALiveTask implements Runnable {
             PortValidator.ports.remove(server.getServerPort() + 1);
 
             if (BedrockCloud.getTemplateProvider().isTemplateRunning(server.getTemplate())) {
-                ServiceHelper.killWithPID(server);
+                ServerUtils.killWithPID(server);
             } else {
-                ServiceHelper.killWithPID(false, server);
+                ServerUtils.killWithPID(false, server);
             }
         } catch (IOException ignored) {
         }

@@ -4,8 +4,8 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
-import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
-import com.bedrockcloud.bedrockcloud.utils.manager.FileManager;
+import com.bedrockcloud.bedrockcloud.utils.Utils;
+import com.bedrockcloud.bedrockcloud.utils.FileUtils;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.port.PortValidator;
@@ -36,13 +36,13 @@ public class CloudServerDisconnectPacket extends DataPacket
         PortValidator.ports.remove(server.getServerPort() + 1);
 
         try {
-            FileManager.deleteServer(new File("./temp/" + serverName), serverName, server.getTemplate().isStatic());
+            FileUtils.deleteServer(new File("./temp/" + serverName), serverName, server.getTemplate().isStatic());
         } catch (NullPointerException ex) {
             BedrockCloud.getLogger().exception(ex);
         }
 
         String notifyMessage = MessageAPI.stoppedMessage.replace("%service", server.getServerName());
-        CloudNotifyManager.sendNotifyCloud(notifyMessage);
+        Utils.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().warning(notifyMessage);
 
         server.getTemplate().removeServer(server.getServerName());

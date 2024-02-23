@@ -1,22 +1,19 @@
-package com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper;
+package com.bedrockcloud.bedrockcloud.utils;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
-import com.bedrockcloud.bedrockcloud.utils.files.json.json;
-import com.bedrockcloud.bedrockcloud.utils.helper.serviceKiller.ServiceKiller;
-import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
-import com.bedrockcloud.bedrockcloud.utils.manager.FileManager;
 import com.bedrockcloud.bedrockcloud.templates.Template;
+import com.bedrockcloud.bedrockcloud.utils.config.Config;
+import com.bedrockcloud.bedrockcloud.utils.files.json.JsonUtils;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class ServiceHelper {
-
+public class ServerUtils {
     @ApiStatus.Internal
     public static void startAllProxies() {
         try {
@@ -26,7 +23,7 @@ public class ServiceHelper {
         }
         for (final String name : GroupAPI.getGroups()) {
             try {
-                final HashMap<String, Object> stats = (HashMap<String, Object>) json.get(name, json.ALL);
+                final HashMap<String, Object> stats = (HashMap<String, Object>) JsonUtils.get(name, JsonUtils.ALL);
                 if (stats != null && !stats.isEmpty()) {
                     if (Integer.parseInt(stats.get("type").toString()) == 0) {
                         final Template group = BedrockCloud.getTemplateProvider().getTemplate(name);
@@ -47,7 +44,7 @@ public class ServiceHelper {
     public static void startAllServers() {
         for (final String name : GroupAPI.getGroups()) {
             try {
-                final HashMap<String, Object> stats = (HashMap<String, Object>) json.get(name, json.ALL);
+                final HashMap<String, Object> stats = (HashMap<String, Object>) JsonUtils.get(name, JsonUtils.ALL);
                 if (stats != null && !stats.isEmpty()) {
                     if (Integer.parseInt(stats.get("type").toString()) == 1) {
                         final Template group = BedrockCloud.getTemplateProvider().getTemplate(name);
@@ -72,7 +69,7 @@ public class ServiceHelper {
     @ApiStatus.Internal
     public static void killWithPID(boolean startNewService, CloudServer server) throws IOException {
         String notifyMessage = MessageAPI.stoppedMessage.replace("%service", server.getServerName());
-        CloudNotifyManager.sendNotifyCloud(notifyMessage);
+        Utils.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().warning(notifyMessage);
 
         Template template = server.getTemplate();
@@ -88,12 +85,12 @@ public class ServiceHelper {
         }
 
         try {
-            FileManager.deleteServer(new File("./temp/" + server.getServerName()), server.getServerName(), server.getTemplate().getStatic());
+            FileUtils.deleteServer(new File("./temp/" + server.getServerName()), server.getServerName(), server.getTemplate().isStatic());
         } catch (NullPointerException ex) {
             BedrockCloud.getLogger().exception(ex);
         }
 
-        ServiceKiller.killPid(server);
+        killPid(server);
 
         server.getTemplate().removeServer(server.getServerName());
         BedrockCloud.getCloudServerProvider().removeServer(server.getServerName());
@@ -108,6 +105,21 @@ public class ServiceHelper {
             if (server.getTemplate().getRunningServers().size() < server.getTemplate().getMinRunningServer()) {
                 new CloudServer(template);
             }
+        }
+    }
+
+    @ApiStatus.Internal
+    public static void killPid(CloudServer server){
+        final File file = new File("./archive/processes/" + server.getServerName() + ".json");
+        if (file.exists()) {
+            Config config = new Config("./archive/processes/" + server.getServerName() + ".json", Config.JSON);
+
+            final ProcessBuilder builder = new ProcessBuilder();
+            try {
+                builder.command("/bin/sh", "-c", "kill " + config.get("pid")).start();
+            } catch (Exception ignored) {}
+
+            file.delete();
         }
     }
 }

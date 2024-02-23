@@ -2,7 +2,6 @@ package com.bedrockcloud.bedrockcloud.rest.handler.server;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
-import com.bedrockcloud.bedrockcloud.utils.helper.serviceKiller.ServiceKiller;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
@@ -47,7 +46,7 @@ public class ServerStopRequestHandler implements HttpHandler {
 
         if (BedrockCloud.getCloudServerProvider().existServer(server)) {
             final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(server);
-            ServiceKiller.killPid(cloudServer);
+            cloudServer.stopServer();
 
             JSONObject responseObj = new JSONObject();
             responseObj.put("success", "The server " + server + " was stopped!");
