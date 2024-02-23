@@ -34,9 +34,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
     }
     
     public Map<String, Object> getAllMap() {
-        final LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-        map.putAll((Map<? extends String, ?>) this);
-        return map;
+        return new LinkedHashMap<String, Object>((Map<? extends String, ?>) this);
     }
     
     public ConfigSection getAll() {
@@ -59,8 +57,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             return defaultValue;
         }
         final Object value = super.get(keys[0]);
-        if (value != null && value instanceof ConfigSection) {
-            final ConfigSection section = (ConfigSection)value;
+        if (value instanceof final ConfigSection section) {
             return (T)section.get(keys[1], (Object)defaultValue);
         }
         return defaultValue;
@@ -101,9 +98,9 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             return sections;
         }
         final HashMap<String, Object> hashMap = null;
-        parent.entrySet().forEach(e -> {
-            if (e.getValue() instanceof ConfigSection) {
-                hashMap.put(e.getKey(), e.getValue());
+        parent.forEach((key1, value) -> {
+            if (value instanceof ConfigSection) {
+                hashMap.put(key1, value);
             }
             return;
         });
@@ -115,7 +112,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
     }
     
     public int getInt(final String key, final int defaultValue) {
-        return this.get(key, defaultValue).intValue();
+        return this.get(key, defaultValue);
     }
     
     public boolean isInt(final String key) {
@@ -128,7 +125,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
     }
     
     public long getLong(final String key, final long defaultValue) {
-        return this.get(key, defaultValue).longValue();
+        return this.get(key, defaultValue);
     }
     
     public boolean isLong(final String key) {
@@ -141,7 +138,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
     }
     
     public double getDouble(final String key, final double defaultValue) {
-        return this.get(key, defaultValue).doubleValue();
+        return this.get(key, defaultValue);
     }
     
     public boolean isDouble(final String key) {
@@ -216,8 +213,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             else if (object instanceof String) {
                 try {
                     result.add(Integer.valueOf((String)object));
-                }
-                catch (Exception ex) {}
+                } catch (Exception ignored) {}
             }
             else if (object instanceof Character) {
                 result.add((int)(char)object);
@@ -273,8 +269,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             else if (object instanceof String) {
                 try {
                     result.add(Double.valueOf((String)object));
-                }
-                catch (Exception ex) {}
+                } catch (Exception ignored) {}
             }
             else if (object instanceof Character) {
                 result.add((double)(char)object);
@@ -302,8 +297,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             else if (object instanceof String) {
                 try {
                     result.add(Float.valueOf((String)object));
-                }
-                catch (Exception ex) {}
+                } catch (Exception ignored) {}
             }
             else if (object instanceof Character) {
                 result.add((float)(char)object);
@@ -331,8 +325,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             else if (object instanceof String) {
                 try {
                     result.add(Long.valueOf((String)object));
-                }
-                catch (Exception ex) {}
+                } catch (Exception ignored) {}
             }
             else if (object instanceof Character) {
                 result.add((long)(char)object);
@@ -360,8 +353,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             else if (object instanceof String) {
                 try {
                     result.add(Byte.valueOf((String)object));
-                }
-                catch (Exception ex) {}
+                } catch (Exception ignored) {}
             }
             else if (object instanceof Character) {
                 result.add((byte)(char)object);
@@ -386,8 +378,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             if (object instanceof Character) {
                 result.add((Character)object);
             }
-            else if (object instanceof String) {
-                final String str = (String)object;
+            else if (object instanceof final String str) {
                 if (str.length() != 1) {
                     continue;
                 }
@@ -416,8 +407,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             else if (object instanceof String) {
                 try {
                     result.add(Short.valueOf((String)object));
-                }
-                catch (Exception ex) {}
+                } catch (Exception ignored) {}
             }
             else if (object instanceof Character) {
                 result.add((short)(char)object);
@@ -474,8 +464,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
         }
         else if (this.containsKey(".")) {
             final String[] keys = key.split("\\.", 2);
-            if (super.get(keys[0]) instanceof ConfigSection) {
-                final ConfigSection section = (ConfigSection) super.get(keys[0]);
+            if (super.get(keys[0]) instanceof final ConfigSection section) {
                 section.remove(keys[1]);
             }
         }
@@ -484,10 +473,10 @@ public class ConfigSection extends LinkedHashMap<String, Object>
     public Set<String> getKeys(final boolean child) {
         final Set<String> keys = new LinkedHashSet<String>();
         final Set<String> set = null;
-        this.entrySet().forEach(entry -> {
-            set.add(entry.getKey());
-            if (entry.getValue() instanceof ConfigSection && child) {
-                ((ConfigSection)entry.getValue()).getKeys(true).forEach(childKey -> set.add(entry.getKey() + "." + childKey));
+        this.forEach((key, value) -> {
+            set.add(key);
+            if (value instanceof ConfigSection && child) {
+                ((ConfigSection) value).getKeys(true).forEach(childKey -> set.add(key + "." + childKey));
             }
             return;
         });
