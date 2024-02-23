@@ -43,7 +43,7 @@ public class PluginEnableRequestHandler implements HttpHandler {
         }
 
         String plugin = queryParams.get("plugin");
-        if (BedrockCloud.getInstance().getPluginManager().getPluginByName(plugin) == null) {
+        if (BedrockCloud.getInstance().getPluginManager().getPluginByName(plugin) != null) {
             JSONObject responseObj = new JSONObject();
             responseObj.put("error", "Plugin " + plugin + " already exists");
 
