@@ -19,8 +19,8 @@ public class ShutdownThread extends Thread {
         }
 
         try {
-            if (BedrockCloud.getNetworkManager().datagramSocket != null && !BedrockCloud.getNetworkManager().datagramSocket.isClosed()) {
-                BedrockCloud.getNetworkManager().datagramSocket.close();
+            if (BedrockCloud.getNetworkManager().getDatagramSocket() != null && !BedrockCloud.getNetworkManager().getDatagramSocket().isClosed()) {
+                BedrockCloud.getNetworkManager().getDatagramSocket().close();
                 BedrockCloud.getLogger().info("CloudSocket was closed.");
             }
         } catch (Exception ignored) {

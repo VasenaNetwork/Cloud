@@ -13,11 +13,11 @@ public class TemplateUpdatePacket extends DataPacket {
     @Override
     public String encode() {
         this.addValue("templateName", this.template.getName());
-        this.addValue("isLobby", this.template.getLobby());
-        this.addValue("isMaintenance", this.template.getMaintenance());
-        this.addValue("isBeta", this.template.getBeta());
+        this.addValue("isLobby", this.template.isLobby());
+        this.addValue("isMaintenance", this.template.isMaintenance());
+        this.addValue("isBeta", this.template.isBeta());
         this.addValue("maxPlayer", this.template.getMaxPlayers());
-        this.addValue("isStatic", this.template.getStatic());
+        this.addValue("isStatic", this.template.isStatic());
         this.addValue("type", this.template.getType());
         return super.encode();
     }

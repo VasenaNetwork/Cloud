@@ -11,19 +11,20 @@ import com.bedrockcloud.bedrockcloud.port.PortValidator;
 import com.bedrockcloud.bedrockcloud.server.properties.ServerProperties;
 import com.bedrockcloud.bedrockcloud.tasks.KeepALiveTask;
 import com.bedrockcloud.bedrockcloud.templates.Template;
+import com.bedrockcloud.bedrockcloud.utils.ServerUtils;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
-import com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper.ServiceHelper;
-import com.bedrockcloud.bedrockcloud.utils.helper.serviceKiller.ServiceKiller;
-import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
-import com.bedrockcloud.bedrockcloud.utils.manager.FileManager;
-import com.bedrockcloud.bedrockcloud.utils.manager.PushPacketManager;
+import com.bedrockcloud.bedrockcloud.utils.FileUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -63,7 +64,7 @@ public class CloudServer {
     public CloudServer(final Template template) {
         this.template = template;
         this.aliveChecks = 0;
-        this.serverName = template.getName() + Utils.getServiceSeperator() + FileManager.getFreeNumber("./temp/" + template.getName());
+        this.serverName = template.getName() + Utils.getServiceSeperator() + FileUtils.getFreeNumber("./temp/" + template.getName());
         if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
             this.serverPort = PortValidator.getNextServerPort(this);
         } else {
@@ -77,7 +78,7 @@ public class CloudServer {
 
         this.uuid = UUID.fromString(this.serverName).toString();
 
-        ServiceKiller.killPid(this);
+        ServerUtils.killPid(this);
         BedrockCloud.getCloudServerProvider().addServer(this);
 
         ServerStartEvent event = new ServerStartEvent(this);
@@ -100,7 +101,7 @@ public class CloudServer {
                     this.setAliveChecks(0);
 
                     String notifyMessage = MessageAPI.startFailed.replace("%service", servername);
-                    CloudNotifyManager.sendNotifyCloud(notifyMessage);
+                    Utils.sendNotifyCloud(notifyMessage);
                     BedrockCloud.getLogger().warning(notifyMessage);
 
                     try {
@@ -108,9 +109,9 @@ public class CloudServer {
                         PortValidator.ports.remove(getServerPort() + 1);
 
                         if (BedrockCloud.getTemplateProvider().isTemplateRunning(getTemplate())) {
-                            ServiceHelper.killWithPID(this);
+                            ServerUtils.killWithPID(this);
                         } else {
-                            ServiceHelper.killWithPID(false, this);
+                            ServerUtils.killWithPID(false, this);
                         }
                     } catch (IOException exception) {
                         BedrockCloud.getLogger().exception(exception);
@@ -135,7 +136,7 @@ public class CloudServer {
             final ProcessBuilder builder = new ProcessBuilder();
 
             String notifyMessage = MessageAPI.startMessage.replace("%service", serverName);
-            CloudNotifyManager.sendNotifyCloud(notifyMessage);
+            Utils.sendNotifyCloud(notifyMessage);
             BedrockCloud.getLogger().info(notifyMessage);
             try {
                 builder.command("/bin/sh", "-c", "screen -X -S " + this.serverName + " kill").start();
@@ -161,7 +162,7 @@ public class CloudServer {
             PortValidator.ports.add(this.getServerPort()+1);
         } else {
             String notifyMessage = MessageAPI.startFailed.replace("%service", serverName);
-            CloudNotifyManager.sendNotifyCloud(notifyMessage);
+            Utils.sendNotifyCloud(notifyMessage);
             BedrockCloud.getLogger().error(notifyMessage);
 
             PortValidator.ports.remove(this.getServerPort());
@@ -173,18 +174,18 @@ public class CloudServer {
         final File src = new File("./templates/" + this.template.getName() + "/");
         final File dest = new File("./temp/" + this.serverName);
         if (!dest.exists()) {
-            FileManager.copy(src, dest);
+            FileUtils.copy(src, dest);
             ServerProperties.createProperties(this);
         }
 
         if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
             final File global_plugins = new File("./local/plugins/pocketmine");
             final File dest_plugs = new File("./temp/" + this.serverName + "/plugins/");
-            FileManager.copy(global_plugins, dest_plugs);
+            FileUtils.copy(global_plugins, dest_plugs);
         } else {
             final File global_plugins = new File("./local/plugins/waterdogpe");
             final File dest_plugs = new File("./temp/" + this.serverName + "/plugins/");
-            FileManager.copy(global_plugins, dest_plugs);
+            FileUtils.copy(global_plugins, dest_plugs);
             final Config config = new Config("./temp/" + this.serverName + "/cloud.yml", Config.YAML);
             config.set("name", this.serverName);
             config.save();
@@ -202,7 +203,7 @@ public class CloudServer {
         BedrockCloud.getInstance().getPluginManager().callEvent(event);
 
         String notifyMessage = MessageAPI.stopMessage.replace("%service", this.serverName);
-        CloudNotifyManager.sendNotifyCloud(notifyMessage);
+        Utils.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().info(notifyMessage);
 
         final CloudServerDisconnectPacket packet = new CloudServerDisconnectPacket();
@@ -211,7 +212,45 @@ public class CloudServer {
     }
 
     public void pushPacket(final DataPacket cloudPacket) {
-        PushPacketManager.pushPacket(cloudPacket, this);
+        if (getServerName() == null || getSocket() == null) {
+            return;
+        }
+
+        if (getSocket().isClosed()) {
+            return;
+        }
+
+        if (BedrockCloud.getNetworkManager().getDatagramSocket() == null) {
+            return;
+        }
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            byteArrayOutputStream.write(cloudPacket.encode().getBytes());
+        } catch (IOException e) {
+            BedrockCloud.getLogger().exception(e);
+        }
+
+        byte[] data = byteArrayOutputStream.toByteArray();
+        try {
+            InetAddress address;
+            if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+                address = InetAddress.getByName("127.0.0.1");
+            } else {
+                address = InetAddress.getByName("0.0.0.0");
+            }
+
+            int port = getServerPort()+1;
+            DatagramPacket datagramPacket = new DatagramPacket(data, data.length, address, port);
+
+            try (DatagramSocket datagramSocket = new DatagramSocket()) {
+                datagramSocket.send(datagramPacket);
+            } catch (IOException ex) {
+                BedrockCloud.getLogger().exception(ex);
+            }
+        } catch (UnknownHostException ex) {
+            BedrockCloud.getLogger().exception(ex);
+        }
     }
 
     public void saveServer() {
@@ -221,7 +260,7 @@ public class CloudServer {
         final File templateFile = new File("./templates/" + this.getServerName() + "/worlds/");
         templateworldsFile.delete();
         templateFile.mkdirs();
-        FileManager.copy(serverFile, templateFile);
+        FileUtils.copy(serverFile, templateFile);
         if (serverFile.isDirectory()) {
             final String[] var6;
             final String[] files = var6 = serverFile.list();
@@ -230,7 +269,7 @@ public class CloudServer {
                 final String file = var6[var8];
                 final File srcFile = new File(serverFile, file);
                 final File destFile = new File(template, file);
-                FileManager.copy(srcFile, destFile);
+                FileUtils.copy(srcFile, destFile);
             }
             BedrockCloud.getLogger().info("The server was saved!");
         }

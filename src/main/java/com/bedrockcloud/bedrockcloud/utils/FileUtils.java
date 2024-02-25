@@ -1,12 +1,10 @@
-package com.bedrockcloud.bedrockcloud.utils.manager;
+package com.bedrockcloud.bedrockcloud.utils;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
-import com.bedrockcloud.bedrockcloud.utils.config.FileUtils;
-import com.bedrockcloud.bedrockcloud.utils.Utils;
 
 import java.io.*;
 
-public class FileManager {
+public class FileUtils {
 
     public static int getFreeNumber(final String path) {
         boolean found = false;
@@ -59,8 +57,8 @@ public class FileManager {
             final File Crashfile = new File("./temp/" + serverName + "/crashdumps/");
             final File dest_lib = new File("./archive/crashdumps/" + serverName + "/");
             dest_lib.mkdirs();
-            FileManager.copy(Crashfile, dest_lib);
-            FileUtils.copyFile(Crashfile, dest_lib);
+            FileUtils.copy(Crashfile, dest_lib);
+            com.bedrockcloud.bedrockcloud.utils.config.FileUtils.copyFile(Crashfile, dest_lib);
         } catch (IOException e) {
             BedrockCloud.getLogger().exception(e);
         }

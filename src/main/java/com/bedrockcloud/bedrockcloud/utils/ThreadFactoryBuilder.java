@@ -1,6 +1,7 @@
 package com.bedrockcloud.bedrockcloud.utils;
 
 import lombok.Builder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -23,7 +24,7 @@ public final class ThreadFactoryBuilder implements ThreadFactory {
     }
 
     @Override
-    public Thread newThread(Runnable runnable) {
+    public Thread newThread(@NotNull Runnable runnable) {
         Thread thread = backingFactory.newThread(runnable);
 
         if (format != null) {

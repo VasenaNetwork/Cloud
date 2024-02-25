@@ -2,8 +2,8 @@ package com.bedrockcloud.bedrockcloud.server.properties;
 
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
-import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
+import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Objects;
@@ -45,13 +45,12 @@ public class ServerProperties {
                 prop.set("cloud-path", Utils.getCloudPath());
                 prop.set("is-private", false);
                 prop.save();
-            } catch (Throwable ignored) {
-            }
+            } catch (Throwable ignored) {}
         } else {
             final Config proxy = new Config("./temp/" + serverName + "/config.yml", Config.YAML);
             proxy.set("listener.host", "0.0.0.0:" + port);
             proxy.set("listener.max_players", server.getTemplate().getMaxPlayers());
-            if (server.getTemplate().getMaintenance()) {
+            if (server.getTemplate().isMaintenance()) {
                 proxy.set("listener.motd", "§c§oMaintenance");
             } else {
                 proxy.set("listener.motd", Utils.getConfig().getString("motd"));

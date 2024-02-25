@@ -42,6 +42,6 @@
 <dependency>
     <groupId>com.github.BedrockCloud</groupId>
     <artifactId>Cloud</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 </dependency>
 ```

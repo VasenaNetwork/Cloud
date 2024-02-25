@@ -5,15 +5,14 @@ import org.jetbrains.annotations.ApiStatus;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CloudPlayerProvider
-{
-    private final HashMap<String, CloudPlayer> cloudPlayerMap;
-    
+public class CloudPlayerProvider {
+    private final Map<String, CloudPlayer> cloudPlayerMap;
+
     public CloudPlayerProvider() {
         this.cloudPlayerMap = new HashMap<>();
     }
-    
-    public HashMap<String, CloudPlayer> getCloudPlayerMap() {
+
+    public Map<String, CloudPlayer> getCloudPlayerMap() {
         return this.cloudPlayerMap;
     }
 
@@ -24,18 +23,18 @@ public class CloudPlayerProvider
 
     @ApiStatus.Internal
     public void removeCloudPlayer(final CloudPlayer cloudPlayer) {
-        this.cloudPlayerMap.remove(cloudPlayer.getPlayerName().toLowerCase(), cloudPlayer);
+        this.cloudPlayerMap.remove(cloudPlayer.getPlayerName().toLowerCase());
     }
 
     @ApiStatus.Internal
-    public void removeCloudPlayer(final String playerName, final CloudPlayer cloudPlayer) {
-        this.cloudPlayerMap.remove(playerName.toLowerCase(), cloudPlayer);
+    public void removeCloudPlayer(final String playerName) {
+        this.cloudPlayerMap.remove(playerName.toLowerCase());
     }
-    
+
     public CloudPlayer getCloudPlayer(final String playerName) {
         return this.cloudPlayerMap.get(playerName.toLowerCase());
     }
-    
+
     public boolean existsPlayer(final String playerName) {
         return this.cloudPlayerMap.containsKey(playerName.toLowerCase());
     }

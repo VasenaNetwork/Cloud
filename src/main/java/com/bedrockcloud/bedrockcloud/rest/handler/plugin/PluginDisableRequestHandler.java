@@ -1,7 +1,6 @@
-package com.bedrockcloud.bedrockcloud.rest.handler.server;
+package com.bedrockcloud.bedrockcloud.rest.handler.plugin;
 
 import com.bedrockcloud.bedrockcloud.BedrockCloud;
-import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
@@ -11,8 +10,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServerStopRequestHandler implements HttpHandler {
-
+public class PluginDisableRequestHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String query = exchange.getRequestURI().getQuery();
@@ -30,9 +28,9 @@ public class ServerStopRequestHandler implements HttpHandler {
             return;
         }
 
-        if (queryParams.get("server") == null){
+        if (queryParams.get("plugin") == null){
             JSONObject responseObj = new JSONObject();
-            responseObj.put("error", "Missing argument: 'server'");
+            responseObj.put("error", "Missing argument: 'plugin'");
 
             String response = responseObj.toString();
             exchange.sendResponseHeaders(200, response.getBytes().length);
@@ -42,14 +40,10 @@ public class ServerStopRequestHandler implements HttpHandler {
             return;
         }
 
-        String server = queryParams.get("server");
-
-        if (BedrockCloud.getCloudServerProvider().existServer(server)) {
-            final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(server);
-            cloudServer.stopServer();
-
+        String plugin = queryParams.get("plugin");
+        if (BedrockCloud.getInstance().getPluginManager().getPluginByName(plugin) == null) {
             JSONObject responseObj = new JSONObject();
-            responseObj.put("success", "The server " + server + " was stopped!");
+            responseObj.put("error", "Plugin " + plugin + " not found");
 
             String response = responseObj.toString();
             exchange.sendResponseHeaders(200, response.getBytes().length);
@@ -57,8 +51,10 @@ public class ServerStopRequestHandler implements HttpHandler {
             os.write(response.getBytes());
             os.close();
         } else {
+            BedrockCloud.getInstance().getPluginManager().disablePlugin(BedrockCloud.getInstance().getPluginManager().getPluginByName(plugin));
+
             JSONObject responseObj = new JSONObject();
-            responseObj.put("error", "The server " + server + " don't exists!");
+            responseObj.put("success", "Plugin " + plugin + " disabled");
 
             String response = responseObj.toString();
             exchange.sendResponseHeaders(200, response.getBytes().length);

@@ -4,6 +4,8 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.rest.handler.player.PlayerInfoRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.player.PlayerKickRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.player.PlayerListRequestHandler;
+import com.bedrockcloud.bedrockcloud.rest.handler.plugin.PluginDisableRequestHandler;
+import com.bedrockcloud.bedrockcloud.rest.handler.plugin.PluginEnableRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.server.ServerListRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.server.ServerStartRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.server.ServerStopRequestHandler;
@@ -25,14 +27,17 @@ import java.net.InetSocketAddress;
 public class App {
 
     public App(){
-        HttpServer server = null;
         try {
-            server = HttpServer.create(new InetSocketAddress((int) Utils.getConfig().getDouble("rest-port")), 0);
+            int restPort = (int) Utils.getConfig().getDouble("rest-port");
+            String restUsername = Utils.getConfig().getString("rest-username");
+            String restPassword = Utils.getConfig().getString("rest-password");
+
+            HttpServer server = HttpServer.create(new InetSocketAddress(restPort), 0);
 
             Authenticator authenticator = new BasicAuthenticator("cloud") {
                 @Override
                 public boolean checkCredentials(String username, String password) {
-                    return username.equals(Utils.getConfig().getString("rest-username")) && password.equals(Utils.getConfig().getString("rest-password"));
+                    return username.equals(restUsername) && password.equals(restPassword);
                 }
             };
 
@@ -51,6 +56,10 @@ public class App {
             server.createContext("/api/v1/server/list/", new ServerListRequestHandler()).setAuthenticator(authenticator);
             server.createContext("/api/v1/server/start/", new ServerStartRequestHandler()).setAuthenticator(authenticator);
             server.createContext("/api/v1/server/stop/", new ServerStopRequestHandler()).setAuthenticator(authenticator);
+
+            //Plugin
+            server.createContext("/api/v1/plugin/enable/", new PluginEnableRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/plugin/disable/", new PluginDisableRequestHandler()).setAuthenticator(authenticator);
 
             server.setExecutor(null);
             server.start();

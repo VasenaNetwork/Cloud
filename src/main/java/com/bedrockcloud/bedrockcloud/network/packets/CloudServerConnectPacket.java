@@ -4,8 +4,8 @@ import com.bedrockcloud.bedrockcloud.BedrockCloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
+import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
-import com.bedrockcloud.bedrockcloud.utils.manager.CloudNotifyManager;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.tasks.KeepALiveTask;
@@ -36,7 +36,6 @@ public class CloudServerConnectPacket extends DataPacket {
         server.setAliveChecks(0);
 
         server.setTask(new KeepALiveTask(server));
-        server.getTask().setName(server.getServerName());
         service.scheduleAtFixedRate(server.getTask(), 0, 1, TimeUnit.SECONDS);
 
         if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
@@ -65,10 +64,10 @@ public class CloudServerConnectPacket extends DataPacket {
         }
 
         String notifyMessage = MessageAPI.startedMessage.replace("%service", serverName);
-        CloudNotifyManager.sendNotifyCloud(notifyMessage);
+        Utils.sendNotifyCloud(notifyMessage);
         BedrockCloud.getLogger().warning(notifyMessage);
 
-        server.getTemplate().addServer(server.getTemplate(), serverName);
+        server.getTemplate().addServer(server);
         server.setConnected(true);
     }
 }

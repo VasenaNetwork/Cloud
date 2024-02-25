@@ -1,13 +1,20 @@
 package com.bedrockcloud.bedrockcloud;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class SoftwareManager {
+    private static final Executor executor = Executors.newFixedThreadPool(10);
+
     public final static int SOFTWARE_PROXY = 0;
     public final static int SOFTWARE_SERVER = 1;
 
@@ -21,18 +28,20 @@ public class SoftwareManager {
     public final static String DEVTOOLS_URL = "https://poggit.pmmp.io/r/208640/PocketMine-DevTools.phar";
     public final static String CLOUDBRIDGEWD_URL = "https://github.com/BedrockCloud/CloudBridge-Proxy/releases/latest/download/CloudBridge.jar";
 
-    public static boolean download(final String url, final String destinationPath) {
-        try {
-            URL downloadUrl = new URL(url);
-            InputStream inputStream = downloadUrl.openStream();
-            Path destination = Path.of(destinationPath);
+    public static CompletableFuture<Boolean> downloadAsync(final String url, final String destinationPath) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                URL downloadUrl = new URL(url);
+                InputStream inputStream = downloadUrl.openStream();
+                Path destination = Path.of(destinationPath);
 
-            Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
-            inputStream.close();
-        } catch (IOException e) {
-            BedrockCloud.getLogger().exception(e);
-            return false;
-        }
-        return true;
+                Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
+                inputStream.close();
+                return true;
+            } catch (IOException e) {
+                BedrockCloud.getLogger().error("Download failed: " + e.getMessage());
+                return false;
+            }
+        }, executor);
     }
 }

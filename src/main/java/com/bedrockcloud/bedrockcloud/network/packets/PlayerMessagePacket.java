@@ -24,26 +24,6 @@ public class PlayerMessagePacket extends DataPacket
             playerTextPacket.type = 0;
             playerTextPacket.value = value;
             cloudPlayer.getProxy().pushPacket(playerTextPacket);
-        } else if (playerName.equals("all.players")){
-            final PlayerTextPacket playerTextPacket = new PlayerTextPacket();
-            playerTextPacket.playerName = playerName;
-            playerTextPacket.type = 0;
-            playerTextPacket.value = value;
-            for (final CloudServer server : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
-                if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
-                    server.pushPacket(playerTextPacket);
-                }
-            }
-        } else if (playerName.equals("team.members")){
-            final PlayerTextPacket playerTextPacket = new PlayerTextPacket();
-            playerTextPacket.playerName = playerName;
-            playerTextPacket.type = 0;
-            playerTextPacket.value = value;
-            for (final CloudServer server : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
-                if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
-                    server.pushPacket(playerTextPacket);
-                }
-            }
         }
     }
     

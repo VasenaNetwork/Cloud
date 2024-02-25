@@ -4,6 +4,7 @@ import com.bedrockcloud.bedrockcloud.api.event.EventHandler;
 import com.bedrockcloud.bedrockcloud.api.event.cloud.CloudStartEvent;
 import com.bedrockcloud.bedrockcloud.api.plugin.PluginManager;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServerProvider;
+import com.bedrockcloud.bedrockcloud.utils.ServerUtils;
 import com.bedrockcloud.bedrockcloud.utils.ThreadFactoryBuilder;
 import com.bedrockcloud.bedrockcloud.utils.command.CommandRegistry;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
@@ -11,8 +12,7 @@ import com.bedrockcloud.bedrockcloud.utils.console.shutdown.ShutdownThread;
 import com.bedrockcloud.bedrockcloud.network.packetRegistry.PacketRegistry;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayerProvider;
 import com.bedrockcloud.bedrockcloud.rest.App;
-import com.bedrockcloud.bedrockcloud.utils.helper.serviceHelper.ServiceHelper;
-import com.bedrockcloud.bedrockcloud.tasks.RestartAllTask;
+import com.bedrockcloud.bedrockcloud.tasks.RestartTask;
 import com.bedrockcloud.bedrockcloud.utils.console.reader.ConsoleReader;
 import com.bedrockcloud.bedrockcloud.network.NetworkManager;
 import com.bedrockcloud.bedrockcloud.network.handler.PacketHandler;
@@ -63,7 +63,7 @@ public class BedrockCloud
     public final static String prefix = "§l§bCloud §r§8» §r";
     private Scheduler scheduler;
     private final ScheduledExecutorService tickExecutor;
-    private ScheduledFuture<?> tickFuture;
+    private final ScheduledFuture<?> tickFuture;
     private int currentTick = 0;
     
     public static Logger getLogger() {
@@ -99,7 +99,7 @@ public class BedrockCloud
 
         final Timer restartTimer = new Timer();
         if (Utils.getConfig().getBoolean("auto-restart-cloud", false)) {
-            restartTimer.schedule(new RestartAllTask(), 1000L, 1000L);
+            restartTimer.schedule(new RestartTask(), 1000L, 1000L);
         }
 
         ThreadFactoryBuilder builder = ThreadFactoryBuilder
@@ -110,8 +110,8 @@ public class BedrockCloud
 
         getPluginManager().enableAllPlugins();
 
-        ServiceHelper.startAllProxies();
-        ServiceHelper.startAllServers();
+        ServerUtils.startAllProxies();
+        ServerUtils.startAllServers();
         BedrockCloud.networkManager.start();
 
         this.tickFuture = this.tickExecutor.scheduleAtFixedRate(this::tickProcessor, 50, 50, TimeUnit.MILLISECONDS);
@@ -127,6 +127,7 @@ public class BedrockCloud
         BedrockCloud.cloudServerProvider = new CloudServerProvider();
         BedrockCloud.cloudPlayerProvider = new CloudPlayerProvider();
         BedrockCloud.packetHandler = new PacketHandler();
+        
         PacketRegistry.registerPackets();
         BedrockCloud.consoleReader.start();
     }
