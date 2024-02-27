@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.api.plugin;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.event.*;
 import com.bedrockcloud.bedrockcloud.api.event.plugin.PluginLoadEvent;
 import com.bedrockcloud.bedrockcloud.api.event.plugin.PluginUnloadEvent;
@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 public class PluginManager {
 
     private final Logger logger;
-    private final BedrockCloud cloud;
+    private final Cloud cloud;
     private final PluginLoader pluginLoader;
     private final CommandRegistry commandManager;
 
@@ -39,9 +39,9 @@ public class PluginManager {
     final Object2ObjectMap<String, PluginClassLoader> pluginClassLoaders = new Object2ObjectArrayMap<>();
     final Map<Class<? extends Event>, Map<EventPriority, List<RegisteredListener>>> listeners = new HashMap<>();
 
-    public PluginManager( BedrockCloud cloud ) {
+    public PluginManager( Cloud cloud ) {
         this.cloud = cloud;
-        this.logger = BedrockCloud.getLogger();
+        this.logger = Cloud.getLogger();
         this.pluginLoader = new PluginLoader( this.logger, this );
         this.commandManager = new CommandRegistry();
         this.loadPluginsIn( this.cloud.getPluginPath().toPath() );
@@ -224,7 +224,7 @@ public class PluginManager {
         return this.pluginMap.getOrDefault( pluginName, null );
     }
 
-    public BedrockCloud getCloud() {
+    public Cloud getCloud() {
         return this.cloud;
     }
 

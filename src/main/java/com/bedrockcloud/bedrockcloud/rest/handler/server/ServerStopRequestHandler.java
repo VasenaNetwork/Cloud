@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.server;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -44,8 +44,8 @@ public class ServerStopRequestHandler implements HttpHandler {
 
         String server = queryParams.get("server");
 
-        if (BedrockCloud.getCloudServerProvider().existServer(server)) {
-            final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(server);
+        if (Cloud.getCloudServerProvider().existServer(server)) {
+            final CloudServer cloudServer = Cloud.getCloudServerProvider().getServer(server);
             cloudServer.stopServer();
 
             JSONObject responseObj = new JSONObject();

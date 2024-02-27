@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
@@ -16,10 +16,10 @@ public class PlayerKickPacket extends DataPacket
     public void handle(final JSONObject jsonObject, final ClientRequest clientRequest) {
         final String playerName = jsonObject.get("playerName").toString();
         final String reason = jsonObject.get("reason").toString();
-        if (BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
-            final CloudPlayer cloudPlayer = BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName);
-            if (BedrockCloud.getCloudServerProvider().existServer(cloudPlayer.getCurrentProxy())) {
-                final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(cloudPlayer.getCurrentProxy());
+        if (Cloud.getCloudPlayerProvider().existsPlayer(playerName)) {
+            final CloudPlayer cloudPlayer = Cloud.getCloudPlayerProvider().getCloudPlayer(playerName);
+            if (Cloud.getCloudServerProvider().existServer(cloudPlayer.getCurrentProxy())) {
+                final CloudServer cloudServer = Cloud.getCloudServerProvider().getServer(cloudPlayer.getCurrentProxy());
                 final PlayerKickPacket playerKickPacket = new PlayerKickPacket();
                 playerKickPacket.playerName = playerName;
                 playerKickPacket.reason = reason.replace("§", "&");

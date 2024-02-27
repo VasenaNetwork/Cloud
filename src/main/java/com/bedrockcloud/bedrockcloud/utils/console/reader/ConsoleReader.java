@@ -2,7 +2,7 @@ package com.bedrockcloud.bedrockcloud.utils.console.reader;
 
 import java.util.*;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.utils.command.Command;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import org.jline.reader.*;
@@ -33,7 +33,7 @@ public class ConsoleReader extends Thread implements Loggable {
                     .completer(new CommandCompleter(getCommandNames()))
                     .build();
 
-            while (BedrockCloud.isRunning()) {
+            while (Cloud.isRunning()) {
                 String input = lineReader.readLine();
 
                 ParsedLine pl = lineReader.getParsedLine();
@@ -49,7 +49,7 @@ public class ConsoleReader extends Thread implements Loggable {
 
             terminal.close();
         } catch (Exception e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
     }
 
@@ -76,7 +76,7 @@ public class ConsoleReader extends Thread implements Loggable {
         if (command != null) {
             command.onCommand(args);
         } else if (!commandName.isEmpty() && !commandName.isBlank()) {
-            BedrockCloud.getLogger().command("This Command doesn't exist. Try help for more!");
+            Cloud.getLogger().command("This Command doesn't exist. Try help for more!");
         }
     }
 

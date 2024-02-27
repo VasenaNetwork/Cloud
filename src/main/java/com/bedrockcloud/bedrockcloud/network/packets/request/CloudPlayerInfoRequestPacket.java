@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets.request;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.network.packets.response.CloudPlayerInfoResponsePacket;
@@ -19,14 +19,14 @@ public class CloudPlayerInfoRequestPacket extends DataPacket {
         if (jsonObject.get("playerInfoName") == null) {
             success = false;
         } else {
-            success = BedrockCloud.getCloudPlayerProvider().getCloudPlayer(jsonObject.get("playerInfoName").toString()) != null;
+            success = Cloud.getCloudPlayerProvider().getCloudPlayer(jsonObject.get("playerInfoName").toString()) != null;
         }
 
         CloudPlayer cloudPlayer;
 
         cloudPlayerInfoResponsePacket.success = success;
         if (success) {
-            if ((cloudPlayer = BedrockCloud.getCloudPlayerProvider().getCloudPlayer(jsonObject.get("playerInfoName").toString())) != null) {
+            if ((cloudPlayer = Cloud.getCloudPlayerProvider().getCloudPlayer(jsonObject.get("playerInfoName").toString())) != null) {
                 cloudPlayerInfoResponsePacket.name = cloudPlayer.getPlayerName();
                 cloudPlayerInfoResponsePacket.address = cloudPlayer.getAddress();
                 cloudPlayerInfoResponsePacket.xuid = cloudPlayer.getXuid();
@@ -35,6 +35,6 @@ public class CloudPlayerInfoRequestPacket extends DataPacket {
             }
         }
 
-        BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(cloudPlayerInfoResponsePacket);
+        Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(cloudPlayerInfoResponsePacket);
     }
 }

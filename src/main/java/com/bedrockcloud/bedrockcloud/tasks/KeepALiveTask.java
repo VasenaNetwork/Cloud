@@ -10,7 +10,7 @@ import com.bedrockcloud.bedrockcloud.server.query.api.Protocol;
 import com.bedrockcloud.bedrockcloud.server.query.api.QueryException;
 import com.bedrockcloud.bedrockcloud.server.query.api.QueryStatus;
 import com.bedrockcloud.bedrockcloud.network.packets.KeepALivePacket;
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
@@ -28,14 +28,14 @@ public class KeepALiveTask implements Runnable {
 
     @Override
     public void run() {
-        while (BedrockCloud.isRunning() && BedrockCloud.getCloudServerProvider().existServer(cloudServer.getServerName())) {
+        while (Cloud.isRunning() && Cloud.getCloudServerProvider().existServer(cloudServer.getServerName())) {
             try {
                 final String serverName = cloudServer.getServerName();
                 if (serverName == null) {
                     return;
                 }
 
-                final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
+                final CloudServer server = Cloud.getCloudServerProvider().getServer(serverName);
                 if (server == null) {
                     return;
                 }
@@ -74,17 +74,17 @@ public class KeepALiveTask implements Runnable {
         server.setAliveChecks(0);
 
         ServerTimeoutEvent event = new ServerTimeoutEvent(server);
-        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+        Cloud.getInstance().getPluginManager().callEvent(event);
 
         String notifyMessage = MessageAPI.timedOut.replace("%service", server.getServerName());
         Utils.sendNotifyCloud(notifyMessage);
-        BedrockCloud.getLogger().warning(notifyMessage);
+        Cloud.getLogger().warning(notifyMessage);
 
         try {
             PortValidator.ports.remove(server.getServerPort());
             PortValidator.ports.remove(server.getServerPort() + 1);
 
-            if (BedrockCloud.getTemplateProvider().isTemplateRunning(server.getTemplate())) {
+            if (Cloud.getTemplateProvider().isTemplateRunning(server.getTemplate())) {
                 ServerUtils.killWithPID(server);
             } else {
                 ServerUtils.killWithPID(false, server);

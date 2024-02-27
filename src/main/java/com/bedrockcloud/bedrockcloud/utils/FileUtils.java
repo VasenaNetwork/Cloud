@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.utils;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 
 import java.io.*;
 
@@ -46,7 +46,7 @@ public class FileUtils {
                     in.close();
                     out.close();
                 } catch (IOException e) {
-                    BedrockCloud.getLogger().exception(e);
+                    Cloud.getLogger().exception(e);
                 }
             }
         } catch (Exception ignored) {}
@@ -60,7 +60,7 @@ public class FileUtils {
             FileUtils.copy(Crashfile, dest_lib);
             com.bedrockcloud.bedrockcloud.utils.config.FileUtils.copyFile(Crashfile, dest_lib);
         } catch (IOException e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
 
         try {
@@ -82,7 +82,7 @@ public class FileUtils {
                 }
             }
         } catch (NullPointerException e){
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
     }
 

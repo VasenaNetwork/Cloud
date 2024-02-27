@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import org.jetbrains.annotations.ApiStatus;
@@ -29,7 +29,7 @@ public class NetworkManager implements Loggable {
     }
 
     public void start() {
-        while (BedrockCloud.isRunning()) {
+        while (Cloud.isRunning()) {
             if (this.datagramSocket != null && !this.datagramSocket.isClosed()) {
                 try {
                     byte[] buffer = new byte[1024];

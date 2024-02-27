@@ -1,14 +1,12 @@
 package com.bedrockcloud.bedrockcloud.templates;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.event.template.TemplateLoadEvent;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class Template implements Loggable {
     private final String name;
@@ -35,10 +33,10 @@ public class Template implements Loggable {
         this.isStatic = isStatic;
 
         TemplateLoadEvent event = new TemplateLoadEvent(this);
-        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+        Cloud.getInstance().getPluginManager().callEvent(event);
 
-        if (!BedrockCloud.getTemplateProvider().existsTemplate(this.getName())) {
-            BedrockCloud.getTemplateProvider().addTemplate(this);
+        if (!Cloud.getTemplateProvider().existsTemplate(this.getName())) {
+            Cloud.getTemplateProvider().addTemplate(this);
         }
 
         this.runningServers = new HashMap<>();
@@ -87,27 +85,27 @@ public class Template implements Loggable {
 
     public void start(boolean force) {
         if (isMaintenance && !force) {
-            BedrockCloud.getLogger().warning("§cThe group §e" + getName() + " §cwas not started because it is in maintenance, but you can start it yourself with the command §7'§etemplate start <template>§7'§c.");
+            Cloud.getLogger().warning("§cThe group §e" + getName() + " §cwas not started because it is in maintenance, but you can start it yourself with the command §7'§etemplate start <template>§7'§c.");
             return;
         }
 
-        BedrockCloud.getLogger().info("Starting group " + getName() + "...");
+        Cloud.getLogger().info("Starting group " + getName() + "...");
         for (int i = 0; i < getMinRunningServer(); ++i) {
             new CloudServer(this);
         }
-        BedrockCloud.getTemplateProvider().addRunningTemplate(this);
+        Cloud.getTemplateProvider().addRunningTemplate(this);
     }
 
     public void restart() {
-        BedrockCloud.getLogger().info("Restarting group " + getName() + "...");
+        Cloud.getLogger().info("Restarting group " + getName() + "...");
         for (CloudServer server : runningServers.values()) {
             server.stopServer();
         }
     }
 
     public void stop() {
-        BedrockCloud.getLogger().info("Stopping group " + getName() + "...");
-        BedrockCloud.getTemplateProvider().removeRunningTemplate(this);
+        Cloud.getLogger().info("Stopping group " + getName() + "...");
+        Cloud.getTemplateProvider().removeRunningTemplate(this);
 
         for (CloudServer server : runningServers.values()) {
             server.stopServer();

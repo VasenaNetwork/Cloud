@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.player;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONArray;
@@ -13,7 +13,7 @@ public class PlayerListRequestHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
-        if (BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().size() == 0){
+        if (Cloud.getCloudPlayerProvider().getCloudPlayerMap().size() == 0){
             String response = "No players online!";
             exchange.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = exchange.getResponseBody();
@@ -23,11 +23,11 @@ public class PlayerListRequestHandler implements HttpHandler {
         }
 
         JSONArray playersArray = new JSONArray();
-        for (String cloudPlayerName : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().keySet()){
-            if (BedrockCloud.getCloudPlayerProvider().existsPlayer(cloudPlayerName)) {
+        for (String cloudPlayerName : Cloud.getCloudPlayerProvider().getCloudPlayerMap().keySet()){
+            if (Cloud.getCloudPlayerProvider().existsPlayer(cloudPlayerName)) {
                 JSONObject playerObj = new JSONObject();
                 playerObj.put("name", cloudPlayerName);
-                playerObj.put("currentServer", BedrockCloud.getCloudPlayerProvider().getCloudPlayer(cloudPlayerName).getCurrentServer());
+                playerObj.put("currentServer", Cloud.getCloudPlayerProvider().getCloudPlayer(cloudPlayerName).getCurrentServer());
                 playersArray.add(playerObj);
             }
         }

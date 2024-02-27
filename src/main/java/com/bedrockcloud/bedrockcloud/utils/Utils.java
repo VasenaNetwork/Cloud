@@ -1,7 +1,7 @@
 package com.bedrockcloud.bedrockcloud.utils;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
-import com.bedrockcloud.bedrockcloud.CloudStarter;
+import com.bedrockcloud.bedrockcloud.Cloud;
+import com.bedrockcloud.bedrockcloud.Bootstrap;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.VersionInfo;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
@@ -48,15 +48,15 @@ public class Utils {
         long maxMemoryBytes = Utils.getMaxMemory();
         double maxMemoryGB = (double) maxMemoryBytes / (1024 * 1024 * 1024);
 
-        BedrockCloud.getLogger().command("Used Memory   : " + decimalFormat.format(usedMemoryGB) + " GB");
-        BedrockCloud.getLogger().command("Free Memory   : " + decimalFormat.format(freeMemoryGB) + " GB");
-        BedrockCloud.getLogger().command("Total Memory  : " + decimalFormat.format(totalMemoryGB) + " GB");
-        BedrockCloud.getLogger().command("Max Memory    : " + decimalFormat.format(maxMemoryGB) + " GB");
+        Cloud.getLogger().command("Used Memory   : " + decimalFormat.format(usedMemoryGB) + " GB");
+        Cloud.getLogger().command("Free Memory   : " + decimalFormat.format(freeMemoryGB) + " GB");
+        Cloud.getLogger().command("Total Memory  : " + decimalFormat.format(totalMemoryGB) + " GB");
+        Cloud.getLogger().command("Max Memory    : " + decimalFormat.format(maxMemoryGB) + " GB");
     }
 
     public static String getCloudPath(){
         try {
-            String path = BedrockCloud.class
+            String path = Cloud.class
                     .getProtectionDomain()
                     .getCodeSource()
                     .getLocation()
@@ -65,7 +65,7 @@ public class Utils {
             String fullPath = path.substring(path.lastIndexOf("/") + 1);
             return path.replace(fullPath, "");
         } catch (NullPointerException | URISyntaxException e){
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
             return "";
         }
     }
@@ -79,7 +79,7 @@ public class Utils {
     }
 
     public static VersionInfo getVersion() {
-        return CloudStarter.class.isAnnotationPresent(VersionInfo.class) ? CloudStarter.class.getAnnotation(VersionInfo.class) : null;
+        return Bootstrap.class.isAnnotationPresent(VersionInfo.class) ? Bootstrap.class.getAnnotation(VersionInfo.class) : null;
     }
 
     public static String boolToString(Boolean bool){
@@ -111,17 +111,17 @@ public class Utils {
     }
 
     public static void addMaintenance(String player){
-        BedrockCloud.getMaintenanceFile().set(player.toLowerCase(), true);
-        BedrockCloud.getMaintenanceFile().save();
+        Cloud.getMaintenanceFile().set(player.toLowerCase(), true);
+        Cloud.getMaintenanceFile().save();
     }
 
     public static void removeMaintenance(String player){
-        BedrockCloud.getMaintenanceFile().remove(player.toLowerCase());
-        BedrockCloud.getMaintenanceFile().save();
+        Cloud.getMaintenanceFile().remove(player.toLowerCase());
+        Cloud.getMaintenanceFile().save();
     }
 
     public static boolean isMaintenance(String player){
-        return BedrockCloud.getMaintenanceFile().exists(player.toLowerCase(), true);
+        return Cloud.getMaintenanceFile().exists(player.toLowerCase(), true);
     }
 
     public static long getMaxMemory() {
@@ -142,7 +142,7 @@ public class Utils {
     }
 
     public static void broadcastPacket(final DataPacket packet) {
-        for (CloudServer server : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+        for (CloudServer server : Cloud.getCloudServerProvider().getCloudServers().values()) {
             if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
                 if (server.isConnected()) server.pushPacket(packet);
             }
@@ -151,10 +151,10 @@ public class Utils {
 
     @ApiStatus.Internal
     public static void sendNotifyCloud(final String message) {
-        for (final CloudServer cloudServer : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+        for (final CloudServer cloudServer : Cloud.getCloudServerProvider().getCloudServers().values()) {
             if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
                 final CloudNotifyMessagePacket packet = new CloudNotifyMessagePacket();
-                packet.message = BedrockCloud.prefix + message;
+                packet.message = Cloud.prefix + message;
                 cloudServer.pushPacket(packet);
             }
         }

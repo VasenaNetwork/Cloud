@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.tasks;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
 import com.bedrockcloud.bedrockcloud.network.packets.PlayerTextPacket;
 
@@ -16,7 +16,7 @@ public class RestartTask extends TimerTask {
 
     @Override
     public void run() {
-        if (!BedrockCloud.isRunning()) return;
+        if (!Cloud.isRunning()) return;
 
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -38,17 +38,17 @@ public class RestartTask extends TimerTask {
 
     private void sendRestartMessage(String timeLeft) {
 
-        for (CloudPlayer player : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
+        for (CloudPlayer player : Cloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
             PlayerTextPacket pk = new PlayerTextPacket();
             pk.playerName = player.getPlayerName();
             pk.type = pk.TYPE_MESSAGE;
-            pk.value = BedrockCloud.prefix + "§cThe server is restarting in " + timeLeft + "§8.";
+            pk.value = Cloud.prefix + "§cThe server is restarting in " + timeLeft + "§8.";
             player.getProxy().pushPacket(pk);
         }
     }
 
     private void initiateServerRestart() {
-        BedrockCloud.setRunning(false);
+        Cloud.setRunning(false);
         System.exit(0);
     }
 }

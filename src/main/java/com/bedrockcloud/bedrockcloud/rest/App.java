@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.rest;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.rest.handler.player.PlayerInfoRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.player.PlayerKickRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.player.PlayerListRequestHandler;
@@ -16,7 +16,6 @@ import com.bedrockcloud.bedrockcloud.rest.handler.template.TemplateStopRequestHa
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.sun.net.httpserver.Authenticator;
 import com.sun.net.httpserver.BasicAuthenticator;
-import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -63,9 +62,9 @@ public class App {
 
             server.setExecutor(null);
             server.start();
-            BedrockCloud.getLogger().info("§aRestAPI is running.");
+            Cloud.getLogger().info("§aRestAPI is running.");
         } catch (IOException e) {
-            BedrockCloud.getLogger().error("§cCan't create RestAPI server.");
+            Cloud.getLogger().error("§cCan't create RestAPI server.");
         }
     }
 }

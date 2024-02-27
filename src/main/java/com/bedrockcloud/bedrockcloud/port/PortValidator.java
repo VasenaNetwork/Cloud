@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.port;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 
@@ -43,7 +43,7 @@ public final class PortValidator {
     }
 
     private static boolean isPortUsed(int port) {
-        for (final var service : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+        for (final var service : Cloud.getCloudServerProvider().getCloudServers().values()) {
             if (service.getServerPort() == port || service.getServerPort()+1 == port) return true;
         }
 

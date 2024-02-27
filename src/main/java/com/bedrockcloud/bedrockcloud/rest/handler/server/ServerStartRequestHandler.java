@@ -1,7 +1,6 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.server;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
-import com.bedrockcloud.bedrockcloud.api.GroupAPI;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
@@ -72,8 +71,8 @@ public class ServerStartRequestHandler implements HttpHandler {
         String template = queryParams.get("template");
         int count = Integer.parseInt(queryParams.get("count"));
 
-        if (BedrockCloud.getTemplateProvider().existsTemplate(template)){
-            if (!BedrockCloud.getTemplateProvider().isTemplateRunning(BedrockCloud.getTemplateProvider().getTemplate(template))){
+        if (Cloud.getTemplateProvider().existsTemplate(template)){
+            if (!Cloud.getTemplateProvider().isTemplateRunning(Cloud.getTemplateProvider().getTemplate(template))){
                 JSONObject responseObj = new JSONObject();
                 responseObj.put("error", "The Template " + template + " isn't running!");
 
@@ -93,7 +92,7 @@ public class ServerStartRequestHandler implements HttpHandler {
                     os.write(response.getBytes());
                     os.close();
                 } else {
-                    final Template group = BedrockCloud.getTemplateProvider().getTemplate(template);
+                    final Template group = Cloud.getTemplateProvider().getTemplate(template);
                     for (int i = 0; i < count; ++i) {
                         new CloudServer(group);
                     }

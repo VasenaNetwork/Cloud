@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.api;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.templates.TemplateProvider;
@@ -30,19 +30,19 @@ public class GroupAPI implements Loggable {
     @ApiStatus.Internal
     public static boolean deleteGroup(final String name) {
         if (!isGroup(name)) {
-            BedrockCloud.getLogger().warning("§cThe template §e" + name + " §cdon't exists§7.");
+            Cloud.getLogger().warning("§cThe template §e" + name + " §cdon't exists§7.");
             return false;
         }
 
-        TemplateProvider templateProvider = BedrockCloud.getTemplateProvider();
+        TemplateProvider templateProvider = Cloud.getTemplateProvider();
         Template template = templateProvider.getTemplate(name);
         if (template == null) {
-            BedrockCloud.getLogger().warning("§cThe template §e" + name + " §cdon't exists§7.");
+            Cloud.getLogger().warning("§cThe template §e" + name + " §cdon't exists§7.");
             return false;
         }
 
         if (templateProvider.isTemplateRunning(template)) {
-            BedrockCloud.getLogger().warning("§cThe template §e" + name + " §cmust be stopped before deleting§7.");
+            Cloud.getLogger().warning("§cThe template §e" + name + " §cmust be stopped before deleting§7.");
             return false;
         }
 
@@ -62,7 +62,7 @@ public class GroupAPI implements Loggable {
             String jsonString = gson.toJson(updatedTemplateArray);
             fileWriter.write(jsonString);
         } catch (IOException e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
             return false;
         }
 
@@ -75,7 +75,7 @@ public class GroupAPI implements Loggable {
     @ApiStatus.Internal
     public static void createGroup(final String name, final int type, final boolean lobby) {
         if (isGroup(name)) {
-            BedrockCloud.getLogger().warning("§cThe template §e" + name + " §calready exists§7.");
+            Cloud.getLogger().warning("§cThe template §e" + name + " §calready exists§7.");
             return;
         }
 
@@ -83,15 +83,15 @@ public class GroupAPI implements Loggable {
             createTemplateDirectories(name, type);
             createConfigEntry(name, type, lobby);
 
-            BedrockCloud.getLogger().debug("The Group " + name + " has been successfully created!");
+            Cloud.getLogger().debug("The Group " + name + " has been successfully created!");
         } catch (IOException e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
     }
 
     public static void createNewGroup(final String name, final int type, final boolean lobby) {
         if (isGroup(name)) {
-            BedrockCloud.getLogger().warning("§cThe template §e" + name + " §calready exists§7.");
+            Cloud.getLogger().warning("§cThe template §e" + name + " §calready exists§7.");
             return;
         }
 
@@ -99,10 +99,10 @@ public class GroupAPI implements Loggable {
             createTemplateDirectories(name, type);
             createConfigEntry(name, type, lobby);
 
-            BedrockCloud.getLogger().debug("The Group " + name + " has been successfully created!");
-            BedrockCloud.getTemplateProvider().loadTemplate(name);
+            Cloud.getLogger().debug("The Group " + name + " has been successfully created!");
+            Cloud.getTemplateProvider().loadTemplate(name);
         } catch (IOException e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.plugin;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
@@ -41,7 +41,7 @@ public class PluginDisableRequestHandler implements HttpHandler {
         }
 
         String plugin = queryParams.get("plugin");
-        if (BedrockCloud.getInstance().getPluginManager().getPluginByName(plugin) == null) {
+        if (Cloud.getInstance().getPluginManager().getPluginByName(plugin) == null) {
             JSONObject responseObj = new JSONObject();
             responseObj.put("error", "Plugin " + plugin + " not found");
 
@@ -51,7 +51,7 @@ public class PluginDisableRequestHandler implements HttpHandler {
             os.write(response.getBytes());
             os.close();
         } else {
-            BedrockCloud.getInstance().getPluginManager().disablePlugin(BedrockCloud.getInstance().getPluginManager().getPluginByName(plugin));
+            Cloud.getInstance().getPluginManager().disablePlugin(Cloud.getInstance().getPluginManager().getPluginByName(plugin));
 
             JSONObject responseObj = new JSONObject();
             responseObj.put("success", "Plugin " + plugin + " disabled");

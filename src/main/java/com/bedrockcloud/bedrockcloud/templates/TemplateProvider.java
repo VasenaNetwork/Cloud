@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.templates;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
 import com.bedrockcloud.bedrockcloud.api.event.template.TemplateUnloadEvent;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
@@ -64,7 +64,7 @@ public class TemplateProvider implements Loggable {
     @ApiStatus.Internal
     public void removeRunningTemplate(final String name) {
         TemplateUnloadEvent event = new TemplateUnloadEvent(this.getTemplate(name));
-        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+        Cloud.getInstance().getPluginManager().callEvent(event);
 
         this.runningTemplates.remove(name);
     }
@@ -72,7 +72,7 @@ public class TemplateProvider implements Loggable {
     @ApiStatus.Internal
     public void removeRunningTemplate(final Template template) {
         TemplateUnloadEvent event = new TemplateUnloadEvent(template);
-        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+        Cloud.getInstance().getPluginManager().callEvent(event);
 
         this.runningTemplates.remove(template.getName());
     }
@@ -88,10 +88,10 @@ public class TemplateProvider implements Loggable {
                             (boolean) stats.get("isStatic"));
                 }
             } catch (IOException e) {
-                BedrockCloud.getLogger().exception(e);
+                Cloud.getLogger().exception(e);
             }
         } else {
-            BedrockCloud.getLogger().error("The template " + name + " is already loaded.");
+            Cloud.getLogger().error("The template " + name + " is already loaded.");
         }
     }
 
@@ -108,7 +108,7 @@ public class TemplateProvider implements Loggable {
                                 (boolean) stats.get("isStatic"));
                     }
                 } catch (IOException e) {
-                    BedrockCloud.getLogger().exception(e);
+                    Cloud.getLogger().exception(e);
                 }
             }
         }

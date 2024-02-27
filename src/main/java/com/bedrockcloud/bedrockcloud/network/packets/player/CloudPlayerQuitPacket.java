@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets.player;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.event.player.CloudPlayerQuitEvent;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
@@ -17,23 +17,23 @@ public class CloudPlayerQuitPacket extends DataPacket
         final String playername = jsonObject.get("playerName").toString();
         final String serverName = jsonObject.get("leftServer").toString();
 
-        if (BedrockCloud.getCloudServerProvider().existServer(serverName)) {
-            final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
+        if (Cloud.getCloudServerProvider().existServer(serverName)) {
+            final CloudServer server = Cloud.getCloudServerProvider().getServer(serverName);
             final CloudPlayerQuitPacket packet = new CloudPlayerQuitPacket();
             packet.playerName = playername;
             server.pushPacket(packet);
         }
 
-        final CloudPlayer cloudPlayer = BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playername);
-        final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
+        final CloudPlayer cloudPlayer = Cloud.getCloudPlayerProvider().getCloudPlayer(playername);
+        final CloudServer server = Cloud.getCloudServerProvider().getServer(serverName);
 
         if (server != null) server.getTemplate().removePlayer(cloudPlayer);
         String proxy = cloudPlayer.getCurrentProxy();
-        if (BedrockCloud.getCloudServerProvider().getServer(proxy) != null) BedrockCloud.getCloudServerProvider().getServer(proxy).getTemplate().removePlayer(cloudPlayer);
+        if (Cloud.getCloudServerProvider().getServer(proxy) != null) Cloud.getCloudServerProvider().getServer(proxy).getTemplate().removePlayer(cloudPlayer);
         CloudPlayerQuitEvent event = new CloudPlayerQuitEvent(cloudPlayer);
-        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+        Cloud.getInstance().getPluginManager().callEvent(event);
 
-        BedrockCloud.getCloudPlayerProvider().removeCloudPlayer(cloudPlayer);
+        Cloud.getCloudPlayerProvider().removeCloudPlayer(cloudPlayer);
     }
     
     @Override

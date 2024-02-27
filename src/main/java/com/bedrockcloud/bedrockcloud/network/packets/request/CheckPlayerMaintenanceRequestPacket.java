@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets.request;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.network.packets.response.CheckPlayerMaintenanceResponsePacket;
@@ -25,6 +25,6 @@ public class CheckPlayerMaintenanceRequestPacket extends DataPacket {
         checkPlayerMaintenanceResponsePacket.success = success;
         checkPlayerMaintenanceResponsePacket.name = jsonObject.get("playerInfoName").toString();
 
-        BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(checkPlayerMaintenanceResponsePacket);
+        Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(checkPlayerMaintenanceResponsePacket);
     }
 }

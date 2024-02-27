@@ -1,31 +1,30 @@
 package com.bedrockcloud.bedrockcloud.utils.console.shutdown;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
-import com.bedrockcloud.bedrockcloud.api.event.cloud.CloudStartEvent;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.event.cloud.CloudStopEvent;
 
 public class ShutdownThread extends Thread {
 
     @Override
     public void run() {
-        CloudStopEvent event = new CloudStopEvent(BedrockCloud.getInstance());
-        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+        CloudStopEvent event = new CloudStopEvent(Cloud.getInstance());
+        Cloud.getInstance().getPluginManager().callEvent(event);
 
-        BedrockCloud.getInstance().getPluginManager().disableAllPlugins();
-        for (final String templateName : BedrockCloud.getTemplateProvider().getTemplateMap().keySet()) {
-            if (BedrockCloud.getTemplateProvider().isTemplateRunning(BedrockCloud.getTemplateProvider().getTemplate(templateName))) {
-                BedrockCloud.getTemplateProvider().getTemplate(templateName).stop();
+        Cloud.getInstance().getPluginManager().disableAllPlugins();
+        for (final String templateName : Cloud.getTemplateProvider().getTemplateMap().keySet()) {
+            if (Cloud.getTemplateProvider().isTemplateRunning(Cloud.getTemplateProvider().getTemplate(templateName))) {
+                Cloud.getTemplateProvider().getTemplate(templateName).stop();
             }
         }
 
         try {
-            if (BedrockCloud.getNetworkManager().getDatagramSocket() != null && !BedrockCloud.getNetworkManager().getDatagramSocket().isClosed()) {
-                BedrockCloud.getNetworkManager().getDatagramSocket().close();
-                BedrockCloud.getLogger().info("CloudSocket was closed.");
+            if (Cloud.getNetworkManager().getDatagramSocket() != null && !Cloud.getNetworkManager().getDatagramSocket().isClosed()) {
+                Cloud.getNetworkManager().getDatagramSocket().close();
+                Cloud.getLogger().info("CloudSocket was closed.");
             }
         } catch (Exception ignored) {
         }
-        BedrockCloud.getLogger().info("§aCloud is stopping now.");
+        Cloud.getLogger().info("§aCloud is stopping now.");
 
         try {
             Thread.sleep(3000L);

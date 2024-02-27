@@ -17,7 +17,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>com.bedrockcloud.bedrockcloud.CloudStarter</mainClass>
+              <mainClass>com.bedrockcloud.bedrockcloud.Bootstrap</mainClass>
             </manifest>
           </archive>
         </configuration>

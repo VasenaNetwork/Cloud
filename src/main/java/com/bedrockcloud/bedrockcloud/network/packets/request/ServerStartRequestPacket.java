@@ -1,9 +1,8 @@
 package com.bedrockcloud.bedrockcloud.network.packets.request;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
-import com.bedrockcloud.bedrockcloud.network.packets.response.ListServerResponsePacket;
 import com.bedrockcloud.bedrockcloud.network.packets.response.ServerStartResponsePacket;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.templates.Template;
@@ -21,15 +20,15 @@ public class ServerStartRequestPacket extends DataPacket {
 
         final String templateName = jsonObject.get("templateName").toString();
         final String count = jsonObject.get("count").toString();
-        final Template group = BedrockCloud.getTemplateProvider().getTemplate(templateName);
+        final Template group = Cloud.getTemplateProvider().getTemplate(templateName);
         if (group == null) {
             serverStartResponsePacket.success = false;
             serverStartResponsePacket.failureId = FAILURE_TEMPLATE_EXISTENCE;
-            BedrockCloud.getLogger().error("This template does not exist");
-        } else if (!BedrockCloud.getTemplateProvider().isTemplateRunning(group)) {
+            Cloud.getLogger().error("This template does not exist");
+        } else if (!Cloud.getTemplateProvider().isTemplateRunning(group)) {
             serverStartResponsePacket.success = false;
             serverStartResponsePacket.failureId = FAILURE_TEMPLATE_RUNNING;
-            BedrockCloud.getLogger().error("The template is not running");
+            Cloud.getLogger().error("The template is not running");
         } else {
             final JSONArray arr = new JSONArray();
             for (int i = 0; i < Integer.parseInt(count); ++i) {
@@ -41,7 +40,7 @@ public class ServerStartRequestPacket extends DataPacket {
         }
 
         serverStartResponsePacket.requestId = jsonObject.get("requestId").toString();
-        final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString());
+        final CloudServer server = Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString());
         server.pushPacket(serverStartResponsePacket);
     }
 }

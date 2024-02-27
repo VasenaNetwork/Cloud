@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
@@ -22,8 +22,8 @@ public class PlayerTextPacket extends DataPacket
         final String playerName = jsonObject.get("playerName").toString();
         final int type = (Integer) jsonObject.get("type");
         final String value = jsonObject.get("value").toString();
-        if (BedrockCloud.getCloudPlayerProvider().existsPlayer(playerName)) {
-            final CloudPlayer cloudPlayer = BedrockCloud.getCloudPlayerProvider().getCloudPlayer(playerName);
+        if (Cloud.getCloudPlayerProvider().existsPlayer(playerName)) {
+            final CloudPlayer cloudPlayer = Cloud.getCloudPlayerProvider().getCloudPlayer(playerName);
             final PlayerTextPacket playerTextPacket = new PlayerTextPacket();
             playerTextPacket.playerName = cloudPlayer.getPlayerName();
             playerTextPacket.type = type;
