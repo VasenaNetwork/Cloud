@@ -1,8 +1,7 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.template;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
-import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
@@ -43,8 +42,8 @@ public class TemplateDeleteRequestHandler implements HttpHandler {
         }
 
         String template = queryParams.get("template");
-        if (BedrockCloud.getTemplateProvider().existsTemplate(template)){
-            if (BedrockCloud.getTemplateProvider().isTemplateRunning(BedrockCloud.getTemplateProvider().getTemplate(template))){
+        if (Cloud.getTemplateProvider().existsTemplate(template)){
+            if (Cloud.getTemplateProvider().isTemplateRunning(Cloud.getTemplateProvider().getTemplate(template))){
                 JSONObject responseObj = new JSONObject();
                 responseObj.put("error", "Template " + template + " must be stopped before deleting!");
 

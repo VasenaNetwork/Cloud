@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.utils;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
@@ -19,23 +19,23 @@ public class ServerUtils {
         try {
             Thread.sleep(3000L);
         } catch (InterruptedException e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
         for (final String name : GroupAPI.getGroups()) {
             try {
                 final HashMap<String, Object> stats = (HashMap<String, Object>) JsonUtils.get(name, JsonUtils.ALL);
                 if (stats != null && !stats.isEmpty()) {
                     if (Integer.parseInt(stats.get("type").toString()) == 0) {
-                        final Template group = BedrockCloud.getTemplateProvider().getTemplate(name);
+                        final Template group = Cloud.getTemplateProvider().getTemplate(name);
                         if (group != null) {
-                            if (!BedrockCloud.getTemplateProvider().isTemplateRunning(group)) {
+                            if (!Cloud.getTemplateProvider().isTemplateRunning(group)) {
                                 group.start(false);
                             }
                         }
                     }
                 }
             } catch (IOException e2) {
-                BedrockCloud.getLogger().exception(e2);
+                Cloud.getLogger().exception(e2);
             }
         }
     }
@@ -47,16 +47,16 @@ public class ServerUtils {
                 final HashMap<String, Object> stats = (HashMap<String, Object>) JsonUtils.get(name, JsonUtils.ALL);
                 if (stats != null && !stats.isEmpty()) {
                     if (Integer.parseInt(stats.get("type").toString()) == 1) {
-                        final Template group = BedrockCloud.getTemplateProvider().getTemplate(name);
+                        final Template group = Cloud.getTemplateProvider().getTemplate(name);
                         if (group != null) {
-                            if (!BedrockCloud.getTemplateProvider().isTemplateRunning(group)) {
+                            if (!Cloud.getTemplateProvider().isTemplateRunning(group)) {
                                 group.start(false);
                             }
                         }
                     }
                 }
             } catch (IOException e) {
-                BedrockCloud.getLogger().exception(e);
+                Cloud.getLogger().exception(e);
             }
         }
     }
@@ -70,7 +70,7 @@ public class ServerUtils {
     public static void killWithPID(boolean startNewService, CloudServer server) throws IOException {
         String notifyMessage = MessageAPI.stoppedMessage.replace("%service", server.getServerName());
         Utils.sendNotifyCloud(notifyMessage);
-        BedrockCloud.getLogger().warning(notifyMessage);
+        Cloud.getLogger().warning(notifyMessage);
 
         Template template = server.getTemplate();
 
@@ -87,13 +87,13 @@ public class ServerUtils {
         try {
             FileUtils.deleteServer(new File("./temp/" + server.getServerName()), server.getServerName(), server.getTemplate().isStatic());
         } catch (NullPointerException ex) {
-            BedrockCloud.getLogger().exception(ex);
+            Cloud.getLogger().exception(ex);
         }
 
         killPid(server);
 
         server.getTemplate().removeServer(server.getServerName());
-        BedrockCloud.getCloudServerProvider().removeServer(server.getServerName());
+        Cloud.getCloudServerProvider().removeServer(server.getServerName());
 
         try {
             Thread.sleep(2000);
@@ -101,7 +101,7 @@ public class ServerUtils {
         }
 
         if (!startNewService) return;
-        if (BedrockCloud.getTemplateProvider().isTemplateRunning(template)) {
+        if (Cloud.getTemplateProvider().isTemplateRunning(template)) {
             if (server.getTemplate().getRunningServers().size() < server.getTemplate().getMinRunningServer()) {
                 new CloudServer(template);
             }

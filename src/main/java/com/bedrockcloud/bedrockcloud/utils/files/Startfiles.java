@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.utils.files;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
 import com.bedrockcloud.bedrockcloud.api.PasswordAPI;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
@@ -97,9 +97,9 @@ public class Startfiles implements Loggable {
         if (!file.exists()) {
             SoftwareManager.downloadAsync(url, destination).whenComplete((success, error) -> {
                 if (success) {
-                    BedrockCloud.getLogger().info(file.getName() + " downloaded!");
+                    Cloud.getLogger().info(file.getName() + " downloaded!");
                 } else {
-                    BedrockCloud.getLogger().error("Download failed: " + error.getMessage());
+                    Cloud.getLogger().error("Download failed: " + error.getMessage());
                 }
             });
         }

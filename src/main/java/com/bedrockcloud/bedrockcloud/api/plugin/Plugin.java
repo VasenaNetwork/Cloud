@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.api.plugin;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.utils.console.Logger;
 import com.google.common.base.Preconditions;
@@ -22,18 +22,18 @@ public abstract class Plugin {
 
     protected boolean enabled = false;
     private PluginYAML description;
-    private BedrockCloud cloud;
+    private Cloud cloud;
     private File pluginFile;
     private File dataFolder;
     private Logger logger;
     private boolean initialized = false;
 
-    protected final void init(PluginYAML description, BedrockCloud cloud, File pluginFile ) {
+    protected final void init(PluginYAML description, Cloud cloud, File pluginFile ) {
         Preconditions.checkArgument( !this.initialized, "Plugin has been already initialized!" );
         this.initialized = true;
         this.description = description;
         this.cloud = cloud;
-        this.logger = BedrockCloud.getLogger();
+        this.logger = Cloud.getLogger();
 
         this.pluginFile = pluginFile;
         this.dataFolder = new File( cloud.getPluginPath().toPath() + "/" + description.getName() + "/" );
@@ -165,7 +165,7 @@ public abstract class Plugin {
         return this.description.getAuthors();
     }
 
-    public BedrockCloud getCloud() {
+    public Cloud getCloud() {
         return this.cloud;
     }
 

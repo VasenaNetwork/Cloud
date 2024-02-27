@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @VersionInfo(name = "BedrockCloud", version = "1.0.7", developers = { "xxFLORII" }, identifier = "@Stable")
-public class CloudStarter {
+public class Bootstrap {
 
     @Getter
     private static String cloudUser;
@@ -28,18 +28,18 @@ public class CloudStarter {
             checkForUpdates();
             startCloud();
         } catch (Exception e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
             Runtime.getRuntime().halt(0);
         }
     }
 
     private static void initialize() {
         try {
-            Class.forName("com.bedrockcloud.bedrockcloud.BedrockCloud");
+            Class.forName("com.bedrockcloud.bedrockcloud.Cloud");
             cloudUser = System.getProperty("user.name");
             Thread.currentThread().setName("BedrockCloud-main");
         } catch (ClassNotFoundException ex) {
-            BedrockCloud.getLogger().exception(ex);
+            Cloud.getLogger().exception(ex);
             Runtime.getRuntime().halt(0);
         }
     }
@@ -47,14 +47,14 @@ public class CloudStarter {
     private static void checkJavaVersion() {
         int javaVersion = getJavaVersion();
         if (javaVersion < 17) {
-            BedrockCloud.getLogger().error("Using unsupported Java version! Minimum supported version is Java 17, found Java " + javaVersion);
+            Cloud.getLogger().error("Using unsupported Java version! Minimum supported version is Java 17, found Java " + javaVersion);
             Runtime.getRuntime().halt(0);
         }
     }
 
     private static void checkOperatingSystem() {
         if (!isLinux()) {
-            BedrockCloud.getLogger().error("You need a Linux distribution to use BedrockCloud.");
+            Cloud.getLogger().error("You need a Linux distribution to use BedrockCloud.");
             Runtime.getRuntime().halt(0);
         }
     }
@@ -62,7 +62,7 @@ public class CloudStarter {
     private static void checkPocketMineBinary() {
         File file = new File("./bin");
         if (!file.exists()) {
-            BedrockCloud.getLogger().error("No PocketMine PHP binary was found. This is needed to start the PocketMine servers.");
+            Cloud.getLogger().error("No PocketMine PHP binary was found. This is needed to start the PocketMine servers.");
             Runtime.getRuntime().halt(0);
         }
     }
@@ -71,7 +71,7 @@ public class CloudStarter {
         Pattern pattern = Pattern.compile("^[^a-zA-Z0-9]+$");
         Matcher matcher = pattern.matcher(Utils.getServiceSeperator());
         if (Utils.getServiceSeperator().isEmpty() || Utils.getServiceSeperator().length() != 1 || !matcher.matches()) {
-            BedrockCloud.getLogger().error("Service separator is invalid. Please check your cloud configuration.");
+            Cloud.getLogger().error("Service separator is invalid. Please check your cloud configuration.");
             Runtime.getRuntime().halt(0);
         }
     }
@@ -80,14 +80,14 @@ public class CloudStarter {
         try {
             String latestVersion = getVersionFromGitHub();
             if (!Objects.equals(getVersion(), latestVersion)) {
-                BedrockCloud.getLogger().info("§cYou are not using the latest stable version of BedrockCloud.");
-                BedrockCloud.getLogger().info("§cLatest stable version§f: §e" + latestVersion);
-                BedrockCloud.getLogger().info("§cCurrent version§f: §e" + getVersion());
+                Cloud.getLogger().info("§cYou are not using the latest stable version of BedrockCloud.");
+                Cloud.getLogger().info("§cLatest stable version§f: §e" + latestVersion);
+                Cloud.getLogger().info("§cCurrent version§f: §e" + getVersion());
             } else {
-                BedrockCloud.getLogger().info("§aYou are using the latest stable version.");
+                Cloud.getLogger().info("§aYou are using the latest stable version.");
             }
         } catch (IOException e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
     }
 
@@ -95,7 +95,7 @@ public class CloudStarter {
         try {
             new Startfiles(PortValidator.getFreeCloudPort());
             Thread.sleep(3000);
-            new BedrockCloud();
+            new Cloud();
         } catch (InterruptedException ignored) {}
     }
 

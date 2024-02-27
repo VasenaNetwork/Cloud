@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets.request;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.network.packets.response.CloudServerInfoResponsePacket;
@@ -15,7 +15,7 @@ public class CloudServerInfoRequestPacket extends DataPacket
         cloudServerInfoResponsePacket.type = 1;
         cloudServerInfoResponsePacket.requestId = jsonObject.get("requestId").toString();
 
-        CloudServer server = BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString());
+        CloudServer server = Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString());
         cloudServerInfoResponsePacket.serverInfoName = server.getServerName();
         cloudServerInfoResponsePacket.templateName = server.getTemplate().getName();
         cloudServerInfoResponsePacket.state = server.getState();
@@ -25,6 +25,6 @@ public class CloudServerInfoRequestPacket extends DataPacket
         cloudServerInfoResponsePacket.playerCount = server.getPlayerCount();
         cloudServerInfoResponsePacket.maxPlayer = server.getTemplate().getMaxPlayers();
         cloudServerInfoResponsePacket.isStatic = server.getTemplate().isStatic();
-        BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(cloudServerInfoResponsePacket);
+        Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(cloudServerInfoResponsePacket);
     }
 }

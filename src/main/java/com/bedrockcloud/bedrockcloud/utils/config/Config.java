@@ -4,7 +4,7 @@ import java.util.TreeMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.regex.Pattern;
@@ -247,7 +247,7 @@ public class Config
             try {
                 FileUtils.writeFile( this.file, content );
             } catch ( IOException e ) {
-                BedrockCloud.getLogger().error("Runned into IOException.");
+                Cloud.getLogger().error("Runned into IOException.");
             }
             return true;
         }

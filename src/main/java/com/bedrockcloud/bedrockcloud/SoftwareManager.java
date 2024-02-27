@@ -1,10 +1,8 @@
 package com.bedrockcloud.bedrockcloud;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -39,7 +37,7 @@ public class SoftwareManager {
                 inputStream.close();
                 return true;
             } catch (IOException e) {
-                BedrockCloud.getLogger().error("Download failed: " + e.getMessage());
+                Cloud.getLogger().error("Download failed: " + e.getMessage());
                 return false;
             }
         }, executor);

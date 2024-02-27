@@ -1,17 +1,17 @@
 package com.bedrockcloud.bedrockcloud.api.event.cloud;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.event.Event;
 
 public class CloudEvent extends Event {
 
-    private final BedrockCloud cloud;
+    private final Cloud cloud;
 
-    public CloudEvent(BedrockCloud cloud ) {
+    public CloudEvent(Cloud cloud ) {
         this.cloud = cloud;
     }
 
-    public BedrockCloud getCloud() {
+    public Cloud getCloud() {
         return this.cloud;
     }
 }

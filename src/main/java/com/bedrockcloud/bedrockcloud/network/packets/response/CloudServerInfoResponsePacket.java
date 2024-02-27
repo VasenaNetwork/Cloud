@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets.response;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.packets.RequestPacket;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
 import org.json.simple.JSONArray;
@@ -33,13 +33,13 @@ public class CloudServerInfoResponsePacket extends RequestPacket
         this.addValue("isStatic", this.isStatic);
         final JSONArray arr = new JSONArray();
         try {
-            for (final CloudPlayer key : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
+            for (final CloudPlayer key : Cloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
                 if (key.getPlayerName() != null && Objects.equals(key.getCurrentServer(), this.serverInfoName)) {
                     arr.add(key.getPlayerName());
                 }
             }
         } catch (ConcurrentModificationException exception){
-            BedrockCloud.getLogger().exception(exception);
+            Cloud.getLogger().exception(exception);
         }
         this.addValue("players", JSONValue.toJSONString(arr));
         this.addValue("playerCount", this.playerCount);

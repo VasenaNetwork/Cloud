@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
@@ -25,7 +25,7 @@ public class CloudServerConnectPacket extends DataPacket {
         final String serverPort = jsonObject.get("serverPort").toString();
         final String serverPid = jsonObject.get("serverPid").toString();
 
-        final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
+        final CloudServer server = Cloud.getCloudServerProvider().getServer(serverName);
         server.setSocket(clientRequest.getSocket());
         server.setPid(Integer.parseInt(serverPid));
 
@@ -42,7 +42,7 @@ public class CloudServerConnectPacket extends DataPacket {
             final VersionInfoPacket versionInfoPacket = new VersionInfoPacket();
             server.pushPacket(versionInfoPacket);
 
-            for (final CloudServer cloudServer : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+            for (final CloudServer cloudServer : Cloud.getCloudServerProvider().getCloudServers().values()) {
                 if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
                     final RegisterServerPacket packet = new RegisterServerPacket();
                     packet.addValue("serverPort", serverPort);
@@ -53,7 +53,7 @@ public class CloudServerConnectPacket extends DataPacket {
         }
 
         if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
-            for (final CloudServer cloudServer : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+            for (final CloudServer cloudServer : Cloud.getCloudServerProvider().getCloudServers().values()) {
                 if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
                     final RegisterServerPacket packet = new RegisterServerPacket();
                     packet.addValue("serverPort", cloudServer.getServerPort());
@@ -65,7 +65,7 @@ public class CloudServerConnectPacket extends DataPacket {
 
         String notifyMessage = MessageAPI.startedMessage.replace("%service", serverName);
         Utils.sendNotifyCloud(notifyMessage);
-        BedrockCloud.getLogger().warning(notifyMessage);
+        Cloud.getLogger().warning(notifyMessage);
 
         server.getTemplate().addServer(server);
         server.setConnected(true);

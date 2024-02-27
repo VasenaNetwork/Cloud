@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets.request;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.network.packets.response.ServerStopResponsePacket;
@@ -16,11 +16,11 @@ public class ServerStopRequestPacket extends DataPacket {
         serverStopResponsePacket.type = 1;
 
         final String server_Name = jsonObject.get("serverName").toString();
-        final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(server_Name);
+        final CloudServer server = Cloud.getCloudServerProvider().getServer(server_Name);
         if (server == null) {
             serverStopResponsePacket.success = false;
             serverStopResponsePacket.failureId = FAILURE_SERVER_EXISTENCE;
-            BedrockCloud.getLogger().error("This Server doesn't exist");
+            Cloud.getLogger().error("This Server doesn't exist");
         } else {
             serverStopResponsePacket.success = true;
             serverStopResponsePacket.serverInfoName = server_Name;
@@ -28,7 +28,7 @@ public class ServerStopRequestPacket extends DataPacket {
         }
 
         serverStopResponsePacket.requestId = jsonObject.get("requestId").toString();
-        final CloudServer cloudServer = BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString());
+        final CloudServer cloudServer = Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString());
         cloudServer.pushPacket(serverStopResponsePacket);
     }
 }

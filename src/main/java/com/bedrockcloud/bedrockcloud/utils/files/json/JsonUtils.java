@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -77,8 +77,8 @@ public class JsonUtils {
             Object obj = parser.parse(reader);
             return (JSONObject) obj;
         } catch (ParseException | IOException e) {
-            BedrockCloud.getLogger().error("Error reading JSON file from path: " + filePath);
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().error("Error reading JSON file from path: " + filePath);
+            Cloud.getLogger().exception(e);
             return null;
         }
     }

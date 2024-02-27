@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.client;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import org.json.simple.JSONObject;
 
 import java.io.*;
@@ -34,15 +34,15 @@ public class ClientRequest extends Thread implements AutoCloseable {
             String line = this.dataInputStream.readLine();
             if (line != null) {
                 try {
-                    String packetName = BedrockCloud.getPacketHandler().getPacketNameByRequest(line);
-                    JSONObject jsonObject = BedrockCloud.getPacketHandler().handleJsonObject(packetName, line);
-                    BedrockCloud.getPacketHandler().handleCloudPacket(jsonObject, this);
+                    String packetName = Cloud.getPacketHandler().getPacketNameByRequest(line);
+                    JSONObject jsonObject = Cloud.getPacketHandler().handleJsonObject(packetName, line);
+                    Cloud.getPacketHandler().handleCloudPacket(jsonObject, this);
                 } catch (NullPointerException ex) {
-                    BedrockCloud.getLogger().exception(ex);
+                    Cloud.getLogger().exception(ex);
                 }
             }
         } catch (IOException ex) {
-            BedrockCloud.getLogger().exception(ex);
+            Cloud.getLogger().exception(ex);
         } finally {
             try {
                 this.dataOutputStream.flush();
@@ -53,7 +53,7 @@ public class ClientRequest extends Thread implements AutoCloseable {
                 datagramSocket.send(responsePacket);
                 datagramSocket.close();
             } catch (IOException e) {
-                BedrockCloud.getLogger().exception(e);
+                Cloud.getLogger().exception(e);
             }
         }
     }

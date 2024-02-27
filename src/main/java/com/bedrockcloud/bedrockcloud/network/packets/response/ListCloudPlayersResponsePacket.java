@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets.response;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.packets.RequestPacket;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayer;
 import org.json.simple.JSONArray;
@@ -14,13 +14,13 @@ public class ListCloudPlayersResponsePacket extends RequestPacket
     public String encode() {
         final JSONArray arr = new JSONArray();
         try {
-            for (final CloudPlayer key : BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
+            for (final CloudPlayer key : Cloud.getCloudPlayerProvider().getCloudPlayerMap().values()) {
                 if (key.getPlayerName() != null) {
                     arr.add(key.getPlayerName());
                 }
             }
         } catch (ConcurrentModificationException e){
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
         this.addValue("players", JSONValue.toJSONString(arr));
         return super.encode();

@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.server;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONArray;
@@ -12,7 +12,7 @@ import java.io.OutputStream;
 public class ServerListRequestHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        if (BedrockCloud.getCloudServerProvider().getCloudServers().size() == 0) {
+        if (Cloud.getCloudServerProvider().getCloudServers().size() == 0) {
             JSONObject responseObj = new JSONObject();
             responseObj.put("error", "No servers online!");
 
@@ -26,8 +26,8 @@ public class ServerListRequestHandler implements HttpHandler {
 
         JSONArray serversArray = new JSONArray();
         JSONObject serversObj = new JSONObject();
-        for (String server : BedrockCloud.getCloudServerProvider().getCloudServers().keySet()) {
-            if (BedrockCloud.getCloudServerProvider().existServer(server)) {
+        for (String server : Cloud.getCloudServerProvider().getCloudServers().keySet()) {
+            if (Cloud.getCloudServerProvider().existServer(server)) {
                 serversObj.put("name", server);
                 serversArray.add(serversObj);
             }

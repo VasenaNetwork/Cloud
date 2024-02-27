@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets.request;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.network.packets.response.TemplateInfoResponsePacket;
@@ -16,9 +16,9 @@ public class TemplateInfoRequestPacket extends DataPacket {
         templateInfoResponsePacket.requestId = jsonObject.get("requestId").toString();
         Template template;
         if (jsonObject.get("template") == null) {
-            template = BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).getTemplate();
+            template = Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).getTemplate();
         } else {
-            template = BedrockCloud.getTemplateProvider().getTemplate(jsonObject.get("templateName").toString());
+            template = Cloud.getTemplateProvider().getTemplate(jsonObject.get("templateName").toString());
         }
         templateInfoResponsePacket.templateName = template.getName();
         templateInfoResponsePacket.isLobby = template.isLobby();
@@ -28,6 +28,6 @@ public class TemplateInfoRequestPacket extends DataPacket {
         templateInfoResponsePacket.isStatic = template.isStatic();
         templateInfoResponsePacket.maxPlayer = template.getMaxPlayers();
         templateInfoResponsePacket.type = template.getType();
-        BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(templateInfoResponsePacket);
+        Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(templateInfoResponsePacket);
     }
 }

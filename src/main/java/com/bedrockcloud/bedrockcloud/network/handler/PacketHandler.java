@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.handler;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import org.json.simple.JSONObject;
@@ -21,7 +21,7 @@ public class PacketHandler implements Loggable {
         if (!isPacketRegistered(packetName)) {
             registeredPackets.put(packetName, packet);
         } else {
-            BedrockCloud.getLogger().warning("§cPacket §e" + packetName + " §cis already registered.");
+            Cloud.getLogger().warning("§cPacket §e" + packetName + " §cis already registered.");
         }
     }
 
@@ -75,7 +75,7 @@ public class PacketHandler implements Loggable {
                         DataPacket packet = packetClass.newInstance();
                         packet.handle(jsonObject, clientRequest);
                     } catch (InstantiationException | IllegalAccessException ex) {
-                        BedrockCloud.getLogger().exception(ex);
+                        Cloud.getLogger().exception(ex);
                     }
                 }
             }

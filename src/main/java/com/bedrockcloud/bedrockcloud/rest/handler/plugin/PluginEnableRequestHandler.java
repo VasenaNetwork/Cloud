@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.plugin;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.plugin.Plugin;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -43,7 +43,7 @@ public class PluginEnableRequestHandler implements HttpHandler {
         }
 
         String plugin = queryParams.get("plugin");
-        if (BedrockCloud.getInstance().getPluginManager().getPluginByName(plugin) != null) {
+        if (Cloud.getInstance().getPluginManager().getPluginByName(plugin) != null) {
             JSONObject responseObj = new JSONObject();
             responseObj.put("error", "Plugin " + plugin + " already exists");
 
@@ -53,9 +53,9 @@ public class PluginEnableRequestHandler implements HttpHandler {
             os.write(response.getBytes());
             os.close();
         } else {
-            Plugin loadedPlugin = BedrockCloud.getInstance().getPluginManager().loadPlugin(new File("./local/plugins/cloud/" + plugin + ".jar").toPath());
+            Plugin loadedPlugin = Cloud.getInstance().getPluginManager().loadPlugin(new File("./local/plugins/cloud/" + plugin + ".jar").toPath());
             if (loadedPlugin != null) {
-                if (BedrockCloud.getInstance().getPluginManager().enablePlugin(loadedPlugin, null)) {
+                if (Cloud.getInstance().getPluginManager().enablePlugin(loadedPlugin, null)) {
                     JSONObject responseObj = new JSONObject();
                     responseObj.put("success", "Plugin " + plugin + " enabled");
 

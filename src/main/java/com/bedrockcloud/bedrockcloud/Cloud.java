@@ -31,10 +31,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class BedrockCloud
+public class Cloud
 {
     @Getter
-    private static BedrockCloud instance;
+    private static Cloud instance;
 
     @Getter
     private static TemplateProvider templateProvider;
@@ -71,10 +71,10 @@ public class BedrockCloud
     }
 
     public static String getLoggerPrefix() {
-        return "§b" + CloudStarter.getCloudUser() + "§r@§b" + "cloud §r§8» §r";
+        return "§b" + Bootstrap.getCloudUser() + "§r@§b" + "cloud §r§8» §r";
     }
 
-    public BedrockCloud() {
+    public Cloud() {
         instance = this;
         running = true;
 
@@ -87,12 +87,12 @@ public class BedrockCloud
         this.initProvider();
 
         CommandRegistry.registerAllCommands();
-        BedrockCloud.networkManager = new NetworkManager((int) Utils.getConfig().getDouble("port"));
+        Cloud.networkManager = new NetworkManager((int) Utils.getConfig().getDouble("port"));
 
         if (Utils.getConfig().getBoolean("rest-enabled", true)) {
             new App();
         } else {
-            BedrockCloud.getLogger().warning("§cRestAPI is currently disabled. You can enable it in your cloud config.");
+            Cloud.getLogger().warning("§cRestAPI is currently disabled. You can enable it in your cloud config.");
         }
 
         getTemplateProvider().loadTemplates();
@@ -112,7 +112,7 @@ public class BedrockCloud
 
         ServerUtils.startAllProxies();
         ServerUtils.startAllServers();
-        BedrockCloud.networkManager.start();
+        Cloud.networkManager.start();
 
         this.tickFuture = this.tickExecutor.scheduleAtFixedRate(this::tickProcessor, 50, 50, TimeUnit.MILLISECONDS);
 
@@ -122,14 +122,14 @@ public class BedrockCloud
 
     private void initProvider() {
         this.scheduler = new Scheduler(this);
-        BedrockCloud.consoleReader = new ConsoleReader();
-        BedrockCloud.templateProvider = new TemplateProvider();
-        BedrockCloud.cloudServerProvider = new CloudServerProvider();
-        BedrockCloud.cloudPlayerProvider = new CloudPlayerProvider();
-        BedrockCloud.packetHandler = new PacketHandler();
+        Cloud.consoleReader = new ConsoleReader();
+        Cloud.templateProvider = new TemplateProvider();
+        Cloud.cloudServerProvider = new CloudServerProvider();
+        Cloud.cloudPlayerProvider = new CloudPlayerProvider();
+        Cloud.packetHandler = new PacketHandler();
         
         PacketRegistry.registerPackets();
-        BedrockCloud.consoleReader.start();
+        Cloud.consoleReader.start();
     }
 
     public PluginManager getPluginManager() {
@@ -138,18 +138,18 @@ public class BedrockCloud
 
     @ApiStatus.Internal
     public static void setRunning(boolean running) {
-        BedrockCloud.running = running;
+        Cloud.running = running;
     }
 
     private void tickProcessor() {
-        if (!BedrockCloud.isRunning() && !this.tickFuture.isCancelled()) {
+        if (!Cloud.isRunning() && !this.tickFuture.isCancelled()) {
             this.tickFuture.cancel(false);
         }
 
         try {
             this.onTick(++this.currentTick);
         } catch (Exception e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
     }
 

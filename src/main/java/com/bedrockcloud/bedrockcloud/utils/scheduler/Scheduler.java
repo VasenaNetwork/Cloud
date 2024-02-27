@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.utils.scheduler;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Getter;
 
@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Scheduler {
 
     private static Scheduler instance;
-    private final BedrockCloud cloud;
+    private final Cloud cloud;
 
     @Getter
     private final ExecutorService threadedExecutor;
@@ -30,7 +30,7 @@ public class Scheduler {
 
     private final AtomicInteger currentId = new AtomicInteger();
 
-    public Scheduler( BedrockCloud cloud ) {
+    public Scheduler( Cloud cloud ) {
         if ( instance != null ) {
             throw new RuntimeException( "Scheduler was already initialized!" );
         }
@@ -144,7 +144,7 @@ public class Scheduler {
     }
 
     public void shutdown() {
-        BedrockCloud.getLogger().debug( "Scheduler shutdown initialized!" );
+        Cloud.getLogger().debug( "Scheduler shutdown initialized!" );
         this.threadedExecutor.shutdown();
 
         int count = 25;

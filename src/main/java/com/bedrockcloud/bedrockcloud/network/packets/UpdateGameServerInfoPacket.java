@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
@@ -13,7 +13,7 @@ public class UpdateGameServerInfoPacket extends DataPacket
     
     @Override
     public void handle(final JSONObject jsonObject, final ClientRequest clientRequest) {
-        final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString());
+        final CloudServer server = Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString());
         final int type = Integer.parseInt(String.valueOf(jsonObject.get("type")));
         final String value = jsonObject.get("value").toString();
         if (type == TYPE_UPDATE_PLAYER_COUNT) {

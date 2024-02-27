@@ -1,9 +1,8 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.player;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -15,7 +14,7 @@ public class PlayerInfoRequestHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
 
-        if (BedrockCloud.getCloudPlayerProvider().getCloudPlayerMap().size() == 0) {
+        if (Cloud.getCloudPlayerProvider().getCloudPlayerMap().size() == 0) {
             String response = "No players online!";
             exchange.sendResponseHeaders(200, response.getBytes().length);
             OutputStream os = exchange.getResponseBody();
@@ -52,12 +51,12 @@ public class PlayerInfoRequestHandler implements HttpHandler {
         }
 
         JSONObject playerObj = new JSONObject();
-        if (BedrockCloud.getCloudPlayerProvider().existsPlayer(queryParams.get("player"))) {
+        if (Cloud.getCloudPlayerProvider().existsPlayer(queryParams.get("player"))) {
             playerObj.put("name", queryParams.get("player"));
-            playerObj.put("currentServer", BedrockCloud.getCloudPlayerProvider().getCloudPlayer(queryParams.get("player")).getCurrentServer());
-            playerObj.put("xuid", BedrockCloud.getCloudPlayerProvider().getCloudPlayer(queryParams.get("player")).getXuid());
-            playerObj.put("ip", BedrockCloud.getCloudPlayerProvider().getCloudPlayer(queryParams.get("player")).getAddress());
-            playerObj.put("currentProxy", BedrockCloud.getCloudPlayerProvider().getCloudPlayer(queryParams.get("player")).getCurrentProxy());
+            playerObj.put("currentServer", Cloud.getCloudPlayerProvider().getCloudPlayer(queryParams.get("player")).getCurrentServer());
+            playerObj.put("xuid", Cloud.getCloudPlayerProvider().getCloudPlayer(queryParams.get("player")).getXuid());
+            playerObj.put("ip", Cloud.getCloudPlayerProvider().getCloudPlayer(queryParams.get("player")).getAddress());
+            playerObj.put("currentProxy", Cloud.getCloudPlayerProvider().getCloudPlayer(queryParams.get("player")).getCurrentProxy());
             //playerObj.put("hasPrivateServer", BedrockCloud.getCloudPlayerProvider().getCloudPlayer(queryParams.get("player")).isHasPrivateServer());
         } else {
             JSONObject responseObj = new JSONObject();

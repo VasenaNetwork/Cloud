@@ -1,9 +1,9 @@
 package com.bedrockcloud.bedrockcloud.api.event.cloud;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 
 public class CloudStopEvent extends CloudEvent {
-    public CloudStopEvent(BedrockCloud cloud) {
+    public CloudStopEvent(Cloud cloud) {
         super(cloud);
     }
 }

@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.server.cloudserver;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerStartEvent;
@@ -79,42 +79,42 @@ public class CloudServer {
         this.uuid = UUID.fromString(this.serverName).toString();
 
         ServerUtils.killPid(this);
-        BedrockCloud.getCloudServerProvider().addServer(this);
+        Cloud.getCloudServerProvider().addServer(this);
 
         ServerStartEvent event = new ServerStartEvent(this);
-        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+        Cloud.getInstance().getPluginManager().callEvent(event);
 
         this.copyServer();
         try {
             this.startServer();
         } catch (InterruptedException e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
         this.checkAliveAsync();
     }
 
     private void checkAliveAsync() {
         CompletableFuture.supplyAsync(() -> {
-            while (!this.isConnected() && BedrockCloud.getCloudServerProvider().existServer(this.getServerName())) {
+            while (!this.isConnected() && Cloud.getCloudServerProvider().existServer(this.getServerName())) {
                 if (!checkAlive()) {
                     String servername = getServerName();
                     this.setAliveChecks(0);
 
                     String notifyMessage = MessageAPI.startFailed.replace("%service", servername);
                     Utils.sendNotifyCloud(notifyMessage);
-                    BedrockCloud.getLogger().warning(notifyMessage);
+                    Cloud.getLogger().warning(notifyMessage);
 
                     try {
                         PortValidator.ports.remove(getServerPort());
                         PortValidator.ports.remove(getServerPort() + 1);
 
-                        if (BedrockCloud.getTemplateProvider().isTemplateRunning(getTemplate())) {
+                        if (Cloud.getTemplateProvider().isTemplateRunning(getTemplate())) {
                             ServerUtils.killWithPID(this);
                         } else {
                             ServerUtils.killWithPID(false, this);
                         }
                     } catch (IOException exception) {
-                        BedrockCloud.getLogger().exception(exception);
+                        Cloud.getLogger().exception(exception);
                     }
                     return false;
                 }
@@ -137,24 +137,24 @@ public class CloudServer {
 
             String notifyMessage = MessageAPI.startMessage.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
-            BedrockCloud.getLogger().info(notifyMessage);
+            Cloud.getLogger().info(notifyMessage);
             try {
                 builder.command("/bin/sh", "-c", "screen -X -S " + this.serverName + " kill").start();
             } catch (Exception e) {
-                BedrockCloud.getLogger().exception(e);
+                Cloud.getLogger().exception(e);
             }
 
             if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
                 try {
                     builder.command("/bin/sh", "-c", "screen -dmS " + this.serverName + " ../../bin/php7/bin/php ../../local/versions/pocketmine/PocketMine-MP.phar").directory(new File("./temp/" + this.serverName)).start();
                 } catch (Exception e) {
-                    BedrockCloud.getLogger().exception(e);
+                    Cloud.getLogger().exception(e);
                 }
             } else {
                 try {
                     builder.command("/bin/sh", "-c", "screen -dmS " + this.serverName + " java -jar ../../local/versions/waterdogpe/WaterdogPE.jar").directory(new File("./temp/" + this.serverName)).start();
                 } catch (Exception e) {
-                    BedrockCloud.getLogger().exception(e);
+                    Cloud.getLogger().exception(e);
                 }
             }
 
@@ -163,7 +163,7 @@ public class CloudServer {
         } else {
             String notifyMessage = MessageAPI.startFailed.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
-            BedrockCloud.getLogger().error(notifyMessage);
+            Cloud.getLogger().error(notifyMessage);
 
             PortValidator.ports.remove(this.getServerPort());
             PortValidator.ports.remove(this.getServerPort()+1);
@@ -200,11 +200,11 @@ public class CloudServer {
 
     public void stopServer() {
         ServerStopEvent event = new ServerStopEvent(this);
-        BedrockCloud.getInstance().getPluginManager().callEvent(event);
+        Cloud.getInstance().getPluginManager().callEvent(event);
 
         String notifyMessage = MessageAPI.stopMessage.replace("%service", this.serverName);
         Utils.sendNotifyCloud(notifyMessage);
-        BedrockCloud.getLogger().info(notifyMessage);
+        Cloud.getLogger().info(notifyMessage);
 
         final CloudServerDisconnectPacket packet = new CloudServerDisconnectPacket();
         packet.addValue("reason", "Server Stopped");
@@ -220,7 +220,7 @@ public class CloudServer {
             return;
         }
 
-        if (BedrockCloud.getNetworkManager().getDatagramSocket() == null) {
+        if (Cloud.getNetworkManager().getDatagramSocket() == null) {
             return;
         }
 
@@ -228,7 +228,7 @@ public class CloudServer {
         try {
             byteArrayOutputStream.write(cloudPacket.encode().getBytes());
         } catch (IOException e) {
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
 
         byte[] data = byteArrayOutputStream.toByteArray();
@@ -246,10 +246,10 @@ public class CloudServer {
             try (DatagramSocket datagramSocket = new DatagramSocket()) {
                 datagramSocket.send(datagramPacket);
             } catch (IOException ex) {
-                BedrockCloud.getLogger().exception(ex);
+                Cloud.getLogger().exception(ex);
             }
         } catch (UnknownHostException ex) {
-            BedrockCloud.getLogger().exception(ex);
+            Cloud.getLogger().exception(ex);
         }
     }
 
@@ -271,7 +271,7 @@ public class CloudServer {
                 final File destFile = new File(template, file);
                 FileUtils.copy(srcFile, destFile);
             }
-            BedrockCloud.getLogger().info("The server was saved!");
+            Cloud.getLogger().info("The server was saved!");
         }
     }
 

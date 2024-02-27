@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.utils.console;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 
 import java.io.*;
@@ -47,12 +47,12 @@ public class Logger
     }
 
     public void log(final String prefix, final String message) {
-        System.out.println(Colors.toColor(BedrockCloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r"));
+        System.out.println(Colors.toColor(Cloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r"));
         try (FileWriter cloudLogWriter = new FileWriter(this.cloudLog, true)) {
             File file = new File("./local/config.yml");
             if (!file.exists()) return;
             if (!Utils.getConfig().getBoolean("enable-cloudlog-file")) return;
-            cloudLogWriter.append(Colors.removeColor(BedrockCloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r")).append("\n");
+            cloudLogWriter.append(Colors.removeColor(Cloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r")).append("\n");
             cloudLogWriter.flush();
         } catch (IOException ignored) {}
     }

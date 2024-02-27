@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.player;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -51,7 +51,7 @@ public class CloudPlayer {
     }
 
     public CloudServer getProxy() {
-        return BedrockCloud.getCloudServerProvider().getServer(this.getCurrentProxy());
+        return Cloud.getCloudServerProvider().getServer(this.getCurrentProxy());
     }
 
     @Override

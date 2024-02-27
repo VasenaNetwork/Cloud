@@ -1,9 +1,7 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.player;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.network.packets.PlayerKickPacket;
-import com.bedrockcloud.bedrockcloud.network.packets.PlayerTextPacket;
-import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
@@ -45,13 +43,13 @@ public class PlayerKickRequestHandler implements HttpHandler {
         }
 
         String player = queryParams.get("player");
-        if (BedrockCloud.getCloudPlayerProvider().existsPlayer(player)) {
+        if (Cloud.getCloudPlayerProvider().existsPlayer(player)) {
 
             final PlayerKickPacket playerKickPacket = new PlayerKickPacket();
             playerKickPacket.playerName = player;
             Objects.requireNonNull(playerKickPacket);
             playerKickPacket.reason = "§cYou was kicked.";
-            BedrockCloud.getCloudPlayerProvider().getCloudPlayer(player).getProxy().pushPacket(playerKickPacket);
+            Cloud.getCloudPlayerProvider().getCloudPlayer(player).getProxy().pushPacket(playerKickPacket);
 
             JSONObject responseObj = new JSONObject();
             responseObj.put("success", "Player " + player + " was kicked successfully!");

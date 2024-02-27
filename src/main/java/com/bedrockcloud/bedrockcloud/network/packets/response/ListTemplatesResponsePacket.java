@@ -1,8 +1,7 @@
 package com.bedrockcloud.bedrockcloud.network.packets.response;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
-import com.bedrockcloud.bedrockcloud.api.GroupAPI;
 import com.bedrockcloud.bedrockcloud.network.packets.RequestPacket;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import org.json.simple.JSONArray;
@@ -17,7 +16,7 @@ public class ListTemplatesResponsePacket extends RequestPacket
     public String encode() {
         final JSONArray arr = new JSONArray();
         try {
-            for (final Template key : BedrockCloud.getTemplateProvider().getRunningTemplates().values()) {
+            for (final Template key : Cloud.getTemplateProvider().getRunningTemplates().values()) {
                 if (key.getName() != null) {
                     if (key.getType() == SoftwareManager.SOFTWARE_SERVER) {
                         arr.add(key.getName());
@@ -25,7 +24,7 @@ public class ListTemplatesResponsePacket extends RequestPacket
                 }
             }
         } catch (ConcurrentModificationException e){
-            BedrockCloud.getLogger().exception(e);
+            Cloud.getLogger().exception(e);
         }
         this.addValue("templates", JSONValue.toJSONString(arr));
         return super.encode();

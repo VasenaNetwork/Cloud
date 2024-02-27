@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.rest.handler.template;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -42,10 +42,10 @@ public class TemplateRestartRequestHandler implements HttpHandler {
         }
 
         String template = queryParams.get("template");
-        if (BedrockCloud.getTemplateProvider().existsTemplate(template)){
-            if (BedrockCloud.getTemplateProvider().isTemplateRunning(BedrockCloud.getTemplateProvider().getTemplate(template))){
+        if (Cloud.getTemplateProvider().existsTemplate(template)){
+            if (Cloud.getTemplateProvider().isTemplateRunning(Cloud.getTemplateProvider().getTemplate(template))){
 
-                Template template1 = BedrockCloud.getTemplateProvider().getTemplate(template);
+                Template template1 = Cloud.getTemplateProvider().getTemplate(template);
                 template1.restart();
 
                 JSONObject responseObj = new JSONObject();

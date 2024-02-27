@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.network.packets;
 
-import com.bedrockcloud.bedrockcloud.BedrockCloud;
+import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
@@ -21,10 +21,10 @@ public class CloudServerDisconnectPacket extends DataPacket
     public void handle(final JSONObject jsonObject, final ClientRequest clientRequest) {
         final String serverName = jsonObject.get("serverName").toString();
 
-        final CloudServer server = BedrockCloud.getCloudServerProvider().getServer(serverName);
+        final CloudServer server = Cloud.getCloudServerProvider().getServer(serverName);
         server.setAliveChecks(0);
         final Template template = server.getTemplate();
-        for (final CloudServer cloudServer : BedrockCloud.getCloudServerProvider().getCloudServers().values()) {
+        for (final CloudServer cloudServer : Cloud.getCloudServerProvider().getCloudServers().values()) {
             if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
                 final UnregisterServerPacket packet = new UnregisterServerPacket();
                 packet.addValue("serverName", serverName);
@@ -38,18 +38,18 @@ public class CloudServerDisconnectPacket extends DataPacket
         try {
             FileUtils.deleteServer(new File("./temp/" + serverName), serverName, server.getTemplate().isStatic());
         } catch (NullPointerException ex) {
-            BedrockCloud.getLogger().exception(ex);
+            Cloud.getLogger().exception(ex);
         }
 
         String notifyMessage = MessageAPI.stoppedMessage.replace("%service", server.getServerName());
         Utils.sendNotifyCloud(notifyMessage);
-        BedrockCloud.getLogger().warning(notifyMessage);
+        Cloud.getLogger().warning(notifyMessage);
 
         server.getTemplate().removeServer(server.getServerName());
-        BedrockCloud.getCloudServerProvider().removeServer(server.getServerName());
+        Cloud.getCloudServerProvider().removeServer(server.getServerName());
 
         if (template.getRunningServers().size() < template.getMinRunningServer()) {
-            if (BedrockCloud.getTemplateProvider().isTemplateRunning(template) && !template.isMaintenance()) {
+            if (Cloud.getTemplateProvider().isTemplateRunning(template) && !template.isMaintenance()) {
                 new CloudServer(template);
             }
         }
