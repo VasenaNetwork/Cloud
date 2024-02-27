@@ -164,4 +164,8 @@ public class Cloud
     public int getCurrentTick() {
         return currentTick;
     }
+
+    public ScheduledExecutorService getTickExecutor() {
+        return tickExecutor;
+    }
 }
