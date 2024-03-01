@@ -1,6 +1,6 @@
-package com.bedrockcloud.bedrockcloud.api;
+package com.bedrockcloud.bedrockcloud.utils;
 
-public class MessageAPI {
+public class Messages {
 
     public static final String startMessage     = "§bTry to §astart §bthe service §3%service§b...";
     public static final String startedMessage   = "§bThe service §3%service §bwas §astarted §bsuccessfully.";

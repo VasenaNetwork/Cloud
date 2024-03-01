@@ -2,7 +2,7 @@ package com.bedrockcloud.bedrockcloud.network.packets;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
-import com.bedrockcloud.bedrockcloud.api.MessageAPI;
+import com.bedrockcloud.bedrockcloud.utils.Messages;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
@@ -63,7 +63,7 @@ public class CloudServerConnectPacket extends DataPacket {
             }
         }
 
-        String notifyMessage = MessageAPI.startedMessage.replace("%service", serverName);
+        String notifyMessage = Messages.startedMessage.replace("%service", serverName);
         Utils.sendNotifyCloud(notifyMessage);
         Cloud.getLogger().warning(notifyMessage);
 

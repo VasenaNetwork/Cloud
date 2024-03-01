@@ -2,7 +2,7 @@ package com.bedrockcloud.bedrockcloud.server.cloudserver;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
-import com.bedrockcloud.bedrockcloud.api.MessageAPI;
+import com.bedrockcloud.bedrockcloud.utils.Messages;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerStartEvent;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerStopEvent;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
@@ -100,7 +100,7 @@ public class CloudServer {
                     String servername = getServerName();
                     this.setAliveChecks(0);
 
-                    String notifyMessage = MessageAPI.startFailed.replace("%service", servername);
+                    String notifyMessage = Messages.startFailed.replace("%service", servername);
                     Utils.sendNotifyCloud(notifyMessage);
                     Cloud.getLogger().warning(notifyMessage);
 
@@ -135,7 +135,7 @@ public class CloudServer {
         if (server.exists()) {
             final ProcessBuilder builder = new ProcessBuilder();
 
-            String notifyMessage = MessageAPI.startMessage.replace("%service", serverName);
+            String notifyMessage = Messages.startMessage.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
             Cloud.getLogger().info(notifyMessage);
             try {
@@ -161,7 +161,7 @@ public class CloudServer {
             PortValidator.ports.add(this.getServerPort());
             PortValidator.ports.add(this.getServerPort()+1);
         } else {
-            String notifyMessage = MessageAPI.startFailed.replace("%service", serverName);
+            String notifyMessage = Messages.startFailed.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
             Cloud.getLogger().error(notifyMessage);
 
@@ -202,7 +202,7 @@ public class CloudServer {
         ServerStopEvent event = new ServerStopEvent(this);
         Cloud.getInstance().getPluginManager().callEvent(event);
 
-        String notifyMessage = MessageAPI.stopMessage.replace("%service", this.serverName);
+        String notifyMessage = Messages.stopMessage.replace("%service", this.serverName);
         Utils.sendNotifyCloud(notifyMessage);
         Cloud.getLogger().info(notifyMessage);
 

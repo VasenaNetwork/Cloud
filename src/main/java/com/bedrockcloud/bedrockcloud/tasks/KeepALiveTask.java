@@ -1,6 +1,6 @@
 package com.bedrockcloud.bedrockcloud.tasks;
 
-import com.bedrockcloud.bedrockcloud.api.MessageAPI;
+import com.bedrockcloud.bedrockcloud.utils.Messages;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerTimeoutEvent;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.ServerUtils;
@@ -76,7 +76,7 @@ public class KeepALiveTask implements Runnable {
         ServerTimeoutEvent event = new ServerTimeoutEvent(server);
         Cloud.getInstance().getPluginManager().callEvent(event);
 
-        String notifyMessage = MessageAPI.timedOut.replace("%service", server.getServerName());
+        String notifyMessage = Messages.timedOut.replace("%service", server.getServerName());
         Utils.sendNotifyCloud(notifyMessage);
         Cloud.getLogger().warning(notifyMessage);
 
