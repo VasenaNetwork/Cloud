@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@VersionInfo(name = "Cloud", version = "1.1.0", developers = { "xxFLORII" }, identifier = "@Stable")
+@VersionInfo(name = "Cloud", version = "1.1.1", developers = { "xxFLORII" }, identifier = "@Beta")
 public class Bootstrap {
 
     @Getter

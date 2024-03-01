@@ -16,11 +16,6 @@ import java.util.HashMap;
 public class ServerUtils {
     @ApiStatus.Internal
     public static void startAllProxies() {
-        try {
-            Thread.sleep(3000L);
-        } catch (InterruptedException e) {
-            Cloud.getLogger().exception(e);
-        }
         for (final String name : GroupAPI.getGroups()) {
             try {
                 final HashMap<String, Object> stats = (HashMap<String, Object>) JsonUtils.get(name, JsonUtils.ALL);
