@@ -10,10 +10,7 @@ import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.net.URISyntaxException;
@@ -36,16 +33,16 @@ public class Utils {
     public static void printCloudInfos() {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-        long usedMemoryBytes = Utils.getTotalMemory() - Utils.getFreeMemory();
+        long usedMemoryBytes = getTotalMemory() - getFreeMemory();
         double usedMemoryGB = (double) usedMemoryBytes / (1024 * 1024 * 1024);
 
-        long freeMemoryBytes = Utils.getFreeMemory();
+        long freeMemoryBytes = getFreeMemory();
         double freeMemoryGB = (double) freeMemoryBytes / (1024 * 1024 * 1024);
 
-        long totalMemoryBytes = Utils.getTotalMemory();
+        long totalMemoryBytes = getTotalMemory();
         double totalMemoryGB = (double) totalMemoryBytes / (1024 * 1024 * 1024);
 
-        long maxMemoryBytes = Utils.getMaxMemory();
+        long maxMemoryBytes = getMaxMemory();
         double maxMemoryGB = (double) maxMemoryBytes / (1024 * 1024 * 1024);
 
         Cloud.getLogger().command("Used Memory   : " + decimalFormat.format(usedMemoryGB) + " GB");
@@ -54,7 +51,7 @@ public class Utils {
         Cloud.getLogger().command("Max Memory    : " + decimalFormat.format(maxMemoryGB) + " GB");
     }
 
-    public static String getCloudPath(){
+    public static String getCloudPath() {
         try {
             String path = Cloud.class
                     .getProtectionDomain()
@@ -64,7 +61,7 @@ public class Utils {
                     .getPath();
             String fullPath = path.substring(path.lastIndexOf("/") + 1);
             return path.replace(fullPath, "");
-        } catch (NullPointerException | URISyntaxException e){
+        } catch (NullPointerException | URISyntaxException e) {
             Cloud.getLogger().exception(e);
             return "";
         }
@@ -82,45 +79,43 @@ public class Utils {
         return Bootstrap.class.isAnnotationPresent(VersionInfo.class) ? Bootstrap.class.getAnnotation(VersionInfo.class) : null;
     }
 
-    public static String boolToString(Boolean bool){
+    public static String boolToString(Boolean bool) {
         return (bool ? "§aYes" : "§cNo");
     }
 
-    public static String getServiceSeperator(){
+    public static String getServiceSeparator() {
         return getConfig().getString("service-separator", "-");
     }
 
     public static void writeFile(File file, InputStream content) throws IOException {
-        if ( content == null ) {
-            throw new IllegalArgumentException( "Content must not be null!" );
+        if (content == null) {
+            throw new IllegalArgumentException("Content must not be null!");
         }
 
-        if ( !file.exists() ) {
+        if (!file.exists()) {
             file.createNewFile();
         }
 
-        FileOutputStream stream = new FileOutputStream( file );
-
-        byte[] buffer = new byte[1024];
-        int length;
-        while ( ( length = content.read( buffer ) ) != -1 ) {
-            stream.write( buffer, 0, length );
+        try (FileOutputStream stream = new FileOutputStream(file)) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = content.read(buffer)) != -1) {
+                stream.write(buffer, 0, length);
+            }
         }
-        content.close();
-        stream.close();
     }
 
-    public static void addMaintenance(String player){
+    public static void addMaintenance(String player) {
         Cloud.getMaintenanceFile().set(player.toLowerCase(), true);
         Cloud.getMaintenanceFile().save();
     }
 
-    public static void removeMaintenance(String player){
+    public static void removeMaintenance(String player) {
         Cloud.getMaintenanceFile().remove(player.toLowerCase());
         Cloud.getMaintenanceFile().save();
     }
 
-    public static boolean isMaintenance(String player){
+    public static boolean isMaintenance(String player) {
         return Cloud.getMaintenanceFile().exists(player.toLowerCase(), true);
     }
 
@@ -151,12 +146,9 @@ public class Utils {
 
     @ApiStatus.Internal
     public static void sendNotifyCloud(final String message) {
-        for (final CloudServer cloudServer : Cloud.getCloudServerProvider().getCloudServers().values()) {
-            if (cloudServer.getTemplate().getType() == SoftwareManager.SOFTWARE_PROXY) {
-                final CloudNotifyMessagePacket packet = new CloudNotifyMessagePacket();
-                packet.message = Cloud.prefix + message;
-                cloudServer.pushPacket(packet);
-            }
-        }
+        final CloudNotifyMessagePacket packet = new CloudNotifyMessagePacket();
+        packet.message = Cloud.prefix + message;
+
+        broadcastPacket(packet);
     }
 }
