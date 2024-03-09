@@ -18,9 +18,11 @@ public class CommandRegistry {
         Cloud.getConsoleReader().addCommand(new MaintenanceCommand());
     }
 
-    public void registerCommand(Command command) {
+    public void registerCommand(Command command) throws Exception {
         if (Cloud.getConsoleReader().getCommand(command.getCommand()) == null) {
             Cloud.getConsoleReader().addCommand(command);
+        } else {
+            throw new Exception("Command " + command.getCommand() + " is already registered");
         }
     }
 }
