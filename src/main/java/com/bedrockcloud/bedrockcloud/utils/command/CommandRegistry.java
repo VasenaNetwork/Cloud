@@ -18,7 +18,7 @@ public class CommandRegistry {
         Cloud.getConsoleReader().addCommand(new MaintenanceCommand());
     }
 
-    public boolean registerCommand(Command command) throws Exception {
+    public boolean registerCommand(Command command) {
         if (Cloud.getConsoleReader().getCommand(command.getCommand()) == null) {
             Cloud.getConsoleReader().addCommand(command);
             return true;
