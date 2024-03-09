@@ -64,7 +64,7 @@ public class CloudServer {
     public CloudServer(final Template template) {
         this.template = template;
         this.aliveChecks = 0;
-        this.serverName = template.getName() + Utils.getServiceSeperator() + FileUtils.getFreeNumber("./temp/" + template.getName());
+        this.serverName = template.getName() + Utils.getServiceSeparator() + FileUtils.getFreeNumber("./temp/" + template.getName());
         if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
             this.serverPort = PortValidator.getNextServerPort(this);
         } else {

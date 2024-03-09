@@ -69,8 +69,8 @@ public class Bootstrap {
 
     private static void configureServiceSeparator() {
         Pattern pattern = Pattern.compile("^[^a-zA-Z0-9]+$");
-        Matcher matcher = pattern.matcher(Utils.getServiceSeperator());
-        if (Utils.getServiceSeperator().isEmpty() || Utils.getServiceSeperator().length() != 1 || !matcher.matches()) {
+        Matcher matcher = pattern.matcher(Utils.getServiceSeparator());
+        if (Utils.getServiceSeparator().isEmpty() || Utils.getServiceSeparator().length() != 1 || !matcher.matches()) {
             Cloud.getLogger().error("Service separator is invalid. Please check your cloud configuration.");
             Runtime.getRuntime().halt(0);
         }
