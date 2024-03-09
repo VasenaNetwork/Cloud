@@ -71,6 +71,10 @@ public class ConsoleReader extends Thread implements Loggable {
         if (getCommand(command.getCommand()) == null) this.commands.add(command);
     }
 
+    public void removeCommand(final Command command) {
+        if (getCommand(command.getCommand()) != null) this.commands.remove(command);
+    }
+
     public void executeCommand(final String commandName, final String[] args) {
         final Command command = this.getCommand(commandName);
         if (command != null) {
