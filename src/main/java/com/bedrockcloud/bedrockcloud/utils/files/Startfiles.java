@@ -2,7 +2,7 @@ package com.bedrockcloud.bedrockcloud.utils.files;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
-import com.bedrockcloud.bedrockcloud.api.PasswordAPI;
+import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
@@ -70,7 +70,7 @@ public class Startfiles implements Loggable {
             config.set("enable-cloudlog-file", false);
             config.set("use-proxy", true);
             config.set("auto-restart-cloud", false);
-            config.set("rest-password", PasswordAPI.generateRandomPassword(8));
+            config.set("rest-password", Utils.generateRandomPassword(8));
             config.set("rest-port", 8080.0);
             config.set("rest-username", "cloud");
             config.set("rest-enabled", true);

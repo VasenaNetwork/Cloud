@@ -14,9 +14,11 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.net.URISyntaxException;
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 
 public class Utils {
+    private static final String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
@@ -150,5 +152,16 @@ public class Utils {
         packet.message = Cloud.prefix + message;
 
         broadcastPacket(packet);
+    }
+
+    @ApiStatus.Internal
+    public static String generateRandomPassword(int length) {
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(ALLOWED_CHARS.length());
+            sb.append(ALLOWED_CHARS.charAt(randomIndex));
+        }
+        return sb.toString();
     }
 }
