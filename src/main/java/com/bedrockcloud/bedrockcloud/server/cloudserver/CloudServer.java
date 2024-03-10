@@ -105,8 +105,8 @@ public class CloudServer {
                     Cloud.getLogger().warning(notifyMessage);
 
                     try {
-                        PortValidator.ports.remove(getServerPort());
-                        PortValidator.ports.remove(getServerPort() + 1);
+                        PortValidator.getUsedPorts().remove(getServerPort());
+                        PortValidator.getUsedPorts().remove(getServerPort() + 1);
 
                         if (Cloud.getTemplateProvider().isTemplateRunning(getTemplate())) {
                             ServerUtils.killWithPID(this);
@@ -158,15 +158,15 @@ public class CloudServer {
                 }
             }
 
-            PortValidator.ports.add(this.getServerPort());
-            PortValidator.ports.add(this.getServerPort()+1);
+            PortValidator.getUsedPorts().add(this.getServerPort());
+            PortValidator.getUsedPorts().add(this.getServerPort()+1);
         } else {
             String notifyMessage = Messages.startFailed.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
             Cloud.getLogger().error(notifyMessage);
 
-            PortValidator.ports.remove(this.getServerPort());
-            PortValidator.ports.remove(this.getServerPort()+1);
+            PortValidator.getUsedPorts().remove(this.getServerPort());
+            PortValidator.getUsedPorts().remove(this.getServerPort()+1);
         }
     }
 
