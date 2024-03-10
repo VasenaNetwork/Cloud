@@ -6,6 +6,7 @@ import com.bedrockcloud.bedrockcloud.rest.handler.player.PlayerKickRequestHandle
 import com.bedrockcloud.bedrockcloud.rest.handler.player.PlayerListRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.plugin.PluginDisableRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.plugin.PluginEnableRequestHandler;
+import com.bedrockcloud.bedrockcloud.rest.handler.plugin.PluginListRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.server.ServerListRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.server.ServerStartRequestHandler;
 import com.bedrockcloud.bedrockcloud.rest.handler.server.ServerStopRequestHandler;
@@ -59,6 +60,7 @@ public class App {
             //Plugin
             server.createContext("/api/v1/plugin/enable/", new PluginEnableRequestHandler()).setAuthenticator(authenticator);
             server.createContext("/api/v1/plugin/disable/", new PluginDisableRequestHandler()).setAuthenticator(authenticator);
+            server.createContext("/api/v1/plugin/list/", new PluginListRequestHandler()).setAuthenticator(authenticator);
 
             server.setExecutor(null);
             server.start();
