@@ -116,6 +116,9 @@ public class GroupAPI implements Loggable {
             directories.add(directories.get(0) + "/plugins");
             directories.add(directories.get(0) + "/plugin_data");
             directories.add(directories.get(0) + "/worlds");
+        } else if (type == SoftwareManager.SOFTWARE_PROXY) {
+            directories.add(directories.get(0) + "/packs");
+            directories.add(directories.get(0) + "/plugins");
         }
 
         for (final String directory : directories) {
