@@ -81,8 +81,8 @@ public class KeepALiveTask implements Runnable {
         Cloud.getLogger().warning(notifyMessage);
 
         try {
-            PortValidator.ports.remove(server.getServerPort());
-            PortValidator.ports.remove(server.getServerPort() + 1);
+            PortValidator.getUsedPorts().remove(server.getServerPort());
+            PortValidator.getUsedPorts().remove(server.getServerPort() + 1);
 
             if (Cloud.getTemplateProvider().isTemplateRunning(server.getTemplate())) {
                 ServerUtils.killWithPID(server);

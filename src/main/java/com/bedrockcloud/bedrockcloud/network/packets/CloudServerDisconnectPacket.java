@@ -32,8 +32,8 @@ public class CloudServerDisconnectPacket extends DataPacket
             }
         }
 
-        PortValidator.ports.remove(server.getServerPort());
-        PortValidator.ports.remove(server.getServerPort() + 1);
+        PortValidator.getUsedPorts().remove(server.getServerPort());
+        PortValidator.getUsedPorts().remove(server.getServerPort() + 1);
 
         try {
             FileUtils.deleteServer(new File("./temp/" + serverName), serverName, server.getTemplate().isStatic());
