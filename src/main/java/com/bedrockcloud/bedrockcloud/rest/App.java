@@ -66,7 +66,7 @@ public class App {
             server.start();
             Cloud.getLogger().info("§aRestAPI is running.");
         } catch (IOException e) {
-            Cloud.getLogger().error("§cCan't create RestAPI server.");
+            Cloud.getLogger().exception(e);
         }
     }
 }
