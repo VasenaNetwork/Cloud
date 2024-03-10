@@ -8,7 +8,7 @@ import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.utils.FileUtils;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
-import com.bedrockcloud.bedrockcloud.port.PortValidator;
+import com.bedrockcloud.bedrockcloud.utils.PortValidator;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import org.json.simple.JSONObject;
 

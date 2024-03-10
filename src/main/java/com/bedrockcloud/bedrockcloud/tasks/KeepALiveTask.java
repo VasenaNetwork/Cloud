@@ -5,7 +5,7 @@ import com.bedrockcloud.bedrockcloud.api.event.server.ServerTimeoutEvent;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.ServerUtils;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
-import com.bedrockcloud.bedrockcloud.port.PortValidator;
+import com.bedrockcloud.bedrockcloud.utils.PortValidator;
 import com.bedrockcloud.bedrockcloud.server.query.api.Protocol;
 import com.bedrockcloud.bedrockcloud.server.query.api.QueryException;
 import com.bedrockcloud.bedrockcloud.server.query.api.QueryStatus;
