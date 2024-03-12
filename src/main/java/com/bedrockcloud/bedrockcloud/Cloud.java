@@ -12,7 +12,6 @@ import com.bedrockcloud.bedrockcloud.utils.console.shutdown.ShutdownThread;
 import com.bedrockcloud.bedrockcloud.network.packetRegistry.PacketRegistry;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayerProvider;
 import com.bedrockcloud.bedrockcloud.rest.App;
-import com.bedrockcloud.bedrockcloud.tasks.RestartTask;
 import com.bedrockcloud.bedrockcloud.utils.console.reader.ConsoleReader;
 import com.bedrockcloud.bedrockcloud.network.NetworkManager;
 import com.bedrockcloud.bedrockcloud.network.handler.PacketHandler;
@@ -25,7 +24,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
-import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -96,11 +94,6 @@ public class Cloud
         }
 
         getTemplateProvider().loadTemplates();
-
-        final Timer restartTimer = new Timer();
-        if (Utils.getConfig().getBoolean("auto-restart-cloud", false)) {
-            restartTimer.schedule(new RestartTask(), 1000L, 1000L);
-        }
 
         ThreadFactoryBuilder builder = ThreadFactoryBuilder
                 .builder()
