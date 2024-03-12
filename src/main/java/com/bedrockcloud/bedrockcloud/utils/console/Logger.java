@@ -51,7 +51,7 @@ public class Logger
         try (FileWriter cloudLogWriter = new FileWriter(this.cloudLog, true)) {
             File file = new File("./local/config.yml");
             if (!file.exists()) return;
-            if (!Utils.getConfig().getBoolean("enable-cloudlog-file")) return;
+            if (!Utils.getConfig().getBoolean("enable-log")) return;
             cloudLogWriter.append(Colors.removeColor(Cloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r")).append("\n");
             cloudLogWriter.flush();
         } catch (IOException ignored) {}

@@ -67,9 +67,8 @@ public class Startfiles implements Loggable {
             config.set("motd", "Default BedrockCloud Service");
             config.set("auto-update-on-start", false);
             config.set("wdpe-login-extras", false);
-            config.set("enable-cloudlog-file", false);
+            config.set("enable-log", false);
             config.set("use-proxy", true);
-            config.set("auto-restart-cloud", false);
             config.set("rest-password", Utils.generateRandomPassword(8));
             config.set("rest-port", 8080.0);
             config.set("rest-username", "cloud");
