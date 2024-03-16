@@ -2,6 +2,7 @@ package com.bedrockcloud.bedrockcloud.utils.console;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
@@ -38,11 +39,7 @@ public class Logger {
         }
     }
 
-    public static String getStackTrace(final Throwable t) {
-        if (t == null) {
-            return "";
-        }
-
+    private static String getStackTrace(@NotNull final Throwable t) {
         try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
             t.printStackTrace(pw);
             return sw.toString();
@@ -51,7 +48,7 @@ public class Logger {
         }
     }
 
-    public void log(final LogLevel level, final String message) {
+    private void log(final LogLevel level, final String message) {
         String formattedMessage = String.format("%s[%s] » %s",
                 Cloud.getLoggerPrefix(),
                 level.getName(),
