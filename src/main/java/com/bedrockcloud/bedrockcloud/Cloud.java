@@ -57,6 +57,9 @@ public class Cloud
     @Setter
     @Getter
     private EventHandler eventHandler;
+    @Setter
+    @Getter
+    private App app;
 
     public final static String prefix = "§l§bCloud §r§8» §r";
     private Scheduler scheduler;
@@ -88,7 +91,7 @@ public class Cloud
         Cloud.networkManager = new NetworkManager((int) Utils.getConfig().getDouble("port"));
 
         if (Utils.getConfig().getBoolean("rest-enabled", true)) {
-            new App();
+            this.setApp(new App());
         } else {
             Cloud.getLogger().warning("§cRestAPI is currently disabled. You can enable it in your cloud config.");
         }

@@ -25,6 +25,7 @@ import java.net.InetSocketAddress;
 
 @ApiStatus.Internal
 public class App {
+    private HttpServer server = null;
 
     public App(){
         try {
@@ -32,7 +33,7 @@ public class App {
             String restUsername = Utils.getConfig().getString("rest-username");
             String restPassword = Utils.getConfig().getString("rest-password");
 
-            HttpServer server = HttpServer.create(new InetSocketAddress(restPort), 0);
+            this.server = HttpServer.create(new InetSocketAddress(restPort), 0);
 
             Authenticator authenticator = new BasicAuthenticator("cloud") {
                 @Override
@@ -42,31 +43,36 @@ public class App {
             };
 
             //Template
-            server.createContext("/api/v1/template/start/", new TemplateStartRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/api/v1/template/stop/", new TemplateStopRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/api/v1/template/restart/", new TemplateRestartRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/api/v1/template/delete/", new TemplateDeleteRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/template/start/", new TemplateStartRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/template/stop/", new TemplateStopRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/template/restart/", new TemplateRestartRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/template/delete/", new TemplateDeleteRequestHandler()).setAuthenticator(authenticator);
 
             //Player
-            server.createContext("/api/v1/player/kick/", new PlayerKickRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/api/v1/player/list/", new PlayerListRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/api/v1/player/info/", new PlayerInfoRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/player/kick/", new PlayerKickRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/player/list/", new PlayerListRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/player/info/", new PlayerInfoRequestHandler()).setAuthenticator(authenticator);
 
             //Server
-            server.createContext("/api/v1/server/list/", new ServerListRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/api/v1/server/start/", new ServerStartRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/api/v1/server/stop/", new ServerStopRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/server/list/", new ServerListRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/server/start/", new ServerStartRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/server/stop/", new ServerStopRequestHandler()).setAuthenticator(authenticator);
 
             //Plugin
-            server.createContext("/api/v1/plugin/enable/", new PluginEnableRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/api/v1/plugin/disable/", new PluginDisableRequestHandler()).setAuthenticator(authenticator);
-            server.createContext("/api/v1/plugin/list/", new PluginListRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/plugin/enable/", new PluginEnableRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/plugin/disable/", new PluginDisableRequestHandler()).setAuthenticator(authenticator);
+            getServer().createContext("/api/v1/plugin/list/", new PluginListRequestHandler()).setAuthenticator(authenticator);
 
-            server.setExecutor(null);
-            server.start();
+            getServer().setExecutor(null);
+            getServer().start();
+
             Cloud.getLogger().info("§aRestAPI is running.");
         } catch (IOException e) {
             Cloud.getLogger().exception(e);
         }
+    }
+
+    public HttpServer getServer() {
+        return server;
     }
 }
