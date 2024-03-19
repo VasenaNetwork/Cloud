@@ -1,9 +1,8 @@
 package com.bedrockcloud.bedrockcloud;
 
 import com.bedrockcloud.bedrockcloud.utils.files.Startfiles;
-import com.bedrockcloud.bedrockcloud.port.PortValidator;
+import com.bedrockcloud.bedrockcloud.utils.PortValidator;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
-import lombok.Getter;
 
 import java.io.*;
 import java.net.URL;
@@ -12,11 +11,8 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@VersionInfo(name = "Cloud", version = "1.1.0", developers = { "xxFLORII" }, identifier = "@Stable")
+@VersionInfo(name = "Cloud", version = "1.1.1", developers = { "xxFLORII" }, identifier = "@Stable")
 public class Bootstrap {
-
-    @Getter
-    private static String cloudUser;
 
     public static void main(String[] args) {
         try {
@@ -36,7 +32,6 @@ public class Bootstrap {
     private static void initialize() {
         try {
             Class.forName("com.bedrockcloud.bedrockcloud.Cloud");
-            cloudUser = System.getProperty("user.name");
             Thread.currentThread().setName("BedrockCloud-main");
         } catch (ClassNotFoundException ex) {
             Cloud.getLogger().exception(ex);
@@ -69,8 +64,8 @@ public class Bootstrap {
 
     private static void configureServiceSeparator() {
         Pattern pattern = Pattern.compile("^[^a-zA-Z0-9]+$");
-        Matcher matcher = pattern.matcher(Utils.getServiceSeperator());
-        if (Utils.getServiceSeperator().isEmpty() || Utils.getServiceSeperator().length() != 1 || !matcher.matches()) {
+        Matcher matcher = pattern.matcher(Utils.getServiceSeparator());
+        if (Utils.getServiceSeparator().isEmpty() || Utils.getServiceSeparator().length() != 1 || !matcher.matches()) {
             Cloud.getLogger().error("Service separator is invalid. Please check your cloud configuration.");
             Runtime.getRuntime().halt(0);
         }

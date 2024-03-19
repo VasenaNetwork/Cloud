@@ -2,7 +2,6 @@ package com.bedrockcloud.bedrockcloud.utils;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
-import com.bedrockcloud.bedrockcloud.api.MessageAPI;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
@@ -16,11 +15,6 @@ import java.util.HashMap;
 public class ServerUtils {
     @ApiStatus.Internal
     public static void startAllProxies() {
-        try {
-            Thread.sleep(3000L);
-        } catch (InterruptedException e) {
-            Cloud.getLogger().exception(e);
-        }
         for (final String name : GroupAPI.getGroups()) {
             try {
                 final HashMap<String, Object> stats = (HashMap<String, Object>) JsonUtils.get(name, JsonUtils.ALL);
@@ -68,7 +62,7 @@ public class ServerUtils {
 
     @ApiStatus.Internal
     public static void killWithPID(boolean startNewService, CloudServer server) throws IOException {
-        String notifyMessage = MessageAPI.stoppedMessage.replace("%service", server.getServerName());
+        String notifyMessage = Messages.stoppedMessage.replace("%service", server.getServerName());
         Utils.sendNotifyCloud(notifyMessage);
         Cloud.getLogger().warning(notifyMessage);
 

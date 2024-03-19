@@ -18,9 +18,19 @@ public class CommandRegistry {
         Cloud.getConsoleReader().addCommand(new MaintenanceCommand());
     }
 
-    public void registerCommand(Command command) {
+    public boolean registerCommand(Command command) {
         if (Cloud.getConsoleReader().getCommand(command.getCommand()) == null) {
             Cloud.getConsoleReader().addCommand(command);
+            return true;
         }
+        return false;
+    }
+
+    public boolean unregisterCommand(Command command) {
+        if (Cloud.getConsoleReader().getCommand(command.getCommand()) != null) {
+            Cloud.getConsoleReader().removeCommand(command);
+            return true;
+        }
+        return false;
     }
 }

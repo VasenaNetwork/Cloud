@@ -28,7 +28,7 @@ public class PlayerMovePacket extends DataPacket
                             playerTextPacket.playerName = playerName;
                             Objects.requireNonNull(playerTextPacket);
                             playerTextPacket.type = 0;
-                            playerTextPacket.value = Cloud.getLoggerPrefix() + "§cThe Server is ingame!";
+                            playerTextPacket.value = Cloud.prefix + "§cThe Server is ingame!";
                             Cloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerTextPacket);
                         } else {
                             final CloudServer cloudServer = Cloud.getCloudServerProvider().getServer(cloudPlayer.getCurrentProxy());
@@ -42,7 +42,7 @@ public class PlayerMovePacket extends DataPacket
                         playerTextPacket.playerName = playerName;
                         Objects.requireNonNull(playerTextPacket);
                         playerTextPacket.type = 0;
-                        playerTextPacket.value = Cloud.getLoggerPrefix() + "§cThe Server is full!";
+                        playerTextPacket.value = Cloud.prefix + "§cThe Server is full!";
                         Cloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerTextPacket);
                     }
                 } else {
@@ -50,7 +50,7 @@ public class PlayerMovePacket extends DataPacket
                     playerTextPacket.playerName = playerName;
                     Objects.requireNonNull(playerTextPacket);
                     playerTextPacket.type = 0;
-                    playerTextPacket.value = Cloud.getLoggerPrefix() + "§4The Server is not registered!";
+                    playerTextPacket.value = Cloud.prefix + "§4The Server is not registered!";
                     Cloud.getCloudPlayerProvider().getCloudPlayer(playerName).getProxy().pushPacket(playerTextPacket);
                 }
             }

@@ -5,6 +5,7 @@ import java.util.*;
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.utils.command.Command;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jline.reader.*;
 import org.jline.reader.impl.DefaultParser;
 import org.jline.terminal.Terminal;
@@ -53,13 +54,13 @@ public class ConsoleReader extends Thread implements Loggable {
         }
     }
 
-    public String[] dropFirstString(final String[] input) {
+    private String[] dropFirstString(final String[] input) {
         final String[] result = new String[input.length - 1];
         System.arraycopy(input, 1, result, 0, input.length - 1);
         return result;
     }
 
-    public Set<String> getCommandNames() {
+    private Set<String> getCommandNames() {
         Set<String> commandNames = new HashSet<>();
         for (Command command : this.commands) {
             commandNames.add(command.getCommand());
@@ -67,11 +68,17 @@ public class ConsoleReader extends Thread implements Loggable {
         return commandNames;
     }
 
+    @ApiStatus.Internal
     public void addCommand(final Command command) {
         if (getCommand(command.getCommand()) == null) this.commands.add(command);
     }
 
-    public void executeCommand(final String commandName, final String[] args) {
+    @ApiStatus.Internal
+    public void removeCommand(final Command command) {
+        if (getCommand(command.getCommand()) != null) this.commands.remove(command);
+    }
+
+    private void executeCommand(final String commandName, final String[] args) {
         final Command command = this.getCommand(commandName);
         if (command != null) {
             command.onCommand(args);

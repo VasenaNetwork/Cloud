@@ -10,7 +10,7 @@ public class FileUtils {
         boolean found = false;
         int i = 1;
         while (!found) {
-            final File file = new File(path + Utils.getServiceSeperator() + i);
+            final File file = new File(path + Utils.getServiceSeparator() + i);
             if (!file.exists()) {
                 found = true;
                 --i;

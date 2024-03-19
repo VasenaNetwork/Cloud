@@ -2,11 +2,11 @@ package com.bedrockcloud.bedrockcloud.utils.console;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 
-public class Logger
-{
+public class Logger {
     private final File cloudLog;
 
     public Logger() {
@@ -14,46 +14,74 @@ public class Logger
     }
 
     public void info(final String message) {
-        this.log("§aINFO", message);
+        log(LogLevel.INFO, message);
     }
 
     public void error(final String message) {
-        this.log("§cERROR", message);
+        log(LogLevel.ERROR, message);
     }
 
     public void debug(final String message) {
-        this.log("§eDEBUG", message);
+        log(LogLevel.DEBUG, message);
     }
 
     public void warning(final String message) {
-        this.log("§6WARNING", message);
+        log(LogLevel.WARNING, message);
     }
 
     public void command(final String message) {
-        this.log("§bCOMMAND", message);
+        log(LogLevel.COMMAND, message);
     }
 
     public void exception(final Exception e) {
-        if (!getStackTrace(e.getCause()).equals("Can't get stacktrace.")) this.log("§cEXCEPTION", getStackTrace(e.getCause()));
+        if (e != null && e.getCause() != null) {
+            log(LogLevel.EXCEPTION, getStackTrace(e.getCause()));
+        }
     }
 
-    public static String getStackTrace(final Throwable t) {
-
-        if (t == null) return "Can't get stacktrace.";
-
-        final StringWriter sw = new StringWriter();
-        t.printStackTrace(new PrintWriter(sw));
-        return sw.toString();
+    private static String getStackTrace(@NotNull final Throwable t) {
+        try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
+            t.printStackTrace(pw);
+            return sw.toString();
+        } catch (Exception e) {
+            return "Error getting stacktrace: " + e.getMessage();
+        }
     }
 
-    public void log(final String prefix, final String message) {
-        System.out.println(Colors.toColor(Cloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r"));
+    private void log(final LogLevel level, final String message) {
+        String formattedMessage = String.format("%s[%s] » %s",
+                Cloud.prefix,
+                level.getName(),
+                message);
+        System.out.println(Colors.toColor(formattedMessage));
+
         try (FileWriter cloudLogWriter = new FileWriter(this.cloudLog, true)) {
             File file = new File("./local/config.yml");
             if (!file.exists()) return;
-            if (!Utils.getConfig().getBoolean("enable-cloudlog-file")) return;
-            cloudLogWriter.append(Colors.removeColor(Cloud.getLoggerPrefix() + "§7[§r" + prefix + "§7]§r §8» §r" + message + "§r")).append("\n");
+            if (!Utils.getConfig().getBoolean("enable-log")) return;
+
+            String plainMessage = Colors.removeColor(formattedMessage);
+            cloudLogWriter.append(plainMessage).append("\n");
             cloudLogWriter.flush();
         } catch (IOException ignored) {}
+    }
+
+    public enum LogLevel {
+        INFO("INFO"),
+        ERROR("ERROR"),
+        DEBUG("DEBUG"),
+        WARNING("WARNING"),
+        COMMAND("COMMAND"),
+        EXCEPTION("EXCEPTION");
+
+        private final String name;
+
+        LogLevel(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

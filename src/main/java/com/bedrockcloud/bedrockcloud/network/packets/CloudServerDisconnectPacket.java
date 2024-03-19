@@ -2,13 +2,13 @@ package com.bedrockcloud.bedrockcloud.network.packets;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
-import com.bedrockcloud.bedrockcloud.api.MessageAPI;
+import com.bedrockcloud.bedrockcloud.utils.Messages;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.utils.FileUtils;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.client.ClientRequest;
-import com.bedrockcloud.bedrockcloud.port.PortValidator;
+import com.bedrockcloud.bedrockcloud.utils.PortValidator;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import org.json.simple.JSONObject;
 
@@ -32,8 +32,8 @@ public class CloudServerDisconnectPacket extends DataPacket
             }
         }
 
-        PortValidator.ports.remove(server.getServerPort());
-        PortValidator.ports.remove(server.getServerPort() + 1);
+        PortValidator.getUsedPorts().remove(server.getServerPort());
+        PortValidator.getUsedPorts().remove(server.getServerPort() + 1);
 
         try {
             FileUtils.deleteServer(new File("./temp/" + serverName), serverName, server.getTemplate().isStatic());
@@ -41,7 +41,7 @@ public class CloudServerDisconnectPacket extends DataPacket
             Cloud.getLogger().exception(ex);
         }
 
-        String notifyMessage = MessageAPI.stoppedMessage.replace("%service", server.getServerName());
+        String notifyMessage = Messages.stoppedMessage.replace("%service", server.getServerName());
         Utils.sendNotifyCloud(notifyMessage);
         Cloud.getLogger().warning(notifyMessage);
 

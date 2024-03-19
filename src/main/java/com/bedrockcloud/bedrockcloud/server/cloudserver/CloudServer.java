@@ -2,14 +2,14 @@ package com.bedrockcloud.bedrockcloud.server.cloudserver;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
-import com.bedrockcloud.bedrockcloud.api.MessageAPI;
+import com.bedrockcloud.bedrockcloud.utils.Messages;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerStartEvent;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerStopEvent;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.packets.CloudServerDisconnectPacket;
-import com.bedrockcloud.bedrockcloud.port.PortValidator;
+import com.bedrockcloud.bedrockcloud.utils.PortValidator;
 import com.bedrockcloud.bedrockcloud.server.properties.ServerProperties;
-import com.bedrockcloud.bedrockcloud.tasks.KeepALiveTask;
+import com.bedrockcloud.bedrockcloud.threads.KeepALiveThread;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.utils.ServerUtils;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
@@ -54,7 +54,7 @@ public class CloudServer {
     private DatagramSocket socket;
     @Setter
     @Getter
-    private KeepALiveTask task = null;
+    private KeepALiveThread task = null;
     @Setter
     @Getter
     private boolean isConnected = false;
@@ -64,7 +64,7 @@ public class CloudServer {
     public CloudServer(final Template template) {
         this.template = template;
         this.aliveChecks = 0;
-        this.serverName = template.getName() + Utils.getServiceSeperator() + FileUtils.getFreeNumber("./temp/" + template.getName());
+        this.serverName = template.getName() + Utils.getServiceSeparator() + FileUtils.getFreeNumber("./temp/" + template.getName());
         if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
             this.serverPort = PortValidator.getNextServerPort(this);
         } else {
@@ -100,13 +100,13 @@ public class CloudServer {
                     String servername = getServerName();
                     this.setAliveChecks(0);
 
-                    String notifyMessage = MessageAPI.startFailed.replace("%service", servername);
+                    String notifyMessage = Messages.startFailed.replace("%service", servername);
                     Utils.sendNotifyCloud(notifyMessage);
                     Cloud.getLogger().warning(notifyMessage);
 
                     try {
-                        PortValidator.ports.remove(getServerPort());
-                        PortValidator.ports.remove(getServerPort() + 1);
+                        PortValidator.getUsedPorts().remove(getServerPort());
+                        PortValidator.getUsedPorts().remove(getServerPort() + 1);
 
                         if (Cloud.getTemplateProvider().isTemplateRunning(getTemplate())) {
                             ServerUtils.killWithPID(this);
@@ -135,7 +135,7 @@ public class CloudServer {
         if (server.exists()) {
             final ProcessBuilder builder = new ProcessBuilder();
 
-            String notifyMessage = MessageAPI.startMessage.replace("%service", serverName);
+            String notifyMessage = Messages.startMessage.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
             Cloud.getLogger().info(notifyMessage);
             try {
@@ -158,15 +158,15 @@ public class CloudServer {
                 }
             }
 
-            PortValidator.ports.add(this.getServerPort());
-            PortValidator.ports.add(this.getServerPort()+1);
+            PortValidator.getUsedPorts().add(this.getServerPort());
+            PortValidator.getUsedPorts().add(this.getServerPort()+1);
         } else {
-            String notifyMessage = MessageAPI.startFailed.replace("%service", serverName);
+            String notifyMessage = Messages.startFailed.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
             Cloud.getLogger().error(notifyMessage);
 
-            PortValidator.ports.remove(this.getServerPort());
-            PortValidator.ports.remove(this.getServerPort()+1);
+            PortValidator.getUsedPorts().remove(this.getServerPort());
+            PortValidator.getUsedPorts().remove(this.getServerPort()+1);
         }
     }
 
@@ -202,7 +202,7 @@ public class CloudServer {
         ServerStopEvent event = new ServerStopEvent(this);
         Cloud.getInstance().getPluginManager().callEvent(event);
 
-        String notifyMessage = MessageAPI.stopMessage.replace("%service", this.serverName);
+        String notifyMessage = Messages.stopMessage.replace("%service", this.serverName);
         Utils.sendNotifyCloud(notifyMessage);
         Cloud.getLogger().info(notifyMessage);
 

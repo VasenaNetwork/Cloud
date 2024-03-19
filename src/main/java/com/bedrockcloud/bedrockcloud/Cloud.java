@@ -12,7 +12,6 @@ import com.bedrockcloud.bedrockcloud.utils.console.shutdown.ShutdownThread;
 import com.bedrockcloud.bedrockcloud.network.packetRegistry.PacketRegistry;
 import com.bedrockcloud.bedrockcloud.player.CloudPlayerProvider;
 import com.bedrockcloud.bedrockcloud.rest.App;
-import com.bedrockcloud.bedrockcloud.tasks.RestartTask;
 import com.bedrockcloud.bedrockcloud.utils.console.reader.ConsoleReader;
 import com.bedrockcloud.bedrockcloud.network.NetworkManager;
 import com.bedrockcloud.bedrockcloud.network.handler.PacketHandler;
@@ -25,7 +24,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.io.File;
-import java.util.Timer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -59,6 +57,9 @@ public class Cloud
     @Setter
     @Getter
     private EventHandler eventHandler;
+    @Setter
+    @Getter
+    private App app;
 
     public final static String prefix = "§l§bCloud §r§8» §r";
     private Scheduler scheduler;
@@ -68,10 +69,6 @@ public class Cloud
     
     public static Logger getLogger() {
         return new Logger();
-    }
-
-    public static String getLoggerPrefix() {
-        return "§b" + Bootstrap.getCloudUser() + "§r@§b" + "cloud §r§8» §r";
     }
 
     public Cloud() {
@@ -90,17 +87,12 @@ public class Cloud
         Cloud.networkManager = new NetworkManager((int) Utils.getConfig().getDouble("port"));
 
         if (Utils.getConfig().getBoolean("rest-enabled", true)) {
-            new App();
+            this.setApp(new App());
         } else {
             Cloud.getLogger().warning("§cRestAPI is currently disabled. You can enable it in your cloud config.");
         }
 
         getTemplateProvider().loadTemplates();
-
-        final Timer restartTimer = new Timer();
-        if (Utils.getConfig().getBoolean("auto-restart-cloud", false)) {
-            restartTimer.schedule(new RestartTask(), 1000L, 1000L);
-        }
 
         ThreadFactoryBuilder builder = ThreadFactoryBuilder
                 .builder()
