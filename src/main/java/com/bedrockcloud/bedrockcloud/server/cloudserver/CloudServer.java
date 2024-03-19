@@ -9,7 +9,7 @@ import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.packets.CloudServerDisconnectPacket;
 import com.bedrockcloud.bedrockcloud.utils.PortValidator;
 import com.bedrockcloud.bedrockcloud.server.properties.ServerProperties;
-import com.bedrockcloud.bedrockcloud.tasks.KeepALiveTask;
+import com.bedrockcloud.bedrockcloud.threads.KeepALiveThread;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.utils.ServerUtils;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
@@ -54,7 +54,7 @@ public class CloudServer {
     private DatagramSocket socket;
     @Setter
     @Getter
-    private KeepALiveTask task = null;
+    private KeepALiveThread task = null;
     @Setter
     @Getter
     private boolean isConnected = false;

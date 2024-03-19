@@ -1,4 +1,4 @@
-package com.bedrockcloud.bedrockcloud.tasks;
+package com.bedrockcloud.bedrockcloud.threads;
 
 import com.bedrockcloud.bedrockcloud.utils.Messages;
 import com.bedrockcloud.bedrockcloud.api.event.server.ServerTimeoutEvent;
@@ -18,11 +18,11 @@ import java.util.ConcurrentModificationException;
 /*
  * KeepALiveTask to check the status of a service
  */
-public class KeepALiveTask implements Runnable {
+public class KeepALiveThread implements Runnable {
 
     private final CloudServer cloudServer;
 
-    public KeepALiveTask(CloudServer cloudServer) {
+    public KeepALiveThread(CloudServer cloudServer) {
         this.cloudServer = cloudServer;
     }
 
