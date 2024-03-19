@@ -3,7 +3,6 @@ package com.bedrockcloud.bedrockcloud;
 import com.bedrockcloud.bedrockcloud.utils.files.Startfiles;
 import com.bedrockcloud.bedrockcloud.utils.PortValidator;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
-import lombok.Getter;
 
 import java.io.*;
 import java.net.URL;
@@ -14,9 +13,6 @@ import java.util.regex.Pattern;
 
 @VersionInfo(name = "Cloud", version = "1.1.1", developers = { "xxFLORII" }, identifier = "@Beta")
 public class Bootstrap {
-
-    @Getter
-    private static String cloudUser;
 
     public static void main(String[] args) {
         try {
@@ -36,7 +32,6 @@ public class Bootstrap {
     private static void initialize() {
         try {
             Class.forName("com.bedrockcloud.bedrockcloud.Cloud");
-            cloudUser = System.getProperty("user.name");
             Thread.currentThread().setName("BedrockCloud-main");
         } catch (ClassNotFoundException ex) {
             Cloud.getLogger().exception(ex);

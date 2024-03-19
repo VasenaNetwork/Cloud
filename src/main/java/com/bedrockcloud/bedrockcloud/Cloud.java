@@ -71,10 +71,6 @@ public class Cloud
         return new Logger();
     }
 
-    public static String getLoggerPrefix() {
-        return "§b" + Bootstrap.getCloudUser() + "§r@§b" + "cloud §r§8» §r";
-    }
-
     public Cloud() {
         instance = this;
         running = true;

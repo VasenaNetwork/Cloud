@@ -50,7 +50,7 @@ public class Logger {
 
     private void log(final LogLevel level, final String message) {
         String formattedMessage = String.format("%s[%s] » %s",
-                Cloud.getLoggerPrefix(),
+                Cloud.prefix,
                 level.getName(),
                 message);
         System.out.println(Colors.toColor(formattedMessage));
