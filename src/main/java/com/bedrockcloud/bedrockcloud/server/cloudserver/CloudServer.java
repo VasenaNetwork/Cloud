@@ -138,24 +138,11 @@ public class CloudServer {
             String notifyMessage = Messages.startMessage.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
             Cloud.getLogger().info(notifyMessage);
+
             try {
-                builder.command("/bin/sh", "-c", "screen -X -S " + this.serverName + " kill").start();
+                builder.command(Cloud.getInstance().getUtils().getStartCommand(Cloud.getInstance().getUtils().getStartMethod(), this)).directory(new File("./temp/" + this.serverName)).start();
             } catch (Exception e) {
                 Cloud.getLogger().exception(e);
-            }
-
-            if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
-                try {
-                    builder.command("/bin/sh", "-c", "screen -dmS " + this.serverName + " ../../bin/php7/bin/php ../../local/versions/pocketmine/PocketMine-MP.phar").directory(new File("./temp/" + this.serverName)).start();
-                } catch (Exception e) {
-                    Cloud.getLogger().exception(e);
-                }
-            } else {
-                try {
-                    builder.command("/bin/sh", "-c", "screen -dmS " + this.serverName + " java -jar ../../local/versions/waterdogpe/WaterdogPE.jar").directory(new File("./temp/" + this.serverName)).start();
-                } catch (Exception e) {
-                    Cloud.getLogger().exception(e);
-                }
             }
 
             PortValidator.getUsedPorts().add(this.getServerPort());

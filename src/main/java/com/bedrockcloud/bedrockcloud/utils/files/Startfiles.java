@@ -75,13 +75,13 @@ public class Startfiles implements Loggable {
 
             try (FileWriter writer = new FileWriter(localConfigFile)) {
                 String[] configKeys = {
-                        "port: " + this.cloudPort,
-                        "debug-mode: false",
-                        "motd: Default BedrockCloud Service",
-                        "auto-update-on-start: false",
-                        "wdpe-login-extras: false",
-                        "enable-log: false",
-                        "use-proxy: true",
+                        "port: " + (config.getProperty("port") != null ? config.getProperty("port") : this.cloudPort),
+                        "debug-mode: " + (config.getProperty("debug-mode") != null ? config.getProperty("debug-mode") : false),
+                        "motd: " + (config.getProperty("motd") != null ? config.getProperty("motd") : "Default Cloud Service"),
+                        "auto-update-on-start: " + (config.getProperty("auto-update-on-start") != null ? config.getProperty("auto-update-on-start") : false),
+                        "wdpe-login-extras: " + (config.getProperty("wdpe-login-extras") != null ? config.getProperty("wdpe-login-extras") : false),
+                        "enable-log: " + (config.getProperty("enable-log") != null ? config.getProperty("enable-log") : true),
+                        "start-method: " + (config.getProperty("start-method") != null ? config.getProperty("start-method") : "tmux"),
                         "rest-password: " + (config.getProperty("rest-password") != null ? config.getProperty("rest-password") : Utils.generateRandomPassword(8)),
                         "rest-port: " + (config.getProperty("rest-port") != null ? config.getProperty("rest-port") : "8080"),
                         "rest-username: " + (config.getProperty("rest-username") != null ? config.getProperty("rest-username") : "cloud"),
@@ -93,7 +93,7 @@ public class Startfiles implements Loggable {
                     String[] parts = keyValue.split(": ", 2);
                     String key = parts[0];
                     String value = parts[1];
-                    if (!config.containsKey(key)) {
+                    if (key != null && value != null && !config.containsKey(key)) {
                         writer.write(keyValue + "\n");
                     }
                 }

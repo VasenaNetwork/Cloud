@@ -60,6 +60,9 @@ public class Cloud
     @Setter
     @Getter
     private App app;
+    @Setter
+    @Getter
+    private Utils utils;
 
     public final static String prefix = "§l§bCloud §r§8» §r";
     private Scheduler scheduler;
@@ -76,6 +79,7 @@ public class Cloud
         running = true;
 
         Runtime.getRuntime().addShutdownHook(new ShutdownThread());
+        setUtils(new Utils());
 
         maintenanceFile = new Config("./local/maintenance.txt", Config.ENUM);
         this.pluginPath = new File("./local/plugins/cloud");
