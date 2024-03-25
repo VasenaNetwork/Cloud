@@ -9,6 +9,7 @@ import com.bedrockcloud.bedrockcloud.network.packets.CloudNotifyMessagePacket;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServer;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
@@ -19,6 +20,7 @@ import java.text.DecimalFormat;
 
 public class Utils {
     private static final String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static String startMethod = "tmux";
 
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
@@ -51,6 +53,15 @@ public class Utils {
         Cloud.getLogger().command("Free Memory   : " + decimalFormat.format(freeMemoryGB) + " GB");
         Cloud.getLogger().command("Total Memory  : " + decimalFormat.format(totalMemoryGB) + " GB");
         Cloud.getLogger().command("Max Memory    : " + decimalFormat.format(maxMemoryGB) + " GB");
+    }
+
+    public static void checkStartMethods() {
+        if (!detectStartMethod()) {
+            Cloud.getLogger().warning("Please install one of the following software:");
+            Cloud.getLogger().warning("tmux (apt-get install tmux)");
+            Cloud.getLogger().warning("screen (apt-get install screen)");
+            System.exit(1);
+        }
     }
 
     public static String getCloudPath() {
@@ -163,5 +174,111 @@ public class Utils {
             sb.append(ALLOWED_CHARS.charAt(randomIndex));
         }
         return sb.toString();
+    }
+
+    @ApiStatus.Internal
+    public static String getStartMethod() {
+        return startMethod;
+    }
+
+    @ApiStatus.Internal
+    private static boolean isTmuxInstalled() {
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            String output = executeCommand("which tmux");
+            return !output.isEmpty();
+        }
+        return false;
+    }
+
+    @ApiStatus.Internal
+    private static boolean isScreenInstalled() {
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            String output = executeCommand("which screen");
+            return !output.isEmpty();
+        }
+        return false;
+    }
+
+    @ApiStatus.Internal
+    private static String executeCommand(String command) {
+        StringBuilder output = new StringBuilder();
+        Process process;
+        try {
+            process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line);
+            }
+        } catch (IOException | InterruptedException e) {
+            Cloud.getLogger().exception(e);
+        }
+        return output.toString().trim();
+    }
+
+    private static boolean detectStartMethod() {
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            if (isTmuxInstalled()) {
+                if (getConfig().getString("start-method").equalsIgnoreCase("screen")) {
+                    if (isScreenInstalled()) {
+                        startMethod = "screen";
+                        return true;
+                    }
+                }
+                startMethod = "tmux";
+                return true;
+            } else if (isScreenInstalled()) {
+                if (getConfig().getString("start-method").equalsIgnoreCase("tmux")) {
+                    if (isTmuxInstalled()) {
+                        startMethod = "tmux";
+                        return true;
+                    }
+                }
+                startMethod = "screen";
+                return true;
+            }
+            Cloud.getLogger().info("Using " + startMethod + " as start method..");
+        }
+        return false;
+    }
+
+    @ApiStatus.Internal
+    @NotNull
+    public static String getStartCommand(String method, CloudServer server) {
+        String directory;
+        String startMethod;
+        if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
+            startMethod = " ../../bin/php7/bin/php";
+            directory = " ../../local/versions/pocketmine/PocketMine-MP.phar";
+        } else {
+            startMethod = " java -jar";
+            directory = " ../../local/versions/waterdogpe/WaterdogPE.jar";
+        }
+
+        final ProcessBuilder builder = new ProcessBuilder();
+
+
+        switch (method.toLowerCase()) {
+            case "screen" -> {
+                try {
+                    builder.command("/bin/sh", "-c", "screen -X -S " + server.getServerName() + " kill").start();
+                } catch (Exception e) {
+                    Cloud.getLogger().exception(e);
+                }
+
+                return "screen -dmS " + server.getServerName() + startMethod + directory;
+            }
+            default -> {
+                try {
+                    builder.command("/bin/sh", "-c", "tmux kill-session -t " + server.getServerName()).start();
+                } catch (Exception e) {
+                    Cloud.getLogger().exception(e);
+                }
+
+                return "tmux new-session -d -s " + server.getServerName() + " bash -c '" + startMethod + directory + "'";
+            }
+        }
     }
 }
