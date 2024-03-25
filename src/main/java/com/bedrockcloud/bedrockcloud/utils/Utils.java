@@ -214,6 +214,31 @@ public class Utils {
         return output.toString().trim();
     }
 
+    public boolean detectStartMethod() {
+        if (System.getProperty("os.name").toLowerCase().contains("linux")) {
+            if (isTmuxInstalled()) {
+                if (getConfig().getString("start-method").equalsIgnoreCase("screen")) {
+                    if (isScreenInstalled()) {
+                        this.startMethod = "screen";
+                        return true;
+                    }
+                }
+                this.startMethod = "tmux";
+                return true;
+            } else if (isScreenInstalled()) {
+                if (getConfig().getString("start-method").equalsIgnoreCase("tmux")) {
+                    if (isTmuxInstalled()) {
+                        this.startMethod = "tmux";
+                        return true;
+                    }
+                }
+                this.startMethod = "tmux";
+                return true;
+            }
+        }
+        return false;
+    }
+
     @ApiStatus.Internal
     @NotNull
     public String getStartCommand(String method, CloudServer server) {
