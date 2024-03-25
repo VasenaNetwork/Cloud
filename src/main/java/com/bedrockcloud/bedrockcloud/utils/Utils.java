@@ -271,6 +271,12 @@ public class Utils {
                 return "screen -dmS " + server.getServerName() + startMethod + directory;
             }
             default -> {
+                try {
+                    builder.command("/bin/sh", "-c", "tmux kill-session -t " + server.getServerName()).start();
+                } catch (Exception e) {
+                    Cloud.getLogger().exception(e);
+                }
+
                 return "tmux new-session -d -s " + server.getServerName() + " bash -c '" + startMethod + directory + "'";
             }
         }
