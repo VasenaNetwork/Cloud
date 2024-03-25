@@ -19,6 +19,7 @@ import java.text.DecimalFormat;
 
 public class Utils {
     private static final String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private String startMethod = "tmux";
 
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
@@ -163,5 +164,15 @@ public class Utils {
             sb.append(ALLOWED_CHARS.charAt(randomIndex));
         }
         return sb.toString();
+    }
+
+    @ApiStatus.Internal
+    public String getStartMethod() {
+        return this.startMethod;
+    }
+
+    @ApiStatus.Internal
+    public void setStartMethod(String startMethod) {
+        this.startMethod = startMethod;
     }
 }
