@@ -22,6 +22,7 @@ public class Bootstrap {
             checkPocketMineBinary();
             configureServiceSeparator();
             checkForUpdates();
+            Utils.checkStartMethods();
             startCloud();
         } catch (Exception e) {
             Cloud.getLogger().exception(e);

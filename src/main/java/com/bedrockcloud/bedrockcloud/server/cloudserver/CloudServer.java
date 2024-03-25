@@ -140,7 +140,7 @@ public class CloudServer {
             Cloud.getLogger().info(notifyMessage);
 
             try {
-                builder.command(Cloud.getInstance().getUtils().getStartCommand(Cloud.getInstance().getUtils().getStartMethod(), this)).directory(new File("./temp/" + this.serverName)).start();
+                builder.command(Utils.getStartCommand(Utils.getStartMethod(), this)).directory(new File("./temp/" + this.serverName)).start();
             } catch (Exception e) {
                 Cloud.getLogger().exception(e);
             }

@@ -20,7 +20,7 @@ import java.text.DecimalFormat;
 
 public class Utils {
     private static final String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    private String startMethod = "tmux";
+    private static String startMethod = "tmux";
 
     public static boolean isNumeric(String strNum) {
         if (strNum == null) {
@@ -55,7 +55,7 @@ public class Utils {
         Cloud.getLogger().command("Max Memory    : " + decimalFormat.format(maxMemoryGB) + " GB");
     }
 
-    public void checkStartMethods() {
+    public static void checkStartMethods() {
         if (!detectStartMethod()) {
             Cloud.getLogger().warning("Please install one of the following software:");
             Cloud.getLogger().warning("tmux (apt-get install tmux)");
@@ -177,17 +177,12 @@ public class Utils {
     }
 
     @ApiStatus.Internal
-    public String getStartMethod() {
-        return this.startMethod;
+    public static String getStartMethod() {
+        return startMethod;
     }
 
     @ApiStatus.Internal
-    public void setStartMethod(String startMethod) {
-        this.startMethod = startMethod;
-    }
-
-    @ApiStatus.Internal
-    public static boolean isTmuxInstalled() {
+    private static boolean isTmuxInstalled() {
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             String output = executeCommand("which tmux");
             return !output.isEmpty();
@@ -196,7 +191,7 @@ public class Utils {
     }
 
     @ApiStatus.Internal
-    public static boolean isScreenInstalled() {
+    private static boolean isScreenInstalled() {
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             String output = executeCommand("which screen");
             return !output.isEmpty();
@@ -223,35 +218,35 @@ public class Utils {
         return output.toString().trim();
     }
 
-    public boolean detectStartMethod() {
+    private static boolean detectStartMethod() {
         if (System.getProperty("os.name").toLowerCase().contains("linux")) {
             if (isTmuxInstalled()) {
                 if (getConfig().getString("start-method").equalsIgnoreCase("screen")) {
                     if (isScreenInstalled()) {
-                        this.startMethod = "screen";
+                        startMethod = "screen";
                         return true;
                     }
                 }
-                this.startMethod = "tmux";
+                startMethod = "tmux";
                 return true;
             } else if (isScreenInstalled()) {
                 if (getConfig().getString("start-method").equalsIgnoreCase("tmux")) {
                     if (isTmuxInstalled()) {
-                        this.startMethod = "tmux";
+                        startMethod = "tmux";
                         return true;
                     }
                 }
-                this.startMethod = "screen";
+                startMethod = "screen";
                 return true;
             }
-            Cloud.getLogger().info("Using " + this.startMethod + " as start method..");
+            Cloud.getLogger().info("Using " + startMethod + " as start method..");
         }
         return false;
     }
 
     @ApiStatus.Internal
     @NotNull
-    public String getStartCommand(String method, CloudServer server) {
+    public static String getStartCommand(String method, CloudServer server) {
         String directory;
         String startMethod;
         if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
