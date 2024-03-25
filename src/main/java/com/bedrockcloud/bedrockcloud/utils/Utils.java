@@ -241,9 +241,10 @@ public class Utils {
                         return true;
                     }
                 }
-                this.startMethod = "tmux";
+                this.startMethod = "screen";
                 return true;
             }
+            Cloud.getLogger().info("Using " + this.startMethod + " as start method..");
         }
         return false;
     }
