@@ -55,6 +55,15 @@ public class Utils {
         Cloud.getLogger().command("Max Memory    : " + decimalFormat.format(maxMemoryGB) + " GB");
     }
 
+    public void checkStartMethods() {
+        if (!detectStartMethod()) {
+            Cloud.getLogger().warning("Please install one of the following software:");
+            Cloud.getLogger().warning("tmux (apt-get install tmux)");
+            Cloud.getLogger().warning("screen (apt-get install screen)");
+            System.exit(1);
+        }
+    }
+
     public static String getCloudPath() {
         try {
             String path = Cloud.class

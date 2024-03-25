@@ -80,7 +80,7 @@ public class Cloud
 
         Runtime.getRuntime().addShutdownHook(new ShutdownThread());
         setUtils(new Utils());
-        getUtils().detectStartMethod();
+        getUtils().checkStartMethods();
 
         maintenanceFile = new Config("./local/maintenance.txt", Config.ENUM);
         this.pluginPath = new File("./local/plugins/cloud");

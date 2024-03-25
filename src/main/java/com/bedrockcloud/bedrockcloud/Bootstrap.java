@@ -25,7 +25,7 @@ public class Bootstrap {
             startCloud();
         } catch (Exception e) {
             Cloud.getLogger().exception(e);
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
@@ -35,7 +35,7 @@ public class Bootstrap {
             Thread.currentThread().setName("BedrockCloud-main");
         } catch (ClassNotFoundException ex) {
             Cloud.getLogger().exception(ex);
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
@@ -43,14 +43,14 @@ public class Bootstrap {
         int javaVersion = getJavaVersion();
         if (javaVersion < 17) {
             Cloud.getLogger().error("Using unsupported Java version! Minimum supported version is Java 17, found Java " + javaVersion);
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
     private static void checkOperatingSystem() {
         if (!isLinux()) {
             Cloud.getLogger().error("You need a Linux distribution to use BedrockCloud.");
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
@@ -58,7 +58,7 @@ public class Bootstrap {
         File file = new File("./bin");
         if (!file.exists()) {
             Cloud.getLogger().error("No PocketMine PHP binary was found. This is needed to start the PocketMine servers.");
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
@@ -67,7 +67,7 @@ public class Bootstrap {
         Matcher matcher = pattern.matcher(Utils.getServiceSeparator());
         if (Utils.getServiceSeparator().isEmpty() || Utils.getServiceSeparator().length() != 1 || !matcher.matches()) {
             Cloud.getLogger().error("Service separator is invalid. Please check your cloud configuration.");
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
