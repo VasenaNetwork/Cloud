@@ -2,6 +2,7 @@ package com.bedrockcloud.bedrockcloud.api;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
+import com.bedrockcloud.bedrockcloud.api.event.template.TemplateCreateEvent;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.templates.TemplateProvider;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
@@ -101,6 +102,9 @@ public class GroupAPI implements Loggable {
 
             Cloud.getLogger().debug("The Group " + name + " has been successfully created!");
             Cloud.getTemplateProvider().loadTemplate(name);
+
+            TemplateCreateEvent event = new TemplateCreateEvent(Cloud.getTemplateProvider().getTemplate(name));
+            Cloud.getInstance().getPluginManager().callEvent(event);
         } catch (IOException e) {
             Cloud.getLogger().exception(e);
         }
