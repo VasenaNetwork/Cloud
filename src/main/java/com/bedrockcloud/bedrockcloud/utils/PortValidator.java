@@ -42,8 +42,10 @@ public final class PortValidator {
     }
 
     private static boolean isPortInUse(int port) {
-        for (final var service : Cloud.getCloudServerProvider().getCloudServers().values()) {
-            if (service.getServerPort() == port || service.getServerPort() == port + 1) return true;
+        if (Cloud.getCloudServerProvider() != null) {
+            for (final var service : Cloud.getCloudServerProvider().getCloudServers().values()) {
+                if (service.getServerPort() == port || service.getServerPort() == port + 1) return true;
+            }
         }
 
         try (final var serverSocket = new DatagramSocket(port)) {

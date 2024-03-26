@@ -16,11 +16,9 @@ public class Bootstrap {
 
     public static void main(String[] args) {
         try {
-            initialize();
             checkJavaVersion();
             checkOperatingSystem();
             checkPocketMineBinary();
-            configureServiceSeparator();
             checkForUpdates();
             Utils.checkStartMethods();
             startCloud();
@@ -91,8 +89,12 @@ public class Bootstrap {
         try {
             new Startfiles(PortValidator.getFreeCloudPort());
             Thread.sleep(3000);
+            configureServiceSeparator();
+            initialize();
             new Cloud();
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException e) {
+            Cloud.getLogger().exception(e);
+        }
     }
 
     private static String getVersionFromGitHub() throws IOException {

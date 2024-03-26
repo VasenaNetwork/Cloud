@@ -80,7 +80,7 @@ public class TemplateProvider implements Loggable {
     public void loadTemplate(String name) {
         if (!existsTemplate(name)) {
             try {
-                JSONObject stats = JsonUtils.readJsonFromFile("./templates/" + name + "/config.json");
+                JSONObject stats = JsonUtils.readJsonFromFile("./templates/config.json");
                 if (stats != null && !stats.isEmpty()) {
                     new Template(name, (int) stats.get("minRunningServer"), (int) stats.get("maxRunningServer"),
                             (int) stats.get("maxPlayer"), (int) stats.get("type"), (boolean) stats.get("beta"),
@@ -100,7 +100,7 @@ public class TemplateProvider implements Loggable {
         for (String name : GroupAPI.getGroups()) {
             if (!existsTemplate(name)) {
                 try {
-                    HashMap<String, Object> stats = JsonUtils.readJsonFromFile("./templates/" + name + "/config.json");
+                    JSONObject stats = JsonUtils.readJsonFromFile("./templates/config.json");
                     if (stats != null && !stats.isEmpty()) {
                         new Template(name, (int) stats.get("minRunningServer"), (int) stats.get("maxRunningServer"),
                                 (int) stats.get("maxPlayer"), (int) stats.get("type"), (boolean) stats.get("beta"),

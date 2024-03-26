@@ -48,16 +48,19 @@ public class Startfiles implements Loggable {
                 File dir = new File(directory);
                 if (!dir.exists()) {
                     getLogger().debug("Creating directory " + directory + "!");
-                    dir.mkdirs();
+                    if (!dir.mkdirs()) {
+                        getLogger().error("Failed to create directory " + directory + "!");
+                    }
                 }
             }
+
             createConfigFiles();
             downloadMissingFiles();
             createDefaultGroups();
             getLogger().info("§aStarting cloud...");
             Thread.sleep(3000);
         } catch (Exception e) {
-            getLogger().exception(e);
+            e.printStackTrace();
         }
     }
 
@@ -71,32 +74,40 @@ public class Startfiles implements Loggable {
             Properties config = new Properties();
             try (FileReader reader = new FileReader(localConfigFile)) {
                 config.load(reader);
+            } catch (Exception e) {
+                getLogger().exception(e);
             }
 
             try (FileWriter writer = new FileWriter(localConfigFile)) {
                 String[] configKeys = {
-                        "port: " + (config.getProperty("port") != null ? config.getProperty("port") : this.cloudPort),
-                        "debug-mode: " + (config.getProperty("debug-mode") != null ? config.getProperty("debug-mode") : false),
-                        "motd: " + (config.getProperty("motd") != null ? config.getProperty("motd") : "Default Cloud Service"),
+                        "port: " + (config.getProperty("port") != null ? Double.toString(Double.parseDouble(config.getProperty("port"))) : Double.toString((double) this.cloudPort)),
+                        "debug-mode: " + (config.getProperty("debug-mode") != null ? config.getProperty("debug-mode") : "false"),
+                        "motd: \"" + (config.getProperty("motd") != null ? config.getProperty("motd") : "Default Cloud Service") + "\"",
                         "auto-update-on-start: " + (config.getProperty("auto-update-on-start") != null ? config.getProperty("auto-update-on-start") : false),
                         "wdpe-login-extras: " + (config.getProperty("wdpe-login-extras") != null ? config.getProperty("wdpe-login-extras") : false),
-                        "enable-log: " + (config.getProperty("enable-log") != null ? config.getProperty("enable-log") : true),
-                        "start-method: " + (config.getProperty("start-method") != null ? config.getProperty("start-method") : "tmux"),
-                        "rest-password: " + (config.getProperty("rest-password") != null ? config.getProperty("rest-password") : Utils.generateRandomPassword(8)),
-                        "rest-port: " + (config.getProperty("rest-port") != null ? config.getProperty("rest-port") : "8080"),
-                        "rest-username: " + (config.getProperty("rest-username") != null ? config.getProperty("rest-username") : "cloud"),
-                        "rest-enabled: " + (config.getProperty("rest-enabled") != null ? config.getProperty("rest-enabled") : "true"),
-                        "service-separator: " + (config.getProperty("service-separator") != null ? config.getProperty("service-separator") : "-")
+                        "enable-log: " + (config.getProperty("enable-log") != null ? config.getProperty("enable-log") : "true"),
+                        "start-method: \"" + (config.getProperty("start-method") != null ? config.getProperty("start-method") : "tmux") + "\"",
+                        "rest-password: \"" + (config.getProperty("rest-password") != null ? config.getProperty("rest-password") : Utils.generateRandomPassword(8)) + "\"",
+                        "rest-port: \"" + (config.getProperty("rest-port") != null ? Double.toString(Double.parseDouble(config.getProperty("rest-port"))) : "8080.0") + "\"",
+                        "rest-username: \"" + (config.getProperty("rest-username") != null ? config.getProperty("rest-username") : "cloud") + "\"",
+                        "rest-enabled: \"" + (config.getProperty("rest-enabled") != null ? config.getProperty("rest-enabled") : "true") + "\"",
+                        "service-separator: \"" + (config.getProperty("service-separator") != null ? config.getProperty("service-separator") : "-") + "\""
                 };
 
                 for (String keyValue : configKeys) {
                     String[] parts = keyValue.split(": ", 2);
                     String key = parts[0];
                     String value = parts[1];
-                    if (key != null && value != null && !config.containsKey(key)) {
+                    if (!config.containsKey(key)) {
                         writer.write(keyValue + "\n");
                     }
                 }
+
+                writer.flush();
+            } catch (IOException e) {
+                getLogger().error("Error writing to config file: " + e.getMessage());
+            } catch (Exception e) {
+                getLogger().exception(e);
             }
         }
 
