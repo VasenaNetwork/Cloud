@@ -4,6 +4,8 @@ import com.bedrockcloud.bedrockcloud.api.event.EventHandler;
 import com.bedrockcloud.bedrockcloud.api.event.cloud.CloudStartEvent;
 import com.bedrockcloud.bedrockcloud.api.plugin.PluginManager;
 import com.bedrockcloud.bedrockcloud.server.cloudserver.CloudServerProvider;
+import com.bedrockcloud.bedrockcloud.templates.Template;
+import com.bedrockcloud.bedrockcloud.utils.FileUtils;
 import com.bedrockcloud.bedrockcloud.utils.ServerUtils;
 import com.bedrockcloud.bedrockcloud.utils.ThreadFactoryBuilder;
 import com.bedrockcloud.bedrockcloud.utils.command.CommandRegistry;
@@ -93,6 +95,10 @@ public class Cloud
         }
 
         getTemplateProvider().loadTemplates();
+
+        for (Template template : getTemplateProvider().getTemplateMap().values()) {
+            FileUtils.clearTemplatesFolder(template.getName(), template.isStatic());
+        }
 
         ThreadFactoryBuilder builder = ThreadFactoryBuilder
                 .builder()

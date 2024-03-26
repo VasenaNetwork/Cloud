@@ -245,40 +245,38 @@ public class Utils {
     }
 
     @ApiStatus.Internal
-    @NotNull
-    public static String getStartCommand(String method, CloudServer server) {
+    public static void executeStartCommand(String method, CloudServer server) {
         String directory;
         String startMethod;
+
         if (server.getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {
-            startMethod = " ../../bin/php7/bin/php";
-            directory = " ../../local/versions/pocketmine/PocketMine-MP.phar";
+            startMethod = "../../bin/php7/bin/php";
+            directory = "../../local/versions/pocketmine/PocketMine-MP.phar";
         } else {
-            startMethod = " java -jar";
-            directory = " ../../local/versions/waterdogpe/WaterdogPE.jar";
+            startMethod = "java -jar";
+            directory = "../../local/versions/waterdogpe/WaterdogPE.jar";
         }
 
-        final ProcessBuilder builder = new ProcessBuilder();
-
+        String commandPrefix = "";
 
         switch (method.toLowerCase()) {
-            case "screen" -> {
-                try {
-                    builder.command("/bin/sh", "-c", "screen -X -S " + server.getServerName() + " kill").start();
-                } catch (Exception e) {
-                    Cloud.getLogger().exception(e);
-                }
+            case "screen":
+                commandPrefix = "screen -dmS " + server.getServerName() + " ";
+                break;
 
-                return "screen -dmS " + server.getServerName() + startMethod + directory;
-            }
-            default -> {
-                try {
-                    builder.command("/bin/sh", "-c", "tmux kill-session -t " + server.getServerName()).start();
-                } catch (Exception e) {
-                    Cloud.getLogger().exception(e);
-                }
+            default:
+                commandPrefix = "tmux new-session -d -s " + server.getServerName() + " ";
+                break;
+        }
 
-                return "tmux new-session -d -s " + server.getServerName() + " bash -c '" + startMethod + directory + "'";
-            }
+        String command = commandPrefix + startMethod + " " + directory;
+
+        try {
+            ProcessBuilder builder = new ProcessBuilder("/bin/sh", "-c", command);
+            builder.directory(new File("./temp/" + server.getServerName()));
+            builder.start().waitFor();
+        } catch (Exception e) {
+            Cloud.getLogger().exception(e);
         }
     }
 }

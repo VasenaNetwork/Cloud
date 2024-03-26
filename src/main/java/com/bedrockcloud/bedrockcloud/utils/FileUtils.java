@@ -86,6 +86,19 @@ public class FileUtils {
         }
     }
 
+    public static void clearTemplatesFolder(final String templateName, boolean isStatic) {
+        File tempFolder = new File("./temp/");
+        File[] matchingFolders = tempFolder.listFiles((dir, name) -> name.startsWith(templateName));
+
+        if (matchingFolders != null) {
+            for (File folder : matchingFolders) {
+                if (!isStatic) {
+                    delete(folder);
+                }
+            }
+        }
+    }
+
     public static void delete(final File file) {
         try {
             if (file.isDirectory()) {

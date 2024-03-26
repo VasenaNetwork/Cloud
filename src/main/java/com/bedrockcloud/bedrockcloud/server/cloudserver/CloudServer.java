@@ -76,7 +76,7 @@ public class CloudServer {
 
         this.startTime = System.currentTimeMillis() / 1000;
 
-        this.uuid = UUID.fromString(this.serverName).toString();
+        this.uuid = UUID.nameUUIDFromBytes(this.getServerName().getBytes()).toString();
 
         ServerUtils.killPid(this);
         Cloud.getCloudServerProvider().addServer(this);
@@ -133,17 +133,11 @@ public class CloudServer {
     private void startServer() throws InterruptedException {
         final File server = new File("./temp/" + this.serverName);
         if (server.exists()) {
-            final ProcessBuilder builder = new ProcessBuilder();
-
             String notifyMessage = Messages.startMessage.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
             Cloud.getLogger().info(notifyMessage);
 
-            try {
-                builder.command(Utils.getStartCommand(Utils.getStartMethod(), this)).directory(new File("./temp/" + this.serverName)).start();
-            } catch (Exception e) {
-                Cloud.getLogger().exception(e);
-            }
+            Utils.executeStartCommand(Utils.getStartMethod(), this);
 
             PortValidator.getUsedPorts().add(this.getServerPort());
             PortValidator.getUsedPorts().add(this.getServerPort()+1);

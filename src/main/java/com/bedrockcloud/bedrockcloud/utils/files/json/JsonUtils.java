@@ -71,11 +71,16 @@ public class JsonUtils {
         }
     }
 
-    public static JSONObject readJsonFromFile(String filePath) throws IOException {
+    public static Object readJsonFromFile(String filePath) throws IOException {
         JSONParser parser = new JSONParser();
         try (FileReader reader = new FileReader(filePath)) {
             Object obj = parser.parse(reader);
-            return (JSONObject) obj;
+            if (obj instanceof JSONObject || obj instanceof JSONArray) {
+                return obj;
+            } else {
+                Cloud.getLogger().error("Invalid JSON format. Expected JSONObject or JSONArray.");
+                return null;
+            }
         } catch (ParseException | IOException e) {
             Cloud.getLogger().error("Error reading JSON file from path: " + filePath);
             Cloud.getLogger().exception(e);

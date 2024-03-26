@@ -6,6 +6,7 @@ import com.bedrockcloud.bedrockcloud.api.event.template.TemplateUnloadEvent;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import com.bedrockcloud.bedrockcloud.utils.files.json.JsonUtils;
 import org.jetbrains.annotations.ApiStatus;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.IOException;
@@ -80,13 +81,30 @@ public class TemplateProvider implements Loggable {
     public void loadTemplate(String name) {
         if (!existsTemplate(name)) {
             try {
-                JSONObject stats = JsonUtils.readJsonFromFile("./templates/config.json");
-                if (stats != null && !stats.isEmpty()) {
-                    new Template(name, (int) stats.get("minRunningServer"), (int) stats.get("maxRunningServer"),
-                            (int) stats.get("maxPlayer"), (int) stats.get("type"), (boolean) stats.get("beta"),
-                            (boolean) stats.get("maintenance"), (boolean) stats.get("isLobby"),
-                            (boolean) stats.get("isStatic"));
+                JSONArray jsonDataArray = (JSONArray) JsonUtils.readJsonFromFile("./templates/config.json");
+
+                for (Object obj : jsonDataArray) {
+                    if (obj instanceof JSONObject) {
+                        JSONObject templateData = (JSONObject) obj;
+
+                        if (templateData.containsKey(name)) {
+                            JSONObject stats = (JSONObject) templateData.get(name);
+
+                            int minRunningServer = stats.containsKey("minRunningServer") ? ((Number) stats.get("minRunningServer")).intValue() : 0;
+                            int maxRunningServer = stats.containsKey("maxRunningServer") ? ((Number) stats.get("maxRunningServer")).intValue() : 0;
+                            int maxPlayer = stats.containsKey("maxPlayer") ? ((Number) stats.get("maxPlayer")).intValue() : 0;
+                            int type = stats.containsKey("type") ? ((Number) stats.get("type")).intValue() : 0;
+                            boolean beta = stats.containsKey("beta") && (boolean) stats.get("beta");
+                            boolean maintenance = stats.containsKey("maintenance") && (boolean) stats.get("maintenance");
+                            boolean isLobby = stats.containsKey("isLobby") && (boolean) stats.get("isLobby");
+                            boolean isStatic = stats.containsKey("isStatic") && (boolean) stats.get("isStatic");
+
+                            new Template(name, minRunningServer, maxRunningServer, maxPlayer, type, beta, maintenance, isLobby, isStatic);
+                            return;
+                        }
+                    }
                 }
+                Cloud.getLogger().error("Template " + name + " not.");
             } catch (IOException e) {
                 Cloud.getLogger().exception(e);
             }
@@ -97,20 +115,36 @@ public class TemplateProvider implements Loggable {
 
     @ApiStatus.Internal
     public void loadTemplates() {
-        for (String name : GroupAPI.getGroups()) {
-            if (!existsTemplate(name)) {
-                try {
-                    JSONObject stats = JsonUtils.readJsonFromFile("./templates/config.json");
-                    if (stats != null && !stats.isEmpty()) {
-                        new Template(name, (int) stats.get("minRunningServer"), (int) stats.get("maxRunningServer"),
-                                (int) stats.get("maxPlayer"), (int) stats.get("type"), (boolean) stats.get("beta"),
-                                (boolean) stats.get("maintenance"), (boolean) stats.get("isLobby"),
-                                (boolean) stats.get("isStatic"));
+        try {
+            JSONArray jsonDataArray = (JSONArray) JsonUtils.readJsonFromFile("./templates/config.json");
+
+            for (String name : GroupAPI.getGroups()) {
+                if (!existsTemplate(name)) {
+                    for (Object obj : jsonDataArray) {
+                        if (obj instanceof JSONObject) {
+                            JSONObject templateData = (JSONObject) obj;
+
+                            if (templateData.containsKey(name)) {
+                                JSONObject stats = (JSONObject) templateData.get(name);
+
+                                int minRunningServer = stats.containsKey("minRunningServer") ? ((Number) stats.get("minRunningServer")).intValue() : 0;
+                                int maxRunningServer = stats.containsKey("maxRunningServer") ? ((Number) stats.get("maxRunningServer")).intValue() : 0;
+                                int maxPlayer = stats.containsKey("maxPlayer") ? ((Number) stats.get("maxPlayer")).intValue() : 0;
+                                int type = stats.containsKey("type") ? ((Number) stats.get("type")).intValue() : 0;
+                                boolean beta = stats.containsKey("beta") && (boolean) stats.get("beta");
+                                boolean maintenance = stats.containsKey("maintenance") && (boolean) stats.get("maintenance");
+                                boolean isLobby = stats.containsKey("isLobby") && (boolean) stats.get("isLobby");
+                                boolean isStatic = stats.containsKey("isStatic") && (boolean) stats.get("isStatic");
+
+                                new Template(name, minRunningServer, maxRunningServer, maxPlayer, type, beta, maintenance, isLobby, isStatic);
+                                break;
+                            }
+                        }
                     }
-                } catch (IOException e) {
-                    Cloud.getLogger().exception(e);
                 }
             }
+        } catch (IOException e) {
+            Cloud.getLogger().exception(e);
         }
     }
 }
