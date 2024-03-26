@@ -104,7 +104,7 @@ public class TemplateProvider implements Loggable {
                         }
                     }
                 }
-                Cloud.getLogger().error("Template " + name + " not.");
+                Cloud.getLogger().error("Template " + name + " not found.");
             } catch (IOException e) {
                 Cloud.getLogger().exception(e);
             }
