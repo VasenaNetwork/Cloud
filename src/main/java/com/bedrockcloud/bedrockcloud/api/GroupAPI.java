@@ -76,7 +76,6 @@ public class GroupAPI implements Loggable {
     @ApiStatus.Internal
     public static void createGroup(final String name, final int type, final boolean lobby) {
         if (isGroup(name)) {
-            Cloud.getLogger().warning("§cThe template §e" + name + " §calready exists§7.");
             return;
         }
 
