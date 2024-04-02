@@ -90,14 +90,14 @@ public class ConfigSection extends LinkedHashMap<String, Object>
     public ConfigSection getSections() {
         return this.getSections(null);
     }
-    
+
     public ConfigSection getSections(final String key) {
         final ConfigSection sections = new ConfigSection();
         final ConfigSection parent = (key == null || key.isEmpty()) ? this.getAll() : this.getSection(key);
         if (parent == null) {
             return sections;
         }
-        final HashMap<String, Object> hashMap = null;
+        final HashMap<String, Object> hashMap = new HashMap<>();  // Initialisieren Sie die 'hashMap'-Variable
         parent.forEach((key1, value) -> {
             if (value instanceof ConfigSection) {
                 hashMap.put(key1, value);
@@ -106,7 +106,7 @@ public class ConfigSection extends LinkedHashMap<String, Object>
         });
         return sections;
     }
-    
+
     public int getInt(final String key) {
         return this.getInt(key, 0);
     }
@@ -159,11 +159,11 @@ public class ConfigSection extends LinkedHashMap<String, Object>
         final Object val = this.get(key);
         return val instanceof String;
     }
-    
+
     public boolean getBoolean(final String key) {
         return this.getBoolean(key, false);
     }
-    
+
     public boolean getBoolean(final String key, final boolean defaultValue) {
         return this.get(key, defaultValue);
     }
@@ -469,20 +469,20 @@ public class ConfigSection extends LinkedHashMap<String, Object>
             }
         }
     }
-    
+
     public Set<String> getKeys(final boolean child) {
         final Set<String> keys = new LinkedHashSet<String>();
-        final Set<String> set = null;
         this.forEach((key, value) -> {
-            set.add(key);
+            keys.add(key);
             if (value instanceof ConfigSection && child) {
-                ((ConfigSection) value).getKeys(true).forEach(childKey -> set.add(key + "." + childKey));
+                ((ConfigSection) value).getKeys(true).forEach(childKey -> keys.add(key + "." + childKey));  // Verwenden Sie die 'keys'-Variable anstelle der 'set'-Variable
             }
             return;
         });
         return keys;
     }
-    
+
+
     public Set<String> getKeys() {
         return this.getKeys(true);
     }

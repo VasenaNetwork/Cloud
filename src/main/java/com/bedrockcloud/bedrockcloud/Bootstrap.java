@@ -11,21 +11,20 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@VersionInfo(name = "Cloud", version = "1.1.1", developers = { "xxFLORII" }, identifier = "@Stable")
+@VersionInfo(name = "Cloud", version = "1.1.2", developers = { "xxFLORII" }, identifier = "@Stable")
 public class Bootstrap {
 
     public static void main(String[] args) {
         try {
-            initialize();
             checkJavaVersion();
             checkOperatingSystem();
             checkPocketMineBinary();
-            configureServiceSeparator();
             checkForUpdates();
+            Utils.checkStartMethods();
             startCloud();
         } catch (Exception e) {
             Cloud.getLogger().exception(e);
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
@@ -35,7 +34,7 @@ public class Bootstrap {
             Thread.currentThread().setName("BedrockCloud-main");
         } catch (ClassNotFoundException ex) {
             Cloud.getLogger().exception(ex);
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
@@ -43,14 +42,14 @@ public class Bootstrap {
         int javaVersion = getJavaVersion();
         if (javaVersion < 17) {
             Cloud.getLogger().error("Using unsupported Java version! Minimum supported version is Java 17, found Java " + javaVersion);
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
     private static void checkOperatingSystem() {
         if (!isLinux()) {
             Cloud.getLogger().error("You need a Linux distribution to use BedrockCloud.");
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
@@ -58,7 +57,7 @@ public class Bootstrap {
         File file = new File("./bin");
         if (!file.exists()) {
             Cloud.getLogger().error("No PocketMine PHP binary was found. This is needed to start the PocketMine servers.");
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
@@ -67,7 +66,7 @@ public class Bootstrap {
         Matcher matcher = pattern.matcher(Utils.getServiceSeparator());
         if (Utils.getServiceSeparator().isEmpty() || Utils.getServiceSeparator().length() != 1 || !matcher.matches()) {
             Cloud.getLogger().error("Service separator is invalid. Please check your cloud configuration.");
-            Runtime.getRuntime().halt(0);
+            System.exit(1);
         }
     }
 
@@ -90,8 +89,12 @@ public class Bootstrap {
         try {
             new Startfiles(PortValidator.getFreeCloudPort());
             Thread.sleep(3000);
+            configureServiceSeparator();
+            initialize();
             new Cloud();
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException e) {
+            Cloud.getLogger().exception(e);
+        }
     }
 
     private static String getVersionFromGitHub() throws IOException {

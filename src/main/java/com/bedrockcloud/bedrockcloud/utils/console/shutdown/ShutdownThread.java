@@ -18,8 +18,8 @@ public class ShutdownThread extends Thread {
         }
 
         try {
-            if (Cloud.getNetworkManager().getDatagramSocket() != null && !Cloud.getNetworkManager().getDatagramSocket().isClosed()) {
-                Cloud.getNetworkManager().getDatagramSocket().close();
+            if (Cloud.getNetworkManager().getCloudSocket() != null && !Cloud.getNetworkManager().getCloudSocket().isClosed()) {
+                Cloud.getNetworkManager().getCloudSocket().close();
                 Cloud.getLogger().info("CloudSocket was closed.");
             }
         } catch (Exception ignored) {

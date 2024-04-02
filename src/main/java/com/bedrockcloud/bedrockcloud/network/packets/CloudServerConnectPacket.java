@@ -29,7 +29,7 @@ public class CloudServerConnectPacket extends DataPacket {
         server.setSocket(clientRequest.getSocket());
         server.setPid(Integer.parseInt(serverPid));
 
-        Config config = new Config("./archive/server-pids/" + serverName + ".json", Config.JSON);
+        Config config = new Config("./archive/processes/" + serverName + ".json", Config.JSON);
         config.set("pid", Integer.parseInt(serverPid));
         config.save();
 

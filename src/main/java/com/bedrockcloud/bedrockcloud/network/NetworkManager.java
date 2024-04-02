@@ -12,11 +12,9 @@ import java.util.HashMap;
 
 @ApiStatus.Internal
 public class NetworkManager implements Loggable {
-    private final DatagramSocket datagramSocket;
-    private final HashMap<String, DatagramPacket> channelList;
+    private final DatagramSocket socket;
 
     public NetworkManager(final int port) {
-        this.channelList = new HashMap<>();
         DatagramSocket socket = null;
         try {
             socket = new DatagramSocket(port);
@@ -25,19 +23,19 @@ public class NetworkManager implements Loggable {
         } catch (IOException e) {
             getLogger().exception(e);
         }
-        this.datagramSocket = socket;
+        this.socket = socket;
     }
 
     public void start() {
         while (Cloud.isRunning()) {
-            if (this.datagramSocket != null && !this.datagramSocket.isClosed()) {
+            if (this.socket != null && !this.socket.isClosed()) {
                 try {
                     byte[] buffer = new byte[1024];
                     DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-                    this.datagramSocket.receive(datagramPacket);
+                    this.socket.receive(datagramPacket);
 
                     if (datagramPacket.getLength() > 0) {
-                        ClientRequest request = new ClientRequest(datagramPacket, this.datagramSocket);
+                        ClientRequest request = new ClientRequest(datagramPacket, this.socket);
                         request.start();
                     }
                 } catch (IOException ignored) {
@@ -46,11 +44,7 @@ public class NetworkManager implements Loggable {
         }
     }
 
-    public DatagramSocket getDatagramSocket() {
-        return datagramSocket;
-    }
-
-    public HashMap<String, DatagramPacket> getChannelList() {
-        return channelList;
+    public DatagramSocket getCloudSocket() {
+        return socket;
     }
 }

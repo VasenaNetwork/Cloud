@@ -4,13 +4,11 @@ import com.bedrockcloud.bedrockcloud.Cloud;
 import com.bedrockcloud.bedrockcloud.api.GroupAPI;
 import com.bedrockcloud.bedrockcloud.utils.Utils;
 import com.bedrockcloud.bedrockcloud.utils.config.Config;
+import com.bedrockcloud.bedrockcloud.utils.config.ConfigSection;
 import com.bedrockcloud.bedrockcloud.utils.console.Loggable;
 import com.bedrockcloud.bedrockcloud.SoftwareManager;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -48,63 +46,60 @@ public class Startfiles implements Loggable {
                 File dir = new File(directory);
                 if (!dir.exists()) {
                     getLogger().debug("Creating directory " + directory + "!");
-                    dir.mkdirs();
+                    if (!dir.mkdirs()) {
+                        getLogger().error("Failed to create directory " + directory + "!");
+                    }
                 }
             }
+
             createConfigFiles();
             downloadMissingFiles();
             createDefaultGroups();
             getLogger().info("§aStarting cloud...");
             Thread.sleep(3000);
         } catch (Exception e) {
-            getLogger().exception(e);
+            e.printStackTrace();
         }
     }
 
-    private void createConfigFiles() throws IOException {
+    private void createConfigFiles() {
         File localConfigFile = new File("./local/config.yml");
 
         if (!localConfigFile.exists()) {
-            localConfigFile.getParentFile().mkdirs();
-            localConfigFile.createNewFile();
-
-            Properties config = new Properties();
-            try (FileReader reader = new FileReader(localConfigFile)) {
-                config.load(reader);
-            }
-
-            try (FileWriter writer = new FileWriter(localConfigFile)) {
-                String[] configKeys = {
-                        "port: " + this.cloudPort,
-                        "debug-mode: false",
-                        "motd: Default BedrockCloud Service",
-                        "auto-update-on-start: false",
-                        "wdpe-login-extras: false",
-                        "enable-log: false",
-                        "use-proxy: true",
-                        "rest-password: " + (config.getProperty("rest-password") != null ? config.getProperty("rest-password") : Utils.generateRandomPassword(8)),
-                        "rest-port: " + (config.getProperty("rest-port") != null ? config.getProperty("rest-port") : "8080"),
-                        "rest-username: " + (config.getProperty("rest-username") != null ? config.getProperty("rest-username") : "cloud"),
-                        "rest-enabled: " + (config.getProperty("rest-enabled") != null ? config.getProperty("rest-enabled") : "true"),
-                        "service-separator: " + (config.getProperty("service-separator") != null ? config.getProperty("service-separator") : "-")
-                };
-
-                for (String keyValue : configKeys) {
-                    String[] parts = keyValue.split(": ", 2);
-                    String key = parts[0];
-                    String value = parts[1];
-                    if (!config.containsKey(key)) {
-                        writer.write(keyValue + "\n");
-                    }
-                }
+            try {
+                localConfigFile.createNewFile();
+            } catch (IOException ignored) {
             }
         }
+
+        Config config = new Config(localConfigFile, Config.YAML);
+
+        if (!config.exists("port")) config.set("port", (double)this.cloudPort);
+        if (!config.exists("debug-mode")) config.set("debug-mode", false);
+        if (!config.exists("motd")) config.set("motd", "Default Cloud Service");
+        if (!config.exists("auto-update-on-start")) config.set("auto-update-on-start", false);
+        if (!config.exists("wdpe-login-extras")) config.set("wdpe-login-extras", false);
+        if (!config.exists("enable-log")) config.set("enable-log", true);
+        if (!config.exists("start-method")) config.set("start-method", "tmux");
+        if (!config.exists("rest-password")) config.set("rest-password", Utils.generateRandomPassword(8));
+        if (!config.exists("rest-port")) config.set("rest-port", 8080.0);
+        if (!config.exists("rest-username")) config.set("rest-username", "cloud");
+        if (!config.exists("rest-enabled")) config.set("rest-enabled", true);
+        if (!config.exists("service-separator")) config.set("service-separator", "-");
+
+        config.save();
 
         File maintenanceFile = new File("./local/maintenance.txt");
         if (!maintenanceFile.exists()) {
-            maintenanceFile.createNewFile();
+            try {
+                maintenanceFile.createNewFile();
+            } catch (Exception e) {
+                getLogger().error("Error creating maintenance file: " + e.getMessage());
+                getLogger().exception(e);
+            }
         }
     }
+
 
     private void downloadMissingFiles() {
         downloadFile(SoftwareManager.POCKETMINE_URL, "./local/versions/pocketmine/PocketMine-MP.phar");

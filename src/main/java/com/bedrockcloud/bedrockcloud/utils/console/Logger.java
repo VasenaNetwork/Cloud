@@ -34,19 +34,21 @@ public class Logger {
     }
 
     public void exception(final Exception e) {
-        if (e != null && e.getCause() != null) {
-            log(LogLevel.EXCEPTION, getStackTrace(e.getCause()));
+        if (e != null) {
+            log(LogLevel.EXCEPTION, getFullStackTrace(e));
         }
     }
 
-    private static String getStackTrace(@NotNull final Throwable t) {
+    private static String getFullStackTrace(@NotNull final Throwable t) {
         try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
+            pw.println(t.toString());
             t.printStackTrace(pw);
             return sw.toString();
         } catch (Exception e) {
-            return "Error getting stacktrace: " + e.getMessage();
+            return "Error getting full stacktrace: " + e.getMessage();
         }
     }
+
 
     private void log(final LogLevel level, final String message) {
         String formattedMessage = String.format("%s[%s] » %s",
