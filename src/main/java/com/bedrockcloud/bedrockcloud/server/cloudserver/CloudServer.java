@@ -201,7 +201,7 @@ public class CloudServer {
             return;
         }
 
-        if (Cloud.getNetworkManager().getDatagramSocket() == null) {
+        if (Cloud.getNetworkManager().getCloudSocket() == null) {
             return;
         }
 
