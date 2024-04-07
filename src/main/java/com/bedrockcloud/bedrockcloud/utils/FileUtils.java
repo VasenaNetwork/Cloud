@@ -54,17 +54,12 @@ public class FileUtils {
     }
 
     public static void deleteServer(final File file, final String serverName, boolean isStatic) {
-        try {
-            final File crashfile = new File("./temp/" + serverName + "/crashdumps/");
-            final File dest_lib = new File("./archive/crashdumps/" + serverName + "/");
-            if (!dest_lib.exists()) dest_lib.mkdirs();
+        final File crashfile = new File("./temp/" + serverName + "/crashdumps/");
+        final File dest_lib = new File("./archive/crashdumps/" + serverName + "/");
+        if (!dest_lib.exists()) dest_lib.mkdirs();
 
-            if (crashfile.exists()) {
-                FileUtils.copy(crashfile, dest_lib);
-                ConfigUtils.copyFile(crashfile, dest_lib);
-            }
-        } catch (IOException e) {
-            Cloud.getLogger().exception(e);
+        if (crashfile.exists()) {
+            FileUtils.copy(crashfile, dest_lib);
         }
 
         if (file != null) {
