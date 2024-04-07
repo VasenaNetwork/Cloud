@@ -6,7 +6,7 @@ import java.io.*;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 
-public class FileUtils {
+public class ConfigUtils {
 
     public static void writeFile(String fileName, String content) throws IOException {
         writeFile(new File(fileName), content);

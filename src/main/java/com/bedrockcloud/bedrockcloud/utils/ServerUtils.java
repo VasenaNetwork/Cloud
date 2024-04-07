@@ -70,10 +70,6 @@ public class ServerUtils {
 
         final ProcessBuilder builder = new ProcessBuilder();
         try {
-            builder.command("/bin/sh", "-c", "screen -X -S " + server.getServerName() + " kill").start();
-        } catch (Exception ignored) {
-        }
-        try {
             builder.command("/bin/sh", "-c", "kill " + server.getPid()).start();
         } catch (Exception ignored) {
         }
