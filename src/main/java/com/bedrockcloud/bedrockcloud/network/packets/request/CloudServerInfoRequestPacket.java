@@ -25,6 +25,7 @@ public class CloudServerInfoRequestPacket extends DataPacket
         cloudServerInfoResponsePacket.playerCount = server.getPlayerCount();
         cloudServerInfoResponsePacket.maxPlayer = server.getTemplate().getMaxPlayers();
         cloudServerInfoResponsePacket.isStatic = server.getTemplate().isStatic();
+        cloudServerInfoResponsePacket.customServerData = server.getCustomServerData();
         Cloud.getCloudServerProvider().getServer(jsonObject.get("serverName").toString()).pushPacket(cloudServerInfoResponsePacket);
     }
 }
