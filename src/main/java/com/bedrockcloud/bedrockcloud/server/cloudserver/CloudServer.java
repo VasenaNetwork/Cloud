@@ -25,6 +25,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -60,6 +62,7 @@ public class CloudServer {
     private boolean isConnected = false;
     private final long startTime;
     private final String uuid;
+    private final Map<Object, Object> customServerData = new HashMap<>();
 
     public CloudServer(final Template template) {
         this.template = template;
@@ -75,7 +78,6 @@ public class CloudServer {
         this.pid = -1;
 
         this.startTime = System.currentTimeMillis() / 1000;
-
         this.uuid = UUID.nameUUIDFromBytes(this.getServerName().getBytes()).toString();
 
         ServerUtils.killPid(this);
@@ -131,8 +133,8 @@ public class CloudServer {
     }
 
     private void startServer() throws InterruptedException {
-        final File server = new File("./temp/" + this.serverName);
-        if (server.exists()) {
+        final File serverDirectory = new File("./temp/" + this.serverName);
+        if (serverDirectory.exists()) {
             String notifyMessage = Messages.startMessage.replace("%service", serverName);
             Utils.sendNotifyCloud(notifyMessage);
             Cloud.getLogger().info(notifyMessage);
@@ -258,6 +260,10 @@ public class CloudServer {
 
     public String getUuid() {
         return uuid;
+    }
+
+    public Map<Object, Object> getCustomServerData() {
+        return customServerData;
     }
 
     @Override
