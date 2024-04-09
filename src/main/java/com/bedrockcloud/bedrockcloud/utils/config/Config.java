@@ -162,7 +162,7 @@ public class Config
             content = "";
 
             try {
-                content = FileUtils.readFile( this.file );
+                content = ConfigUtils.readFile( this.file );
             } catch ( IOException e ) {
                 e.printStackTrace();
             }
@@ -187,7 +187,7 @@ public class Config
             if ( this.correct ) {
                 String content;
                 try {
-                    content = FileUtils.readFile( inputStream );
+                    content = ConfigUtils.readFile( inputStream );
                 } catch ( IOException e ) {
                     e.printStackTrace();
                     return false;
@@ -245,7 +245,7 @@ public class Config
             }
 
             try {
-                FileUtils.writeFile( this.file, content );
+                ConfigUtils.writeFile( this.file, content );
             } catch ( IOException e ) {
                 Cloud.getLogger().error("Runned into IOException.");
             }

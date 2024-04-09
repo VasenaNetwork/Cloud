@@ -1,6 +1,7 @@
 package com.bedrockcloud.bedrockcloud.utils;
 
 import com.bedrockcloud.bedrockcloud.Cloud;
+import com.bedrockcloud.bedrockcloud.utils.config.ConfigUtils;
 
 import java.io.*;
 
@@ -53,36 +54,35 @@ public class FileUtils {
     }
 
     public static void deleteServer(final File file, final String serverName, boolean isStatic) {
-        try {
-            final File Crashfile = new File("./temp/" + serverName + "/crashdumps/");
-            final File dest_lib = new File("./archive/crashdumps/" + serverName + "/");
-            dest_lib.mkdirs();
-            FileUtils.copy(Crashfile, dest_lib);
-            com.bedrockcloud.bedrockcloud.utils.config.FileUtils.copyFile(Crashfile, dest_lib);
-        } catch (IOException e) {
-            Cloud.getLogger().exception(e);
+        final File crashfile = new File("./temp/" + serverName + "/crashdumps/");
+        final File dest_lib = new File("./archive/crashdumps/" + serverName + "/");
+        if (!dest_lib.exists()) dest_lib.mkdirs();
+
+        if (crashfile.exists()) {
+            FileUtils.copy(crashfile, dest_lib);
         }
 
-        try {
-            if (!isStatic) {
-                if (file.isDirectory()) {
-                    final String[] fileList = file.list();
-                    if (fileList.length == 0) {
-                        file.delete();
-                    } else {
-                        for (final String fileName : fileList) {
-                            final String fullPath = file.getPath() + "/" + fileName;
-                            final File fileOrFolder = new File(fullPath);
-                            delete(fileOrFolder);
+        if (file != null) {
+            try {
+                if (!isStatic) {
+                    if (file.isDirectory()) {
+                        final String[] fileList = file.list();
+                        if (fileList != null) {
+                            for (final String fileName : fileList) {
+                                final String fullPath = file.getPath() + "/" + fileName;
+                                final File fileOrFolder = new File(fullPath);
+                                delete(fileOrFolder);
+                            }
                         }
+
                         delete(file);
+                    } else {
+                        file.delete();
                     }
-                } else {
-                    file.delete();
                 }
+            } catch (NullPointerException e) {
+                Cloud.getLogger().exception(e);
             }
-        } catch (NullPointerException e){
-            Cloud.getLogger().exception(e);
         }
     }
 
@@ -92,7 +92,7 @@ public class FileUtils {
 
         if (matchingFolders != null) {
             for (File folder : matchingFolders) {
-                if (!isStatic) {
+                if (!isStatic && folder != null && folder.isDirectory()) {
                     delete(folder);
                 }
             }

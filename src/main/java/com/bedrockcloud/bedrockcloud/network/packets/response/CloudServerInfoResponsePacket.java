@@ -7,6 +7,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
 
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class CloudServerInfoResponsePacket extends RequestPacket
@@ -21,6 +23,7 @@ public class CloudServerInfoResponsePacket extends RequestPacket
     public boolean isStatic;
     public int playerCount;
     public int maxPlayer;
+    public Map<Object, Object> customServerData = new HashMap<>();
 
     @Override
     public String encode() {
@@ -44,6 +47,7 @@ public class CloudServerInfoResponsePacket extends RequestPacket
         this.addValue("players", JSONValue.toJSONString(arr));
         this.addValue("playerCount", this.playerCount);
         this.addValue("maxPlayer", this.maxPlayer);
+        this.addValue("customServerData", this.customServerData);
         return super.encode();
     }
 }
