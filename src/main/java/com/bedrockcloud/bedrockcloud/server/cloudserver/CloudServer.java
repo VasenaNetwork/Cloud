@@ -8,7 +8,7 @@ import com.bedrockcloud.bedrockcloud.api.event.server.ServerStopEvent;
 import com.bedrockcloud.bedrockcloud.network.DataPacket;
 import com.bedrockcloud.bedrockcloud.network.packets.CloudServerDisconnectPacket;
 import com.bedrockcloud.bedrockcloud.utils.PortValidator;
-import com.bedrockcloud.bedrockcloud.server.properties.ServerProperties;
+import com.bedrockcloud.bedrockcloud.server.properties.PropertiesMaker;
 import com.bedrockcloud.bedrockcloud.threads.KeepALiveThread;
 import com.bedrockcloud.bedrockcloud.templates.Template;
 import com.bedrockcloud.bedrockcloud.utils.ServerUtils;
@@ -158,7 +158,7 @@ public class CloudServer {
         final File dest = new File("./temp/" + this.serverName);
         if (!dest.exists()) {
             FileUtils.copy(src, dest);
-            ServerProperties.createProperties(this);
+            PropertiesMaker.createProperties(this);
         }
 
         if (getTemplate().getType() == SoftwareManager.SOFTWARE_SERVER) {

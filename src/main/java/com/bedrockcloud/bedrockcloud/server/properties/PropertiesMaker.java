@@ -8,7 +8,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Objects;
 
-public class ServerProperties {
+public class PropertiesMaker {
     @ApiStatus.Internal
     public static void createProperties(final CloudServer server) {
         final String serverName = server.getServerName();
