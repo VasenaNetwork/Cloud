@@ -5,9 +5,12 @@ import com.bedrockcloud.bedrockcloud.utils.Utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Logger {
-    private final File cloudLog;
+    private File cloudLog;
+    private int maxSizeBytes = 12 * 1024 * 1024;
 
     public Logger() {
         this.cloudLog = new File("./local/cloud.log");
@@ -65,6 +68,18 @@ public class Logger {
             String plainMessage = Colors.removeColor(formattedMessage);
             cloudLogWriter.append(plainMessage).append("\n");
             cloudLogWriter.flush();
+
+            if (this.cloudLog.length() > maxSizeBytes) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                String currentDate = dateFormat.format(new Date());
+                File logsDirectory = new File("./local/logs");
+                if (!logsDirectory.exists()) {
+                    logsDirectory.mkdirs();
+                }
+                File newLogFile = new File(logsDirectory, "cloud-" + currentDate + ".log");
+                this.cloudLog.renameTo(newLogFile);
+                this.cloudLog = new File("./local/cloud.log");
+            }
         } catch (IOException ignored) {}
     }
 
